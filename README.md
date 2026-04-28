@@ -6,7 +6,7 @@
 [![PyTorch](https://img.shields.io/badge/PyTorch-1.9+-red.svg)](https://pytorch.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-**A unified benchmark for full-precision and binary CNNs on standard image classification datasets.**
+**A unified benchmark for full-precision, binary, and quantized CNNs on standard image classification datasets.**
 
 </div>
 
@@ -14,18 +14,19 @@
 
 ## 📌 Overview
 
-SnowBench is a reproducible benchmark suite designed for training and evaluating **full-precision** and **binary** neural networks on standard image classification datasets. It serves as a baseline framework for research on binary neural networks (BNNs), model compression, and efficient deep learning.
+SnowBench4Quant is a reproducible benchmark suite designed for training and evaluating **full-precision**, **binary**, and **quantized** neural networks on standard image classification datasets. It serves as a baseline framework for research on binary neural networks (BNNs), model quantization, model compression, and efficient deep learning.
 
 **Key features:**
 - ✅ Multiple datasets: CIFAR-10, CIFAR-100, Tiny-ImageNet, ImageNet
 - ✅ Multiple backbones: ResNet18, VGG16, AlexNet
-- ✅ Training modes: Full-precision & Binary (XNOR/DoReFa-style)
-- ✅ Multiple optimizers: SGD, Adam, AdamW, RMSprop
+- ✅ Training modes: Full-precision, Binary (XNOR-style), and Quantized (DoReFa-style)
+- ✅ Multiple optimizers: SGD, Adam, Bop, Bop2ndOrder, SGDAT
 - ✅ Reproducible configurations for fair comparisons
 
 ---
+
 ```text
-SnowBench/
+SnowBench4Quant/
 ├── configs/              # Configuration files for datasets/models
 ├── data/                 # Dataset loading & preprocessing
 ├── models/               # Model definitions
@@ -46,8 +47,8 @@ SnowBench/
 ### Installation
 
 ```bash
-git clone https://github.com/yourusername/SnowBench.git
-cd SnowBench
+git clone https://github.com/yourusername/SnowBench4Quant.git
+cd SnowBench4Quant
 pip install -r requirements.txt
 ```
 
