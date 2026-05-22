@@ -26,18 +26,29 @@ SnowBench4Quant is a reproducible benchmark suite designed for training and eval
 ---
 
 ```text
-SnowBench4Quant/
-├── configs/              # Configuration files for datasets/models
-├── data/                 # Dataset loading & preprocessing
-├── models/               # Model definitions
-│   ├── full_precision/   # ResNet18, VGG16, AlexNet
-│   └── binary/           # Binary versions of the above
-├── optimizers/           # Custom optimizer wrappers
-├── trainers/             # Training loops (full & binary)
-├── utils/                # Logger, metrics, checkpointing
-├── scripts/              # Run scripts for experiments
-├── results/              # Output logs & checkpoints
-└── config.py             # Global configuration
+SnowBench/
+├── data.py                 # Dataset loader: CIFAR-10/100, Tiny-ImageNet, ImageNet (with path configuration)
+├── preprocess.py           # Data preprocessing utilities
+├── utils.py                # Logger, metrics, checkpointing utilities
+├── msavg.py                # Moving average / model smoothing utilities
+│
+├── main_full.py            # Training entry: full-precision models
+├── main_binary.py          # Training entry: binary models (base)
+├── main_binary_ff.py       # Training entry: binary with FF (Feed-Forward)
+├── main_binary_iff.py      # Training entry: binary with IFF (Inverse Feed-Forward)
+├── main_dali.py            # Training entry: DALI accelerated data loading
+├── main_imagenet.py        # Training entry: ImageNet specific pipeline
+│
+├── requirements.txt        # Python dependencies
+├── README.md               # Project documentation
+│
+├── models/                 # Model definitions
+│   ├── full_precision/     # ResNet18, VGG16, AlexNet (FP32)
+│   └── binary/             # Binary versions of the above
+│
+├── datasets/               # Dataset loading & preprocessing (custom)
+│
+└── configs/                # Configuration files (optional, to be added)
 ```
 
 ---
@@ -116,19 +127,17 @@ If you use SnowBench in your research, please cite:
 
 ```bibtex
 @misc{snowbench2024,
-  author = {Your Name},
+  author = {Xue He},
   title = {SnowBench4Quant: A Unified Benchmark for Full-Precision and Binary CNNs},
   year = {2026},
   publisher = {GitHub},
-  url = {https://github.com/yourusername/SnowBench}
+  url = {https://github.com/snowloving/SnowBench}
 }
 ```
 
 
 ## 🙏 Acknowledgements
-PyTorch for the deep learning framework
-torchvision for datasets and pre-trained models
-Binary neural network implementations inspired by XNOR-Net and DoReFa-Net
+The code is based on [SGDAT](https://github.com/gushan/SGDAT/blob/main/README.md).
 
 ## 📧 Contact
 For questions or suggestions, please open an issue or contact a1311965600@gmai.com.
