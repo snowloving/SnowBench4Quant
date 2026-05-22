@@ -27,10 +27,18 @@ SnowBench4Quant is a reproducible benchmark suite designed for training and eval
 
 ```text
 SnowBench/
+├── README.md               # Project documentation
+├── requirements.txt        # Python dependencies
+│
 ├── data.py                 # Dataset loader: CIFAR-10/100, Tiny-ImageNet, ImageNet (with path configuration)
-├── preprocess.py           # Data preprocessing utilities
-├── utils.py                # Logger, metrics, checkpointing utilities
-├── msavg.py                # Moving average / model smoothing utilities
+├── preprocess.py           # Data augmentation & preprocessing: transforms, Lighting, ColorJitter, and dataset-specific pipelines
+├── utils.py                # Logger, metrics, checkpointing utilities, model binarization, and optimizer adjustment (SGD/Adam/Bop/SGDAT)
+│
+├── datasets/               # Dataset loading & preprocessing (custom)
+│
+├── models/                 # Model definitions
+│   ├── full_precision/     # ResNet18, VGG16, AlexNet (FP32)
+│   └── binary/             # Binary versions of the above
 │
 ├── main_full.py            # Training entry: full-precision models
 ├── main_binary.py          # Training entry: binary models (base)
@@ -39,16 +47,7 @@ SnowBench/
 ├── main_dali.py            # Training entry: DALI accelerated data loading
 ├── main_imagenet.py        # Training entry: ImageNet specific pipeline
 │
-├── requirements.txt        # Python dependencies
-├── README.md               # Project documentation
-│
-├── models/                 # Model definitions
-│   ├── full_precision/     # ResNet18, VGG16, AlexNet (FP32)
-│   └── binary/             # Binary versions of the above
-│
-├── datasets/               # Dataset loading & preprocessing (custom)
-│
-└── configs/                # Configuration files (optional, to be added)
+└
 ```
 
 ---
