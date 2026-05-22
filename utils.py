@@ -6,7 +6,7 @@ import pandas as pd
 from bokeh.io import output_file, save, show
 from bokeh.plotting import figure
 from bokeh.layouts import column
-from optimizers import SGDAT, Bop, Bop2ndOrder, ProbBop, ProbBop_v4, ProbBop2ndOrder, ProbSGD
+from optimizers import SGDAT, Bop, Bop2ndOrder
 
 
 def setup_logging(log_file='log.txt'):
@@ -102,11 +102,7 @@ __optimizers = {
     'Adam': torch.optim.Adam,
     'Bop': Bop.Bop,
     'Bop2ndOrder': Bop2ndOrder.Bop2ndOrder,
-    'SGDAT': SGDAT.SGDAT,
-    'ProbSGD':ProbSGD.ProbSGD,
-    'ProbBop2ndOrder':ProbBop2ndOrder.ProbBop2ndOrder,
-    'ProbBop':ProbBop.ProbBop,
-    'ProbBop_v4':ProbBop_v4.ProbBop_v4,
+    'SGDAT': SGDAT.SGDAT
 }
 
 
