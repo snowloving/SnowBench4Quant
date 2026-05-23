@@ -101,7 +101,7 @@ This benchmark supports two main experimental tracks:
 | SGDT | 89.170 | | |
 | SGDAT | 90.040 | | |
 > 📝 **Notes:**
-> - Results reported are from a **single run** (not averaged over 5 trials). Multi-run results with mean ± std are on the way.
+> - Results reported are from a **single run** with fix seed_value (not averaged over 5 trials). Multi-run results with mean ± std are on the way.
 > - Entries marked with hourglass are currently being benchmarked and will be updated soon.
 
 #### 📋 Example Command
