@@ -46,6 +46,7 @@ SnowBench/
 │   └── resnet_binary.py/       # Binary versions of ResNet18
 │
 ├── models_full/                # Full-precision models (to be added)
+│   ├── __init__.py.py/         
 │
 ├── main_binary_sgdat.py        # Training entry: binary models (corresponding to models_sgdat)
 ├── main_full.py                # Training entry: full-precision models (to be added)
