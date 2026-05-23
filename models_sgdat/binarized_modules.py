@@ -16,7 +16,7 @@ class BinarizeLinear(nn.Linear):
         super(BinarizeLinear, self).__init__(*kargs, **kwargs)
 
     def forward(self, input):
-        if input.size(1) != 784:
+        if input.size(1) != 784: # 784 维的输入（如 MNIST 原始像素）保持不变
             input.data=binarize(input.data)
         if not hasattr(self.weight,'org'):
             # self.weight.org = self.weight.data.clone() # there is something I don't know why
@@ -39,7 +39,7 @@ class BinarizeConv2d(nn.Conv2d):
 
 
     def forward(self, input):
-        if input.size(1) != 3:
+        if input.size(1) != 3: # 3 通道的输入（如 RGB 图像）保持不变, 其他情况（如中间层特征）则进行二值化处理
             input.data = binarize(input.data)
         if not hasattr(self.weight,'org'):
             # self.weight.org = self.weight.data.clone() # there is something I don't know why
