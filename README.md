@@ -97,9 +97,9 @@ This benchmark supports two main experimental tracks:
 | SGDM | 89.88 | 65.23 | |
 | Adam | 89.97 | 64.94 | |
 | Bop | 89.11 | 64.61 | |
-| Bop2ndOrder | 89.74 | | |
-| SGDT | 89.17 | | |
-| SGDAT | 90.04 | | |
+| Bop2ndOrder | 89.74 | 65.19 | |
+| SGDT | 89.17 | 64.23 | |
+| SGDAT | 90.04 | 65.77 | |
 > 📝 **Notes:**
 > - Results reported are from a **single run** with fix seed_value (not averaged over 5 trials). Multi-run results with mean ± std are on the way.
 > - Entries marked with hourglass are currently being benchmarked and will be updated soon.
