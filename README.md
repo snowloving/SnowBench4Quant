@@ -18,7 +18,7 @@ SnowBench4Quant is a reproducible benchmark suite designed for training and eval
 
 **Key features:**
 - ✅ Multiple datasets: CIFAR-10, CIFAR-100, Tiny-ImageNet, ImageNet
-- ✅ Multiple backbones: ResNet18, VGG16, AlexNet
+- ✅ Multiple backbones: ResNet18, VGG16, BinaryNet
 - ✅ Training modes: Full-precision, Binary (XNOR-style), and Quantized (DoReFa-style)
 - ✅ Multiple optimizers: SGD, Adam, Bop, Bop2ndOrder, SGDAT
 - ✅ Reproducible configurations for fair comparisons
@@ -67,7 +67,7 @@ pip install -r requirements.txt
 ### Train ResNet18 (full-precision) on CIFAR-10:
 
 ```bash
-python train.py --dataset cifar10 --model resnet18 --mode full --epochs 200
+python main_binary.py --model vgg_cifar10_binary --save vgg_cifar10_SGD_fp --dataset cifar10 --bin_regime "{0: {'optimizer': 'SGD','lr':1e-4}}" --fp_regime "{0: {'optimizer': 'SGD','lr':1e-4}}" --binarization det --input_size 32 --epochs 200 -b 256
 ```
 
 ### Train binary AlexNet on Tiny-ImageNet:
