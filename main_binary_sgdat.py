@@ -344,7 +344,7 @@ def forward(data_loader, model, criterion, epoch=0, training=True,  bin_optimize
     if total_num==0:
         flip_flops=0
     else:
-        flip_flops=flip_num/flip_num
+        flip_flops=flip_num/total_num
     return losses.avg, top1.avg, top5.avg, flip_flops
 
 
