@@ -76,7 +76,7 @@ This benchmark supports two main experimental tracks:
 ### 🎯 Experiments Navigator
 
 - [🔬 Experiment 1](#exp1): Binary Network Optimizer Comparison — SGD vs Adam vs Bop vs Bop2ndOrder vs SGDAT
-- [🧫 Experiment 2](#exp2): Full-Precision Network Accuracy Comparison — ResNet18 at FP32
+- [🧫 Experiment 2](#exp2): Full-Precision Network Accuracy Comparison — FP32 baselines as reference ceiling for binary & quantization benchmarks
 
 
 ---
@@ -193,6 +193,17 @@ python main_binary_sgdat.py --model binarynet --save binarynet_tiny_imagenet_SGD
 
 <a id="exp2"></a>
 ### 🧫 Experiment 2: Full-Precision Network Accuracy Comparison
+
+
+**Goal:** Establish full-precision (FP32) accuracy baselines across multiple architectures to serve as **upper-bound references** for subsequent binary and quantization experiments. The accuracy gap between these baselines and compressed models quantifies the cost of binarization and low-bit quantization.
+
+#### 📊 Results
+
+| Model | CIFAR-10 | CIFAR-100 |
+|-------|:--------:|:---------:|
+| AlexNet | ⏳ | ⏳ |
+| VGG (CIFAR) | ⏳ | ⏳ |
+| ResNet18 | ⏳ | ⏳ |
 
 ## 📝 Citation
 If you use SnowBench in your research, please cite:
