@@ -220,11 +220,11 @@ def main():
 
 
         # train for one epoch
-        train_loss, train_prec1, train_prec5 = train(
+        train_loss, train_prec1, train_prec5, flip_flops = train(
             train_loader, model, criterion, epoch, bin_optimizer,fp_optimizer)
 
         # evaluate on validation set
-        val_loss, val_prec1, val_prec5 = validate(
+        val_loss, val_prec1, val_prec5, _ = validate(
             val_loader, model, criterion, epoch)
 
         # remember best prec@1 and save checkpoint
@@ -247,14 +247,15 @@ def main():
                      'Validation Loss {val_loss:.4f} \t'
                      'Validation Prec@1 {val_prec1:.3f} \t'
                      'Validation Prec@5 {val_prec5:.3f} \t'
+                     'Flip Flops {flip_flops:.3f} \t'
                      'Best prec1@1 {best_prec1:.3f} \n'
                      .format(epoch + 1, train_loss=train_loss, val_loss=val_loss,
                              train_prec1=train_prec1, val_prec1=val_prec1,
-                             train_prec5=train_prec5, val_prec5=val_prec5, best_prec1=best_prec1))
+                             train_prec5=train_prec5, val_prec5=val_prec5, flip_flops=flip_flops, best_prec1=best_prec1))
 
         results.add(epoch=epoch + 1, train_loss=train_loss, val_loss=val_loss,
                     train_prec1=train_prec1, val_prec1=val_prec1,
-                    train_prec5=train_prec5, val_prec5=val_prec5, best_prec1=best_prec1)
+                    train_prec5=train_prec5, val_prec5=val_prec5, best_prec1=best_prec1,flip_flops=flip_flops.item())
         #results.plot(x='epoch', y=['train_loss', 'val_loss'],
         #             title='Loss', ylabel='loss')
         #results.plot(x='epoch', y=['train_error1', 'val_error1'],
@@ -273,6 +274,10 @@ def forward(data_loader, model, criterion, epoch=0, training=True,  bin_optimize
     losses = AverageMeter()
     top1 = AverageMeter()
     top5 = AverageMeter()
+    flip_count=0
+    flip_num=0
+    flip_flops=0.0
+    total_num=0 #it should be the same as binary_num_parameters
 
     end = time.time()
     for i, (inputs, target) in enumerate(data_loader):
@@ -306,6 +311,9 @@ def forward(data_loader, model, criterion, epoch=0, training=True,  bin_optimize
             loss.backward()
             for p in list(model.parameters()):
                 if hasattr(p,'pre_binary_data'):
+                    flip_count=abs(torch.sign(p.data)-torch.sign(p.pre_binary_data))/2
+                    flip_num+=torch.sum(flip_count)
+                    total_num+=flip_count.numel()
                     p.pre_binary_data = p.data.clone()
                     p.flip_num_epoch = torch.zeros_like(p.data)
                     p.flip_num_step = torch.zeros_like(p.data)
@@ -333,8 +341,11 @@ def forward(data_loader, model, criterion, epoch=0, training=True,  bin_optimize
                              phase='TRAINING' if training else 'EVALUATING',
                              batch_time=batch_time,
                              data_time=data_time, loss=losses, top1=top1, top5=top5))
-
-    return losses.avg, top1.avg, top5.avg
+    if total_num==0:
+        flip_flops=0
+    else:
+        flip_flops=flip_num/flip_num
+    return losses.avg, top1.avg, top5.avg, flip_flops
 
 
 def train(data_loader, model, criterion, epoch, bin_optimizer, fp_optimizer):
