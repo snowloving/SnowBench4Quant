@@ -76,7 +76,7 @@ This benchmark supports two main experimental tracks:
 ### 🎯 Experiments Navigator
 
 - [🔬 Experiment 1](#exp1): Binary Network Optimizer Comparison — SGD vs Adam vs Bop vs Bop2ndOrder vs SGDAT
-- [🧫 Experiment 2](#exp2): Full-Precision Network Accuracy Comparison — BinaryNet & ResNet18 at FP32
+- [🧫 Experiment 2](#exp2): Full-Precision Network Accuracy Comparison — ResNet18 at FP32
 
 
 ---
@@ -93,13 +93,16 @@ This benchmark supports two main experimental tracks:
 
 | Optimizer | CIFAR-10 | CIFAR-100 | Tiny-ImageNet |
 |-----------|:--------:|:---------:|:-------------:|
-| SGD | 90.040 | | |
+| SGD | 90.040 | 64.420 | ⏳ |
 | SGDM | 89.880 | | |
 | Adam | 89.970 | | |
 | Bop | 89.110 | | |
 | Bop2ndOrder | 89.740 | | |
-| SGDT | | | |
-| SGDAT | | | |
+| SGDT | 89.170 | | |
+| SGDAT | 90.040 | | |
+> 📝 **Notes:**
+> - Results reported are from a **single run** (not averaged over 5 trials). Multi-run results with mean ± std are on the way.
+> - Entries marked with hourglass are currently being benchmarked and will be updated soon.
 
 #### 📋 Example Command
 
