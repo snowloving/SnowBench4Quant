@@ -4,6 +4,7 @@ import torchvision.transforms as transforms
 from torch.autograd import Function
 from .binarized_modules import  BinarizeLinear,BinarizeConv2d
 
+__all__ = ['binarynet']
 
 
 class BinaryNet(nn.Module):
@@ -74,19 +75,21 @@ class BinaryNet(nn.Module):
         x = self.classifier(x)
         return x
 
+def binarynet(**kwargs):
+    dataset = kwargs.get('dataset', 'cifar10')
 
-def vgg_cifar10_binary(**kwargs):
-    input_size = kwargs.get('input_size', 32)
-    num_classes = kwargs.get( 'num_classes', 10)
-    return BinaryNet(input_size, num_classes)
+    if dataset == 'cifar10':
+        input_size = kwargs.get('input_size', 32)
+        num_classes = kwargs.get( 'num_classes', 10)
+        return BinaryNet(input_size, num_classes)
 
 
-def vgg_cifar100_binary(**kwargs):
-    input_size = kwargs.get('input_size', 32)
-    num_classes = kwargs.get( 'num_classes', 100)
-    return BinaryNet(input_size, num_classes)
+    elif dataset == 'cifar100':
+        input_size = kwargs.get('input_size', 32)
+        num_classes = kwargs.get( 'num_classes', 100)
+        return BinaryNet(input_size, num_classes)
 
-def vgg_tiny_imagenet_binary(**kwargs):
-    input_size = kwargs.get('input_size', 64)
-    num_classes = kwargs.get( 'num_classes', 200)
-    return BinaryNet(input_size, num_classes)
+    elif dataset == 'tiny_imagenet':
+        input_size = kwargs.get('input_size', 64)
+        num_classes = kwargs.get( 'num_classes', 200)
+        return BinaryNet(input_size, num_classes)
