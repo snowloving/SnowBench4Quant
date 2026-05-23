@@ -19,8 +19,8 @@ class BinarizeLinear(nn.Linear):
         if input.size(1) != 784:
             input.data=binarize(input.data)
         if not hasattr(self.weight,'org'):
-            self.weight.org = self.weight.data.clone()
-            #self.weight.org=torch.zeros_like(self.weight)  
+            # self.weight.org = self.weight.data.clone() # there is something I don't know why
+            self.weight.org=torch.zeros_like(self.weight)  
         if not hasattr(self.weight,'pre_binary_data'):
             self.weight.pre_binary_data = binarize(self.weight.data)
 
@@ -42,8 +42,8 @@ class BinarizeConv2d(nn.Conv2d):
         if input.size(1) != 3:
             input.data = binarize(input.data)
         if not hasattr(self.weight,'org'):
-            self.weight.org = self.weight.data.clone()
-            #self.weight.org=torch.zeros_like(self.weight)    
+            # self.weight.org = self.weight.data.clone() # there is something I don't know why
+            self.weight.org=torch.zeros_like(self.weight)    
         if not hasattr(self.weight,'pre_binary_data'):
             self.weight.pre_binary_data = binarize(self.weight.data)
 
@@ -59,6 +59,8 @@ class BinarizeConv2d(nn.Conv2d):
         return out
 
 
+
+# It doesn't binarize activation, discard input.data=binarize(input.data)
 class BinarizeLinear_1w32a(nn.Linear):
 
     def __init__(self, *kargs, **kwargs):
@@ -66,8 +68,8 @@ class BinarizeLinear_1w32a(nn.Linear):
 
     def forward(self, input):
         if not hasattr(self.weight,'org'):
-            self.weight.org = self.weight.data.clone()
-            #self.weight.org=torch.zeros_like(self.weight)      
+            # self.weight.org = self.weight.data.clone()
+            self.weight.org=torch.zeros_like(self.weight)      
         if not hasattr(self.weight,'pre_binary_data'):
             self.weight.pre_binary_data = binarize(self.weight.data)
 
@@ -79,6 +81,7 @@ class BinarizeLinear_1w32a(nn.Linear):
 
         return out
 
+# It doesn't binarize activation, discard input.data=binarize(input.data)
 class BinarizeConv2d_1w32a(nn.Conv2d):
 
     def __init__(self, *kargs, **kwargs):
@@ -87,8 +90,8 @@ class BinarizeConv2d_1w32a(nn.Conv2d):
 
     def forward(self, input):
         if not hasattr(self.weight,'org'):
-            self.weight.org = self.weight.data.clone()
-            #self.weight.org=torch.zeros_like(self.weight)      
+            # self.weight.org = self.weight.data.clone()
+            self.weight.org=torch.zeros_like(self.weight)      
         if not hasattr(self.weight,'pre_binary_data'):
             self.weight.pre_binary_data = binarize(self.weight.data)
 
