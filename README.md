@@ -119,7 +119,7 @@ This benchmark supports two main experimental tracks:
 > 📝 **Notes:**
 > All results are from a single run with a fixed random seed (`seed_value=2020`). No hyperparameter tuning was performed.
 
-#### 📋 Example Command
+#### 📋 Quick Example Command
 
 ````bash
 python main_binary_sgdat.py \
@@ -127,11 +127,7 @@ python main_binary_sgdat.py \
   --save binarynet_cifar10_SGD \
   --dataset cifar10 \
   --bin_regime "{0: {'optimizer': 'SGD', 'lr': 1e-4}}" \
-  --fp_regime "{0: {'optimizer': 'Adam','lr':1e-3}}" \
   --binarization det \
-  --input_size 32 \
-  --epochs 200 \
-  -b 256 \
   --gpus 0
 ````
 
@@ -299,20 +295,20 @@ Binary networks in this benchmark use different latent weight (`weight.org`) ini
 |  | resnet56 | ⌛️ | ⌛️ | He et al. (16-32-64 channels) |
 |  | resnet18 | ⌛️ | ⌛️ | ImageNet modified (3x3 conv1) |
 
-#### 📋 Example Command
+#### 📋 Quick Example Command
 
 ````bash
 python main_full_cifar.py \
   --model vgg_small \
   --save full_vgg_small_cifar10 \
   --dataset cifar10 \
-  --epochs 200 \
-  -b 256 \
   --gpus 0
 ````
 
 <details> <summary>🔁 All Reproducible Commands </summary>
-
+  
+---
+  
 **CIFAR-10 on VGG_Small** 
 ```bash
 python main_full_cifar.py --model vgg_small --save full_vgg_small_cifar10 --dataset cifar10 --epochs 200 -b 256 --gpus 0
@@ -323,6 +319,21 @@ python main_full_cifar.py --model vgg_small --save full_vgg_small_cifar10 --data
 python main_full_cifar.py --model vgg16 --save full_vgg16_cifar10 --dataset cifar10 --epochs 200 -b 256 --gpus 2
 ```
 
+**CIFAR-10 on ResNet20** 
+```bash
+python main_full_cifar.py --model resnet20 --save full_resnet20_cifar10 --dataset cifar10 --epochs 200 -b 256 --gpus 0
+```
+
+**CIFAR-10 on ResNet56** 
+```bash
+python main_full_cifar.py --model resnet56 --save full_resnet56_cifar10 --dataset cifar10 --epochs 200 -b 256 --gpus 1
+```
+
+**CIFAR-10 on ResNet18** 
+```bash
+python main_full_cifar.py --model resnet18 --save full_resnet18_cifar10 --dataset cifar10 --epochs 200 -b 256 --gpus 2
+```
+
 **CIFAR-100 on VGG_Small** 
 ```bash
 python main_full_cifar.py --model vgg_small --save full_vgg_small_cifar100 --dataset cifar100 --epochs 200 -b 256 --gpus 1
@@ -331,6 +342,21 @@ python main_full_cifar.py --model vgg_small --save full_vgg_small_cifar100 --dat
 **CIFAR-100 on VGG16** 
 ```bash
 python main_full_cifar.py --model vgg16 --save full_vgg16_cifar100 --dataset cifar100 --epochs 200 -b 256 --gpus 3
+```
+
+**CIFAR-100 on ResNet20** 
+```bash
+python main_full_cifar.py --model resnet20 --save full_resnet20_cifar100 --dataset cifar100 --epochs 200 -b 256 --gpus 3
+```
+
+**CIFAR-100 on ResNet56** 
+```bash
+python main_full_cifar.py --model resnet56 --save full_resnet56_cifar100 --dataset cifar100 --epochs 200 -b 256 --gpus 0
+```
+
+**CIFAR-100 on ResNet18** 
+```bash
+python main_full_cifar.py --model resnet18 --save full_resnet18_cifar100 --dataset cifar100 --epochs 200 -b 256 --gpus 1
 ```
 
 </details>
@@ -352,7 +378,7 @@ python main_full_cifar.py --model vgg16 --save full_vgg16_cifar100 --dataset cif
 |  | resnet56 | 1/32 | ⌛️ | ⌛️ |
 |  | resnet18 | 1/32 | ⌛️ | ⌛️ |
 
-#### 📋 Example Command
+#### 📋 Quick Example Command
 
 ````bash
 python 
@@ -376,7 +402,7 @@ python
 | BiRealNet | ⏳ | ⏳ |
 | ResNet | ⏳ | ⏳ |
 
-#### 📋 Example Command
+#### 📋 Quick Example Command
 
 ````bash
 python 
