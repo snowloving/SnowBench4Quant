@@ -212,14 +212,13 @@ def main():
 
     bin_optimizer = torch.optim.Adam(bin_parameters, lr=0.001)
     fp_optimizer = torch.optim.Adam(fp_parameters, lr=0.001)
-    bin_optimizer = adjust_optimizer(bin_optimizer, args.start_epoch, bin_regime)
-    fp_optimizer = adjust_optimizer(fp_optimizer, args.start_epoch, fp_regime)
     logging.info('training bin_regime: %s', bin_regime)
     logging.info('training fp_regime: %s', fp_regime)
 
 
     for epoch in range(args.start_epoch, args.epochs):
-
+        bin_optimizer = adjust_optimizer(bin_optimizer, epoch, bin_regime)
+        fp_optimizer = adjust_optimizer(fp_optimizer, epoch, fp_regime)
 
         # train for one epoch
         train_loss, train_prec1, train_prec5, flip_flops = train(
