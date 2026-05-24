@@ -96,13 +96,13 @@ This benchmark supports two main experimental tracks:
 
 | Optimizer | CIFAR-10 | CIFAR-100 | Tiny-ImageNet |
 |-----------|:--------:|:---------:|:-------------:|
-| SGD | 90.04 | 20.86 | ⌛️ |
-| SGDM | 89.88 | 21.32 | ⌛️  |
+| SGD | 90.04 | 64.42 | ⌛️ |
+| SGDM | 89.88 | 65.23 | ⌛️  |
 | Adam | 89.74 | 65.27 | ⌛️ |
 | Bop | 89.08 | 63.91 | ⌛️ |
 | Bop2ndOrder | 89.74 | 64.70 | ⌛️ |
-| SGDT | 89.17 | 20.69 | ⌛️ |
-| SGDAT | 90.15 | 62.80 | ⌛️ |
+| SGDT | 89.17 | 64.57 | ⌛️ |
+| SGDAT | 90.15 |  | ⌛️ |
 > 📝 **Notes:**
 > All results are from a single run with a fixed random seed (seed_value=2020). No hyperparameter tuning was performed.
 
@@ -206,6 +206,21 @@ python main_binary_sgdat.py --model binarynet --save binarynet_tiny_imagenet_SGD
 python main_binary_sgdat.py --model binarynet --save binarynet_tiny_imagenet_SGDM --dataset tiny_imagenet --bin_regime "{0: {'optimizer': 'SGD','lr':1e-4,'momentum':0.9}}" --binarization det --input_size 64 --epochs 100 -b 256 --gpus 1
 ```
 
+**tiny-imagenet with Adam** 
+```bash
+python main_binary_sgdat.py --model binarynet --save binarynet_tiny_imagenet_Adam --dataset tiny_imagenet --bin_regime "{0: {'optimizer': 'Adam','lr':1e-3}}" --binarization det --input_size 64 --epochs 100 -b 256 --gpus 2
+```
+
+**tiny-imagenet with Bop** 
+```bash
+python main_binary_sgdat.py --model binarynet --save binarynet_tiny_imagenet_Bop --dataset tiny_imagenet --bin_regime "{0: {'optimizer': 'Bop','gamma':1e-4,'threshold':1e-8}}" --binarization det --input_size 64 --epochs 100 -b 256 --gpus 0
+```
+
+**tiny-imagenet with Bop2ndOrder** 
+```bash
+python main_binary_sgdat.py --model binarynet --save binarynet_tiny_imagenet_Bop2ndOrder --dataset tiny_imagenet --bin_regime "{0: {'optimizer': 'Bop2ndOrder','gamma':1e-7,'sigma':1e-3,'threshold':1e-6}}" --binarization det --input_size 64 --epochs 100 -b 256 --gpus 1
+```
+
 **tiny-imagenet with SGDT** 
 ```bash
 python main_binary_sgdat.py --model binarynet --save binarynet_tiny_imagenet_SGDT --dataset tiny_imagenet --bin_regime "{0: {'optimizer': 'SGD','lr':1e-4}}" --binarization threshold --threshold 1e-8 --input_size 64 --epochs 100 -b 256 --gpus 2
@@ -216,6 +231,8 @@ python main_binary_sgdat.py --model binarynet --save binarynet_tiny_imagenet_SGD
 python main_binary_sgdat.py --model binarynet --save binarynet_tiny_imagenet_SGDAT --dataset tiny_imagenet --bin_regime "{0: {'optimizer':'SGDAT','lr':1e-4,'threshold':1e-7}}" --binarization det --input_size 64 --epochs 100 -b 256 --gpus 3
 ```
 </details>
+
+---
 
 #### ⚙️ Key Arguments
 | Argument | Description | Options in this experiment |
@@ -249,6 +266,7 @@ Binary networks in this benchmark use different latent weight (`weight.org`) ini
 
 > **Why?** `zeros_like` makes SGD-like optimizers infinitely sensitive to early gradients — the first batch's gradient direction alone decides the sign of every binary weight, acting as a data-driven initialization. Adam and Bop don't need this: Adam's adaptive learning rate naturally amplifies small gradients, easily crossing the zero axis from any starting point.
 
+---
 
 <a id="exp2"></a>
 ### 🧫 Experiment 2: Full-Precision Network Accuracy Comparison
