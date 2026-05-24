@@ -8,7 +8,7 @@ import torch.nn.parallel
 import torch.backends.cudnn as cudnn
 import torch.optim
 import torch.utils.data
-import models_full
+import models_binarynet
 from torch.autograd import Variable
 from data import get_dataset
 from preprocess import get_transform
@@ -33,13 +33,13 @@ torch.cuda.manual_seed_all(seed_value)   # 为所有GPU设置随机种子（多�
 
 torch.backends.cudnn.deterministic = True
 
-model_names = sorted(name for name in models_full.__dict__
+model_names = sorted(name for name in models_binarynet.__dict__
                      if name.islower() and not name.startswith("__")
-                     and callable(models_full.__dict__[name]))
+                     and callable(models_binarynet.__dict__[name]))
 
 parser = argparse.ArgumentParser(description='PyTorch ConvNet Training')
 
-parser.add_argument('--results_dir', metavar='RESULTS_DIR', default='./results_full',
+parser.add_argument('--results_dir', metavar='RESULTS_DIR', default='./results_binarynet',
                     help='results dir')
 parser.add_argument('--save', metavar='SAVE', default='',
                     help='saved folder')
@@ -107,7 +107,7 @@ def main():
 
     # create model
     logging.info("creating model %s", args.model)
-    model = models_full.__dict__[args.model]
+    model = models_binarynet.__dict__[args.model]
     model_config = {'input_size': args.input_size, 'dataset': args.dataset}
 
     if args.model_config is not '':
