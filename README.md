@@ -301,10 +301,22 @@ Binary networks in this benchmark use different latent weight (`weight.org`) ini
 #### 📋 Example Command
 
 ````bash
-python 
+python main_full_cifar.py \
+  --model vgg_small \
+  --save full_vgg_small_cifar10 \
+  --dataset cifar10 \
+  --epochs 200 \
+  -b 256 \
+  --gpus 0
 ````
 
 <details> <summary>🔁 All Reproducible Commands </summary>
+
+**CIFAR-10 on VGG_Small** 
+```bash
+python main_full_cifar.py --model vgg_small --save full_vgg_small_cifar10 --dataset cifar10 --epochs 200 -b 256 --gpus 0
+```
+
 </details>
 
 ---
