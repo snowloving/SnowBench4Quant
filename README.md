@@ -317,6 +317,21 @@ python main_full_cifar.py \
 python main_full_cifar.py --model vgg_small --save full_vgg_small_cifar10 --dataset cifar10 --epochs 200 -b 256 --gpus 0
 ```
 
+**CIFAR-10 on VGG16** 
+```bash
+python main_full_cifar.py --model vgg16 --save full_vgg16_cifar10 --dataset cifar10 --epochs 200 -b 256 --gpus 2
+```
+
+**CIFAR-100 on VGG_Small** 
+```bash
+python main_full_cifar.py --model vgg_small --save full_vgg_small_cifar100 --dataset cifar100 --epochs 200 -b 256 --gpus 1
+```
+
+**CIFAR-100 on VGG16** 
+```bash
+python main_full_cifar.py --model vgg16 --save full_vgg16_cifar100 --dataset cifar100 --epochs 200 -b 256 --gpus 3
+```
+
 </details>
 
 ---
