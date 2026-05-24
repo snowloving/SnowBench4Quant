@@ -435,7 +435,7 @@ If you use SnowBench in your research, please cite:
 This project is built upon the excellent work of the following open-source projects (listed in order of reference, not contribution):
 
 - [SGDAT](https://github.com/gushan/SGDAT) — SGD with Adaptive Threshold for binary neural networks
-- [BinaryNet]([https://github.com/itayhubara/BinaryNet](https://github.com/itayhubara/BinaryNet.pytorch)) — Training deep neural networks with weights and activations constrained to +1 or -1
+- [BinaryNet](https://github.com/itayhubara/BinaryNet.pytorch) — Training deep neural networks with weights and activations constrained to +1 or -1
 - [VISPA](https://github.com/snownus/bnn_vi) - BNN training and variational inference
 
 We are grateful to all the researchers and developers who have made their code publicly available, enabling this benchmark to exist.
