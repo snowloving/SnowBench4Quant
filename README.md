@@ -53,8 +53,8 @@ SnowBench/
 ├── models_binarynet/           # Full-precision & Binary & Quantized (BinaryNet-style)
 │   ├── __init__.py.py/         # __all__ = ['vgg_small_binary', 'vgg16_binary', 'resnet18_binary', 'resnet20_binary', 'resnet56_binary']
 │   ├── binarized_modules.py/   # Binarize / quantize layers & functions
-│   ├── vgg_binary.py/          # Binary VGG
-│   └── resnet_binary.py/       # Binary ResNet
+│   ├── vgg.py/                 # Binary VGG
+│   └── resnet.py/              # Binary ResNet
 │
 ├── models_full_imagenet/       # Full-precision models (ImageNet-scale)
 │   ├── __init__.py.py/         # __all__ = []
