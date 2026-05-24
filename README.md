@@ -90,7 +90,7 @@ This benchmark supports two main experimental tracks:
 
 **Goal:** Compare different optimizers (SGD, Adam, Bop, Bop2ndOrder, SGDAT) for training binary neural networks.  
 
-#### 📊 Results
+#### 📊 Results (Take BinaryNet as example)
 
 **BinaryNet**
 
@@ -282,7 +282,7 @@ Binary networks in this benchmark use different latent weight (`weight.org`) ini
 
 **Goal:** Establish full-precision (FP32) accuracy baselines across multiple architectures to serve as **upper-bound references** for subsequent binary and quantization experiments. The accuracy gap between these baselines and compressed models quantifies the cost of binarization and low-bit quantization.
 
-#### 📊 Results
+#### 📊 Results (Take CIFAR-100 as example)
 
 **CIFAR-100**
 
@@ -294,6 +294,9 @@ Binary networks in this benchmark use different latent weight (`weight.org`) ini
 > 📝 **Notes:**
 > All results are from a single run with a fixed random seed (seed_value=2020). No hyperparameter tuning was performed.
 
+#### 📋 Example Command
+
+**Run with SGD**
 ````bash
 python main_full.py \
   --model resnet \
@@ -309,6 +312,7 @@ python main_full.py \
   --gpus 0
 ````
 
+**Run with Adam**
 ````bash
 python main_full.py \
   --model resnet \
@@ -321,6 +325,22 @@ python main_full.py \
   -b 256 \
   --gpus 1
 ````
+
+<details> <summary>🔁 All Reproducible Commands with CIFAR-100</summary>
+
+**AlexNet with SGD** 
+```bash
+python main_full.py --model alexnet --save alexnet_full_sgd --dataset cifar100 --optimizer sgd --lr 0.1 --momentum 0.9 --weight_decay 1e-4 --input_size 32 --epochs 200 -b 256 --gpus 0
+```
+
+**AlexNet with Adam** 
+```bash
+python main_full.py --model alexnet --save alexnet_full_adam --dataset cifar100 --optimizer adam --lr 0.1 --input_size 32 --epochs 200 -b 256 --gpus 1
+```
+  
+</details>
+
+---
 
 
 ## 📝 Citation
