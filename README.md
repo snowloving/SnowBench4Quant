@@ -93,10 +93,10 @@ This benchmark supports two main experimental tracks:
 
 | Optimizer | CIFAR-10 | CIFAR-100 | Tiny-ImageNet |
 |-----------|:--------:|:---------:|:-------------:|
-| SGD | 90.04 | 64.42 | ⏳ |
-| SGDM | 89.88 | 65.23 | |
-| Adam | 89.97 | 64.94 | |
-| Bop | 89.11 | 64.61 | |
+| SGD | 90.04 | 64.42 | 45.11 |
+| SGDM | 89.88 | 65.23 | 45.67 |
+| Adam | 89.97 | 64.94 | 45.37 |
+| Bop | 89.11 | 64.61 | 44.95 |
 | Bop2ndOrder | 89.74 | 65.19 | |
 | SGDT | 89.17 | 64.23 | |
 | SGDAT | 90.04 | 65.77 | |
