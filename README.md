@@ -282,11 +282,13 @@ Binary networks in this benchmark use different latent weight (`weight.org`) ini
 ---
 
 <a id="exp2"></a>
-### ⚗️ Full-Precision Network Accuracy Comparison on CIFAR
+### ⚗️ Experiment 2: Full-Precision Network Accuracy Comparison on CIFAR
 
 **Goal:** Establish the FP32 upper-bound accuracy for standard CIFAR architectures. These results serve as the "ceiling" references when calculating the accuracy drop of binary and quantized models.
 
-#### 📊 Results
+#### 📊 Results (Take SGD as example)
+
+**SGD**
 
 | Architecture | Model Name | CIFAR-10 | CIFAR-100 | Structural Notes |
 |-----------|:---------:|:---------:|:---------:|---------|
@@ -365,7 +367,7 @@ python main_full_cifar.py --model resnet18 --save full_resnet18_cifar100 --datas
 ---
 
 <a id="exp3"></a>
-### ⚗️ Experiment 3: Binary & Quantized Networks on CIFAR (BinaryNet-style)
+### 🔭 Experiment 3: Binary & Quantized Networks on CIFAR (BinaryNet-style)
 
 **Goal:** Evaluate extreme model compression techniques (1-bit BNNs & low-bit QNNs) using the standardized CIFAR architectures defined in Experiment 2.
 
