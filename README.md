@@ -18,7 +18,7 @@ SnowBench4Quant is a reproducible benchmark suite designed for training and eval
 
 **Key features:**
 - ✅ Multiple datasets: CIFAR-10, CIFAR-100, Tiny-ImageNet, ImageNet
-- ✅ Multiple backbones: BinaryNet, ResNet18, VGG, AlexNet, BiRealNet
+- ✅ Multiple backbones: VGG, ResNet, AlexNet, BiRealNet
 - ✅ Training modes: Full-precision, Binary (XNOR-style), and Quantized (DoReFa-style)
 - ✅ Multiple optimizers: SGD, Adam, Bop, Bop2ndOrder, SGDAT
 - ✅ Reproducible configurations for fair comparisons
@@ -100,7 +100,8 @@ This benchmark supports two main experimental tracks:
 <a id="exp1"></a>
 ### 🔬 Experiment 1: Binary Network Optimizer Comparison
 
-**Goal:** Compare different optimizers (SGD, Adam, Bop, Bop2ndOrder, SGDAT) for training binary neural networks.  
+> **Goal:** Compare different optimizers (SGD, Adam, Bop, Bop2ndOrder, SGDAT) for training binary neural networks.  
+> ℹ️ **Note:** The "BinaryNet" used throughout this experiment refers to a compact VGG-style architecture (a.k.a. **VGG-Small**), implemented as `vgg_small` in `models_full_cifar/`.
 
 #### 📊 Results (Take BinaryNet as example)
 
