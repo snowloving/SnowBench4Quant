@@ -52,7 +52,7 @@ SnowBench/
 │   └── vgg_cifar.py/           # Full-precision versions of VGG  
 │
 ├── main_binary_sgdat.py        # Training entry: binary models (corresponding to models_sgdat)
-├── main_binary_binarynet.py    # Training entry: full-precision models (to be added)
+├── main_full.py                # Training entry: full-precision models (corresponding to models_full)
 ├── main_quant.py               # Training entry: other quantization bit-widths (to be added)
 └
 ```
