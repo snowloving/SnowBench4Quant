@@ -8,7 +8,7 @@ import torch.nn.parallel
 import torch.backends.cudnn as cudnn
 import torch.optim
 import torch.utils.data
-import models_sgdat
+import models_full_cifar
 from torch.autograd import Variable
 from data import get_dataset
 from preprocess import get_transform
@@ -33,13 +33,13 @@ torch.cuda.manual_seed_all(seed_value)   # 为所有GPU设置随机种子（多�
 
 torch.backends.cudnn.deterministic = True
 
-model_names = sorted(name for name in models_sgdat.__dict__
+model_names = sorted(name for name in models_full_cifar.__dict__
                      if name.islower() and not name.startswith("__")
-                     and callable(models_sgdat.__dict__[name]))
+                     and callable(models_full_cifar.__dict__[name]))
 
 parser = argparse.ArgumentParser(description='PyTorch ConvNet Training')
 
-parser.add_argument('--results_dir', metavar='RESULTS_DIR', default='./results_sgdat',
+parser.add_argument('--results_dir', metavar='RESULTS_DIR', default='./results_binarynet',
                     help='results dir')
 parser.add_argument('--save', metavar='SAVE', default='',
                     help='saved folder')
@@ -72,13 +72,14 @@ parser.add_argument('--resume', default='', type=str, metavar='PATH',
                     help='path to latest checkpoint (default: none)')
 parser.add_argument('-e', '--evaluate', type=str, metavar='FILE',
                     help='evaluate model FILE on validation set')
-parser.add_argument('--bin_regime', default="{0: {'optimizer': 'Adam','lr':1e-3}}", type=str, metavar='OPT',
+parser.add_argument('--optimizer', default='SGD', type=str, metavar='OPT',
                     help='optimizer function used')
-parser.add_argument('--fp_regime', default="{0: {'optimizer': 'Adam','lr':1e-3}}", type=str, metavar='OPT',
-                    help='optimizer function used')
-parser.add_argument('--binarization', default='det', type=str, help='binarization function:det or threshold (default: det)')
-parser.add_argument('-t', '--threshold', default=1e-8, type=float,
-                    help='optimization threshold (default: 1e-8)')
+parser.add_argument('--lr', '--learning_rate', default=0.1, type=float,
+                    metavar='LR', help='initial learning rate')
+parser.add_argument('--momentum', default=0.9, type=float, metavar='M',
+                    help='momentum')
+parser.add_argument('--weight-decay', '--wd', default=1e-4, type=float,
+                    metavar='W', help='weight decay (default: 1e-4)')
 
 
 def main():
@@ -106,7 +107,7 @@ def main():
 
     # create model
     logging.info("creating model %s", args.model)
-    model = models_sgdat.__dict__[args.model]
+    model = models_full_cifar.__dict__[args.model]
     model_config = {'input_size': args.input_size, 'dataset': args.dataset}
 
     if args.model_config is not '':
@@ -141,6 +142,9 @@ def main():
             logging.error("no checkpoint found at '%s'", args.resume)
 
 
+    num_parameters = sum([l.nelement() for l in model.parameters()])
+    logging.info("number of parameters: %d", num_parameters)
+
 
     # Data loading code
     default_transform = {
@@ -151,8 +155,11 @@ def main():
     }
 
     transform = getattr(model, 'input_transform', default_transform)
-    bin_regime = getattr(model, 'bin_regime', eval(args.bin_regime))
-    fp_regime = getattr(model, 'fp_regime', eval(args.fp_regime))
+    #regime = getattr(model, 'regime', {0: {'optimizer': args.optimizer,
+    #                                       'lr': args.lr,
+    #                                       'momentum': args.momentum,
+    #                                       'weight_decay': args.weight_decay}})
+
 
     # define loss function (criterion) and optimizer
     criterion = getattr(model, 'criterion', nn.CrossEntropyLoss)()
@@ -188,44 +195,21 @@ def main():
         batch_size=args.batch_size, shuffle=True,
         num_workers=args.workers, pin_memory=True)
 
-
-    num_parameters = sum([l.nelement() for l in model.parameters()])
-    binary_num_parameters = 0
-    fp_num_parameters = 0
-    for l in list(model.parameters()):
-        if hasattr(l,'org'):
-            binary_num_parameters = binary_num_parameters + l.nelement()
-        else:
-            fp_num_parameters = fp_num_parameters + l.nelement()
-    logging.info("number of parameters: %d", num_parameters)
-    logging.info("number of binary parameters: %d", binary_num_parameters)
-    logging.info("number of full precision parameters: %d", fp_num_parameters)
-
-    bin_parameters = []
-    fp_parameters = []
-    # flip number per epoch
-    for p in list(model.parameters()):
-        if hasattr(p,'org'):
-            bin_parameters.append(p)  
-        else:
-            fp_parameters.append(p)
-
-    bin_optimizer = torch.optim.Adam(bin_parameters, lr=0.001)
-    fp_optimizer = torch.optim.Adam(fp_parameters, lr=0.001)
-    logging.info('training bin_regime: %s', bin_regime)
-    logging.info('training fp_regime: %s', fp_regime)
+    if args.optimizer=='SGD':
+        optimizer = torch.optim.SGD([{'params':model.parameters()}], lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
+    elif args.optimizer=='Adam':
+        optimizer = torch.optim.Adam([{'params':model.parameters()}], lr=args.lr)
 
 
     for epoch in range(args.start_epoch, args.epochs):
-        bin_optimizer = adjust_optimizer(bin_optimizer, epoch, bin_regime)
-        fp_optimizer = adjust_optimizer(fp_optimizer, epoch, fp_regime)
+        # optimizer = adjust_optimizer(optimizer, epoch, regime)
 
         # train for one epoch
-        train_loss, train_prec1, train_prec5, flip_flops = train(
-            train_loader, model, criterion, epoch, bin_optimizer,fp_optimizer)
+        train_loss, train_prec1, train_prec5 = train(
+            train_loader, model, criterion, epoch, optimizer)
 
         # evaluate on validation set
-        val_loss, val_prec1, val_prec5, _ = validate(
+        val_loss, val_prec1, val_prec5 = validate(
             val_loader, model, criterion, epoch)
 
         # remember best prec@1 and save checkpoint
@@ -237,9 +221,7 @@ def main():
             'model': args.model,
             'config': args.model_config,
             'state_dict': model.state_dict(),
-            'best_prec1': best_prec1,
-            'bin_regime': bin_regime,
-            'fp_regime': fp_regime
+            'best_prec1': best_prec1
         }, is_best, path=save_path)
         logging.info('\n Epoch: {0}\t'
                      'Training Loss {train_loss:.4f} \t'
@@ -248,15 +230,14 @@ def main():
                      'Validation Loss {val_loss:.4f} \t'
                      'Validation Prec@1 {val_prec1:.3f} \t'
                      'Validation Prec@5 {val_prec5:.3f} \t'
-                     'Flip Flops {flip_flops:.3f} \t'
                      'Best prec1@1 {best_prec1:.3f} \n'
                      .format(epoch + 1, train_loss=train_loss, val_loss=val_loss,
                              train_prec1=train_prec1, val_prec1=val_prec1,
-                             train_prec5=train_prec5, val_prec5=val_prec5, flip_flops=flip_flops, best_prec1=best_prec1))
+                             train_prec5=train_prec5, val_prec5=val_prec5, best_prec1=best_prec1))
 
         results.add(epoch=epoch + 1, train_loss=train_loss, val_loss=val_loss,
                     train_prec1=train_prec1, val_prec1=val_prec1,
-                    train_prec5=train_prec5, val_prec5=val_prec5, best_prec1=best_prec1,flip_flops=flip_flops)
+                    train_prec5=train_prec5, val_prec5=val_prec5, best_prec1=best_prec1)
         #results.plot(x='epoch', y=['train_loss', 'val_loss'],
         #             title='Loss', ylabel='loss')
         #results.plot(x='epoch', y=['train_error1', 'val_error1'],
@@ -267,7 +248,7 @@ def main():
 
 
 
-def forward(data_loader, model, criterion, epoch=0, training=True,  bin_optimizer=None,fp_optimizer=None):
+def forward(data_loader, model, criterion, epoch=0, training=True,  optimizer=None):
     if args.gpus and len(args.gpus) > 1:
         model = torch.nn.DataParallel(model, args.gpus)
     batch_time = AverageMeter()
@@ -275,10 +256,6 @@ def forward(data_loader, model, criterion, epoch=0, training=True,  bin_optimize
     losses = AverageMeter()
     top1 = AverageMeter()
     top5 = AverageMeter()
-    flip_count=0
-    flip_num=0.0
-    flip_flops=0.0
-    total_num=0 #it should be the same as binary_num_parameters
 
     end = time.time()
     for i, (inputs, target) in enumerate(data_loader):
@@ -307,24 +284,9 @@ def forward(data_loader, model, criterion, epoch=0, training=True,  bin_optimize
 
         if training:
             # compute gradient and do SGD step
-            bin_optimizer.zero_grad()
-            fp_optimizer.zero_grad()
+            optimizer.zero_grad()
             loss.backward()
-            for p in list(model.parameters()):
-                if hasattr(p,'org'):
-                    p.pre_binary_data = p.pre_binary_data.to(p.data.device)
-                    p.org = p.org.to(p.data.device)
-
-                    flip_count=abs(torch.sign(p.data)-torch.sign(p.pre_binary_data))/2
-                    flip_num+=torch.sum(flip_count).item()
-                    total_num+=flip_count.numel()
-                    p.pre_binary_data = p.data.clone().detach()
-                    p.data.copy_(p.org)
-            bin_optimizer.step()
-            fp_optimizer.step()
-
-
-            binarize_model(model,args.threshold,args.binarization)
+            optimizer.step()
 
 
         # measure elapsed time
@@ -342,25 +304,22 @@ def forward(data_loader, model, criterion, epoch=0, training=True,  bin_optimize
                              phase='TRAINING' if training else 'EVALUATING',
                              batch_time=batch_time,
                              data_time=data_time, loss=losses, top1=top1, top5=top5))
-    if total_num==0:
-        flip_flops=0
-    else:
-        flip_flops=flip_num/total_num
-    return losses.avg, top1.avg, top5.avg, flip_flops
+
+    return losses.avg, top1.avg, top5.avg
 
 
-def train(data_loader, model, criterion, epoch, bin_optimizer, fp_optimizer):
+def train(data_loader, model, criterion, epoch, optimizer):
     # switch to train mode
     model.train()
     return forward(data_loader, model, criterion, epoch,
-                   training=True, bin_optimizer=bin_optimizer, fp_optimizer=fp_optimizer)
+                   training=True, optimizer=optimizer)
 
 
 def validate(data_loader, model, criterion, epoch):
     # switch to evaluate mode
     model.eval()
     return forward(data_loader, model, criterion, epoch,
-                   training=False, bin_optimizer=None, fp_optimizer=None)
+                   training=False, optimizer=None)
 
 
 if __name__ == '__main__':
