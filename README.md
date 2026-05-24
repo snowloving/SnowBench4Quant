@@ -274,6 +274,8 @@ Binary networks in this benchmark use different latent weight (`weight.org`) ini
 
 > **Why?** `zeros_like` makes SGD-like optimizers infinitely sensitive to early gradients — the first batch's gradient direction alone decides the sign of every binary weight, acting as a data-driven initialization. Adam and Bop don't need this: Adam's adaptive learning rate naturally amplifies small gradients, easily crossing the zero axis from any starting point.
 
+<details> <summary>⌛️ The results on ResNet18 will coming soon~</summary>
+</details>
 ---
 
 <a id="exp2"></a>
@@ -342,6 +344,8 @@ python main_full.py --model alexnet --save alexnet_full_adam --dataset cifar100 
 
 ---
 
+<details> <summary>⌛️ The results on ImageNet will coming soon~</summary>
+</details>
 
 ## 📝 Citation
 If you use SnowBench in your research, please cite:
