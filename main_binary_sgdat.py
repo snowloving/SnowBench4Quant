@@ -212,8 +212,8 @@ def main():
 
     bin_optimizer = torch.optim.Adam(bin_parameters, lr=0.001)
     fp_optimizer = torch.optim.Adam(fp_parameters, lr=0.001)
-    bin_optimizer = adjust_optimizer(bin_optimizer, epoch, bin_regime)
-    fp_optimizer = adjust_optimizer(fp_optimizer, epoch, fp_regime)
+    bin_optimizer = adjust_optimizer(bin_optimizer, args.start_epoch, bin_regime)
+    fp_optimizer = adjust_optimizer(fp_optimizer, args.start_epoch, fp_regime)
     logging.info('training bin_regime: %s', bin_regime)
     logging.info('training fp_regime: %s', fp_regime)
 
@@ -257,7 +257,7 @@ def main():
 
         results.add(epoch=epoch + 1, train_loss=train_loss, val_loss=val_loss,
                     train_prec1=train_prec1, val_prec1=val_prec1,
-                    train_prec5=train_prec5, val_prec5=val_prec5, best_prec1=best_prec1,flip_flops=flip_flops.item())
+                    train_prec5=train_prec5, val_prec5=val_prec5, best_prec1=best_prec1,flip_flops=flip_flops)
         #results.plot(x='epoch', y=['train_loss', 'val_loss'],
         #             title='Loss', ylabel='loss')
         #results.plot(x='epoch', y=['train_error1', 'val_error1'],
@@ -312,12 +312,14 @@ def forward(data_loader, model, criterion, epoch=0, training=True,  bin_optimize
             fp_optimizer.zero_grad()
             loss.backward()
             for p in list(model.parameters()):
-                if hasattr(p,'pre_binary_data'):
+                if hasattr(p,'org'):
+                    p.pre_binary_data = p.pre_binary_data.to(p.data.device)
+                    p.org = p.org.to(p.data.device)
+
                     flip_count=abs(torch.sign(p.data)-torch.sign(p.pre_binary_data))/2
                     flip_num+=torch.sum(flip_count).item()
                     total_num+=flip_count.numel()
-                    p.pre_binary_data = p.data.clone()
-                if hasattr(p,'org'):
+                    p.pre_binary_data = p.data.clone().detach()
                     p.data.copy_(p.org)
             bin_optimizer.step()
             fp_optimizer.step()
