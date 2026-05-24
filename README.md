@@ -38,7 +38,7 @@ SnowBench/
 ├── results/
 ├── optimizers/                 # Bop/Bop2ndOrder/SGDAT
 │
-├── models_sgdat/               # Binary models (SGDAT-style): BinaryNet, ResNet18
+├── models_sgdat/               # Binary models (SGDAT-style)
 │   ├── __init__.py.py/         # __all__ = ['binarynet', 'resnet_binary']
 │   ├── binarized_modules.py/   # BinarizeLinear, BinarizeConv2d (1w1a / 1w32a)
 │   ├── binarynet.py/          
@@ -293,8 +293,8 @@ Binary networks in this benchmark use different latent weight (`weight.org`) ini
 
 | Architecture | Model Name | CIFAR-10 | CIFAR-100 | Structural Notes |
 |-----------|:---------:|:---------:|:---------:|---------|
-| VGG | vgg_small | ⌛️ | ⌛️ | BinaryNet baseline (7-layer) |
-|  | vgg16 | ⌛️ | ⌛️ | CIFAR modified (No 4096-FCs) |
+| VGG | vgg_small | 91.37 | 68.75 | BinaryNet baseline (7-layer) |
+|  | vgg16 | 90.62 | 64.96 | CIFAR modified (No 4096-FCs) |
 | ResNet | resnet20 | ⌛️ | ⌛️ | He et al. (16-32-64 channels)  |
 |  | resnet56 | ⌛️ | ⌛️ | He et al. (16-32-64 channels) |
 |  | resnet18 | ⌛️ | ⌛️ | ImageNet modified (3x3 conv1) |
