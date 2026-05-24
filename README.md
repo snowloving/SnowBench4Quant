@@ -39,28 +39,32 @@ SnowBench/
 ├── optimizers/                 # Bop/Bop2ndOrder/SGDAT
 │
 ├── models_sgdat/               # Binary models (SGDAT-style): BinaryNet, ResNet18
-│   ├── __init__.py.py/         
+│   ├── __init__.py.py/         # __all__ = ['binarynet', 'resnet_binary']
 │   ├── binarized_modules.py/   # BinarizeLinear, BinarizeConv2d (1w1a / 1w32a)
 │   ├── binarynet.py/          
 │   └── resnet_binary.py/      
-│
+│  
+├── models_full_cifar/          # Full-precision models (CIFAR-scale)
+│   ├── __init__.py.py/         # __all__ = ['resnet18', 'resnet20', 'resnet56', 'vgg_small', 'vgg16']
+│   ├── vgg.py/                 # Full-precision versions of VGG-family
+│   └── resnet.py/              # Full-precision versions of ResNet-family
+├
 ├── models_binarynet/           # Full-precision & Binary & Quantized (BinaryNet-style)
-│   ├── __init__.py.py/         
+│   ├── __init__.py.py/         # __all__ = []
 │   ├── binarized_modules.py/   # Binarize / quantize layers & functions
-│   ├── vgg.py/                 # Full-precision VGG
-│   ├── resnet.py/              # Full-precision ResNet
 │   ├── vgg_binary.py/          # Binary VGG
 │   └── resnet_binary.py/       # Binary ResNet
 │
 ├── models_full_imagenet/       # Full-precision models (ImageNet-scale)
-│   ├── __init__.py.py/
+│   ├── __init__.py.py/         # __all__ = []
 │   ├── alexnet.py/             # Full-precision versions of AlexNet
 │   ├── birealnet.py/           # Full-precision versions of BiRealNet
 │   └── resnet.py/              # Full-precision versions of ResNet18
 │
 ├── main_binary_sgdat.py        # Entry: binary models (models_sgdat)
+├── main_full_cifar.py          # Entry: full-precision on cifar (models_full_cifar)
 ├── main_binary_binarynet.py    # Entry: binary & full-precision (models_binarynet)
-├── main_full_imagenet.py       # Entry: full-precision (models_full_imagenet)
+├── main_full_imagenet.py       # Entry: full-precision on imagenet (models_full_imagenet)
 ├── main_quant.py               # Entry: quantization (to be added)
 └
 ```
@@ -87,8 +91,9 @@ This benchmark supports two main experimental tracks:
 ### 🎯 Experiments Navigator
 
 - [🔬 Experiment 1](#exp1): Binary Network Optimizer Comparison (SGDAT-style) — SGD vs Adam vs Bop vs Bop2ndOrder vs SGDAT
-- [⚗️ Experiment 2](#exp2): Full-Precision & Binary & Quantized Network Accuracy Comparison on CIFAR (BynaryNet-style)
-- [🧫 Experiment 3](#exp3): Full-Precision Network Accuracy Comparison on ImageNet — FP32 baselines as reference ceiling
+- [⚗️ Experiment 2](#exp2): Full-Precision Network Accuracy Comparison on CIFAR — FP32 baselines as reference ceiling
+- [🔭 Experiment 3](#exp3): Binary & Quantized Network Accuracy Comparison on CIFAR (BynaryNet-style) — 1-bit & Multi-bit compression
+- [🧫 Experiment 4](#exp4): Full-Precision Network Accuracy Comparison on ImageNet — Large-scale datasets ceiling
 
 ---
 
@@ -238,13 +243,6 @@ python main_binary_sgdat.py --model binarynet --save binarynet_tiny_imagenet_SGD
 python main_binary_sgdat.py --model binarynet --save binarynet_tiny_imagenet_SGDAT --dataset tiny_imagenet --bin_regime "{0: {'optimizer':'SGDAT','lr':1e-4,'threshold':1e-7}}" --binarization det --input_size 64 --epochs 100 -b 256 --gpus 3
 ```
 
-**On the Resnet-18**
-
-**CIFAR-10 with SGD**
-```bash
-python main_binary_sgdat.py --model resnet_binary --save resnet18_cifar10_SGD --dataset cifar10 --bin_regime "{0: {'optimizer': 'SGD','lr':1e-4}}" --binarization det --input_size 32 --epochs 200 -b 256 --gpus 1
-```
-
 </details>
 
 ---
@@ -286,27 +284,63 @@ Binary networks in this benchmark use different latent weight (`weight.org`) ini
 ---
 
 <a id="exp2"></a>
-### ⚗️ Full-Precision & Binary & Quantized Network Accuracy Comparison on CIFAR
+### ⚗️ Full-Precision Network Accuracy Comparison on CIFAR
 
-**Goal:** Provide comprehensive baselines across full-precision, binary, and quantized regimes on CIFAR-10 and CIFAR-100. These results serve as reference points for comparing different compression techniques.
+**Goal:** Establish the FP32 upper-bound accuracy for standard CIFAR architectures. These results serve as the "ceiling" references when calculating the accuracy drop of binary and quantized models.
 
-#### 📊 Results (Take CIFAR10 and CIFAR100 as example)
+#### 📊 Results
 
-**Full-Precision**
+| Architecture | Model Name | CIFAR-10 | CIFAR-100 | Structural Notes |
+|-----------|:---------:|:---------:|:---------:|---------|
+| VGG | vgg_small | ⌛️ | ⌛️ | BinaryNet baseline (7-layer) |
+|  | vgg16 | ⌛️ | ⌛️ | CIFAR modified (No 4096-FCs) |
+| ResNet | resnet20 | ⌛️ | ⌛️ | He et al. (16-32-64 channels)  |
+|  | resnet56 | ⌛️ | ⌛️ | He et al. (16-32-64 channels) |
+|  | resnet18 | ⌛️ | ⌛️ | ImageNet modified (3x3 conv1) |
 
-| Architecture | CIFAR-10 | CIFAR-100 |
-|-----------|:--------:|:---------:|
-| ResNet | ⌛️ | ⌛️ |
-| VGG | ⌛️ | ⌛️ |
+#### 📋 Example Command
+
+````bash
+python 
+````
+
+<details> <summary>🔁 All Reproducible Commands </summary>
+</details>
+
+---
 
 <a id="exp3"></a>
-### 🧫 Experiment 3: Full-Precision Network Accuracy Comparison on ImageNet
+### ⚗️ Experiment 3: Binary & Quantized Networks on CIFAR (BinaryNet-style)
 
-**Goal:** Establish full-precision (FP32) accuracy baselines across multiple architectures to serve as **upper-bound references** for subsequent binary and quantization experiments. The accuracy gap between these baselines and compressed models quantifies the cost of binarization and low-bit quantization.
+**Goal:** Evaluate extreme model compression techniques (1-bit BNNs & low-bit QNNs) using the standardized CIFAR architectures defined in Experiment 2.
 
-#### 📊 Results (Take ImageNet as example)
+#### 📊 Results
 
-**ImageNet**
+| Architecture | Model Name | Precision (W/A) | CIFAR-10 | CIFAR-100 |
+|-----------|:---------:|:---------:|:---------:|:---------:|
+| VGG | vgg_small | 1/32 | ⌛️ | ⌛️ |
+|  | vgg16 | 1/32 | ⌛️ | ⌛️ |
+| ResNet | resnet20 | 1/32 | ⌛️ | ⌛️ |
+|  | resnet56 | 1/32 | ⌛️ | ⌛️ |
+|  | resnet18 | 1/32 | ⌛️ | ⌛️ |
+
+#### 📋 Example Command
+
+````bash
+python 
+````
+
+<details> <summary>🔁 All Reproducible Commands </summary>
+</details>
+
+---
+
+<a id="exp4"></a>
+### 🧫 Experiment 4: Full-Precision Network Accuracy Comparison on ImageNet
+
+**Goal:** Provide baseline accuracy on large-scale, high-resolution datasets (ImageNet-1K) for standard full-precision models.
+
+#### 📊 Results
 
 | Model | Top1 (%) | Top5 (%) |
 |-------|:--------:|:---------:|
@@ -316,25 +350,11 @@ Binary networks in this benchmark use different latent weight (`weight.org`) ini
 
 #### 📋 Example Command
 
-**Run with Adam**
 ````bash
-python main_full_imagenet.py \
-  --model alexnet \
-  --save alexnet_imagenet_full \
-  --optimizer Adam \
-  --lr 0.1 \
-  --epochs 100 \
-  -b 256 \
-  --gpus 0
+python 
 ````
 
-<details> <summary>🔁 All Reproducible Commands with CIFAR-100</summary>
-
-**AlexNet** 
-```bash
-python main_full_imagenet.py --model alexnet --save alexnet_imagenet_full --optimizer Adam --lr 0.1 --epochs 100 -b 256 --gpus 1
-```
-  
+<details> <summary>🔁 All Reproducible Commands </summary>
 </details>
 
 ---
