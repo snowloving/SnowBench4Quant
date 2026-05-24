@@ -16,14 +16,13 @@
 
 SnowBench4Quant is a reproducible benchmark suite designed for training and evaluating **full-precision**, **binary**, and **quantized** neural networks on standard image classification datasets. It serves as a baseline framework for research on binary neural networks (BNNs), model quantization, model compression, and efficient deep learning.
 
-
 **Key features:**
 - ✅ Multiple datasets: CIFAR-10, CIFAR-100, Tiny-ImageNet, ImageNet
-- ✅ Multiple backbones: BinaryNet, ResNet18
+- ✅ Multiple backbones: BinaryNet, ResNet18, VGG, AlexNet, BiRealNet
 - ✅ Training modes: Full-precision, Binary (XNOR-style), and Quantized (DoReFa-style)
 - ✅ Multiple optimizers: SGD, Adam, Bop, Bop2ndOrder, SGDAT
 - ✅ Reproducible configurations for fair comparisons
-
+  
 ---
 
 ## 📂 Repository Structure
@@ -32,28 +31,37 @@ SnowBench/
 ├── README.md                   
 ├── requirements.txt            
 ├── data.py                     # Dataset loader: CIFAR-10/100, Tiny-ImageNet, ImageNet (with path configuration)
-├── preprocess.py               # Data augmentation & preprocessing: transforms, Lighting, ColorJitter, and dataset-specific pipelines
-├── utils.py                    # Logger, metrics, checkpointing utilities, model binarization, and optimizer adjustment (SGD/Adam/Bop/Bop2ndOrder/SGDAT)
+├── preprocess.py               # Data augmentation & preprocessing pipelines
+├── utils.py                    # Logger, metrics, checkpointing, optimizer adjustment
 │
 ├── datasets/
 ├── results/
 ├── optimizers/                 # Bop/Bop2ndOrder/SGDAT
 │
-├── models_sgdat/               # Binary model definitions derived from  SGDAT: BinaryNet, ResNet18
+├── models_sgdat/               # Binary models (SGDAT-style): BinaryNet, ResNet18
 │   ├── __init__.py.py/         
-│   ├── binarized_modules.py/   # Binary quantization layers: BinarizeLinear, BinarizeConv2d (weights + activations), and 1w32a variants (weights only binarized)
-│   ├── binarynet.py/           # Binary versions of BinaryNet
-│   └── resnet_binary.py/       # Binary versions of ResNet18
+│   ├── binarized_modules.py/   # BinarizeLinear, BinarizeConv2d (1w1a / 1w32a)
+│   ├── binarynet.py/          
+│   └── resnet_binary.py/      
 │
-├── models_full/                # Full-precision model definitions derived from BinaryNet: BinaryNet, ResNet18, VGG
+├── models_binarynet/           # Full-precision & Binary & Quantized (BinaryNet-style)
+│   ├── __init__.py.py/         
+│   ├── binarized_modules.py/   # Binarize / quantize layers & functions
+│   ├── resnet.py/              # Full-precision ResNet18
+│   ├── resnet_binary.py/       # Binary ResNet18
+│   ├── vgg.py/                 # Full-precision VGG
+│   └── vgg_binary.py/          # Binary VGG
+│
+├── models_full_imagenet/       # Full-precision models (ImageNet-scale)
 │   ├── __init__.py.py/
 │   ├── alexnet.py/             # Full-precision versions of AlexNet
-│   ├── resnet.py/              # Full-precision versions of ResNet18
-│   └── vgg_cifar.py/           # Full-precision versions of VGG  
+│   ├── birealnet.py/           # Full-precision versions of BiRealNet
+│   └── resnet.py/              # Full-precision versions of ResNet18
 │
-├── main_binary_sgdat.py        # Training entry: binary models (corresponding to models_sgdat)
-├── main_full.py                # Training entry: full-precision models (corresponding to models_full)
-├── main_quant.py               # Training entry: other quantization bit-widths (to be added)
+├── main_binary_sgdat.py        # Entry: binary models (models_sgdat)
+├── main_binary_binarynet.py    # Entry: binary & full-precision (models_binarynet)
+├── main_full_imagenet.py       # Entry: full-precision (models_full_imagenet)
+├── main_quant.py               # Entry: quantization (to be added)
 └
 ```
 
@@ -78,15 +86,14 @@ This benchmark supports two main experimental tracks:
 
 ### 🎯 Experiments Navigator
 
-- [🔬 Experiment 1](#exp1): Binary Network Optimizer Comparison — SGD vs Adam vs Bop vs Bop2ndOrder vs SGDAT
-- [🧫 Experiment 2](#exp2): Full-Precision Network Accuracy Comparison — FP32 baselines as reference ceiling for binary & quantization benchmarks
-
+- [🔬 Experiment 1](#exp1): Binary Network Optimizer Comparison (SGDAT-style) — SGD vs Adam vs Bop vs Bop2ndOrder vs SGDAT
+- [⚗️ Experiment 2](#exp2): Full-Precision & Binary & Quantized Network Accuracy Comparison (BynaryNet-style)
+- [🧫 Experiment 3](#exp3): Full-Precision Network Accuracy Comparison on ImageNet — FP32 baselines as reference ceiling
 
 ---
 
 <a id="exp1"></a>
 ### 🔬 Experiment 1: Binary Network Optimizer Comparison
-
 
 **Goal:** Compare different optimizers (SGD, Adam, Bop, Bop2ndOrder, SGDAT) for training binary neural networks.  
 
@@ -96,15 +103,15 @@ This benchmark supports two main experimental tracks:
 
 | Optimizer | CIFAR-10 | CIFAR-100 | Tiny-ImageNet |
 |-----------|:--------:|:---------:|:-------------:|
-| SGD | 90.04 | 64.42 | ⌛️ |
-| SGDM | 89.88 | 65.23 | ⌛️  |
-| Adam | 89.74 | 65.27 | ⌛️ |
-| Bop | 89.08 | 63.91 | ⌛️ |
-| Bop2ndOrder | 89.74 | 64.70 | ⌛️ |
-| SGDT | 89.17 | 64.57 | ⌛️ |
-| SGDAT | 90.15 | 65.50 | ⌛️ |
+| SGD | 90.04 | 64.42 | 46.69 |
+| SGDM | 89.88 | 65.23 | 45.88  |
+| Adam | 89.74 | 65.27 | 45.64 |
+| Bop | 89.08 | 63.91 | 44.95 |
+| Bop2ndOrder | 89.74 | 64.70 | 46.17 |
+| SGDT | 89.17 | 64.57 | 44.94 |
+| SGDAT | 90.15 | 65.50 | 46.67 |
 > 📝 **Notes:**
-> All results are from a single run with a fixed random seed (seed_value=2020). No hyperparameter tuning was performed.
+> All results are from a single run with a fixed random seed (`seed_value=2020`). No hyperparameter tuning was performed.
 
 #### 📋 Example Command
 
@@ -128,12 +135,12 @@ python main_binary_sgdat.py \
 
 **CIFAR-10 with SGD** 
 ```bash
-python main_binary_sgdat.py --model binarynet --save binarynet_cifar10_SGD --dataset cifar10 --bin_regime "{0: {'optimizer': 'SGD','lr':1e-4}}" --binarization det --input_size 32 --epochs 200 -b 256 --gpus 1
+python main_binary_sgdat.py --model binarynet --save binarynet_cifar10_SGD --dataset cifar10 --bin_regime "{0: {'optimizer': 'SGD','lr':1e-4}}" --binarization det --input_size 32 --epochs 200 -b 256 --gpus 0
 ```
 
 **CIFAR-10 with SGDM** 
 ```bash
-python main_binary_sgdat.py --model binarynet --save binarynet_cifar10_SGDM --dataset cifar10 --bin_regime "{0: {'optimizer': 'SGD','lr':1e-4,'momentum':0.9}}" --binarization det --input_size 32 --epochs 200 -b 256 --gpus 1
+python main_binary_sgdat.py --model binarynet --save binarynet_cifar10_SGDM --dataset cifar10 --bin_regime "{0: {'optimizer': 'SGD','lr':1e-4,'momentum':0.9}}" --binarization det --input_size 32 --epochs 200 -b 256 --gpus 2
 ```
 
 **CIFAR-10 with Adam** 
@@ -143,7 +150,7 @@ python main_binary_sgdat.py --model binarynet --save binarynet_cifar10_Adam --da
 
 **CIFAR-10 with Bop** 
 ```bash
-python main_binary_sgdat.py --model binarynet --save binarynet_cifar10_Bop --dataset cifar10 --bin_regime "{0: {'optimizer': 'Bop','gamma':1e-4,'threshold':1e-8}}" --binarization det --input_size 32 --epochs 200 -b 256 --gpus 3
+python main_binary_sgdat.py --model binarynet --save binarynet_cifar10_Bop --dataset cifar10 --bin_regime "{0: {'optimizer': 'Bop','gamma':1e-4,'threshold':1e-8}}" --binarization det --input_size 32 --epochs 200 -b 256 --gpus 1
 ```
 
 **CIFAR-10 with Bop2ndOrder** 
@@ -173,7 +180,7 @@ python main_binary_sgdat.py --model binarynet --save binarynet_cifar100_SGDM --d
 
 **CIFAR-100 with Adam** 
 ```bash
-python main_binary_sgdat.py --model binarynet --save binarynet_cifar100_Adam --dataset cifar100 --bin_regime "{0: {'optimizer': 'Adam','lr':1e-3}}" --binarization det --input_size 32 --epochs 200 -b 256 --gpus 3
+python main_binary_sgdat.py --model binarynet --save binarynet_cifar100_Adam --dataset cifar100 --bin_regime "{0: {'optimizer': 'Adam','lr':1e-3}}" --binarization det --input_size 32 --epochs 200 -b 256 --gpus 0
 ```
 
 **CIFAR-100 with Bop** 
@@ -208,17 +215,17 @@ python main_binary_sgdat.py --model binarynet --save binarynet_tiny_imagenet_SGD
 
 **tiny-imagenet with Adam** 
 ```bash
-python main_binary_sgdat.py --model binarynet --save binarynet_tiny_imagenet_Adam --dataset tiny_imagenet --bin_regime "{0: {'optimizer': 'Adam','lr':1e-3}}" --binarization det --input_size 64 --epochs 100 -b 256 --gpus 2
+python main_binary_sgdat.py --model binarynet --save binarynet_tiny_imagenet_Adam --dataset tiny_imagenet --bin_regime "{0: {'optimizer': 'Adam','lr':1e-3}}" --binarization det --input_size 64 --epochs 100 -b 256 --gpus 0
 ```
 
 **tiny-imagenet with Bop** 
 ```bash
-python main_binary_sgdat.py --model binarynet --save binarynet_tiny_imagenet_Bop --dataset tiny_imagenet --bin_regime "{0: {'optimizer': 'Bop','gamma':1e-4,'threshold':1e-8}}" --binarization det --input_size 64 --epochs 100 -b 256 --gpus 0
+python main_binary_sgdat.py --model binarynet --save binarynet_tiny_imagenet_Bop --dataset tiny_imagenet --bin_regime "{0: {'optimizer': 'Bop','gamma':1e-4,'threshold':1e-8}}" --binarization det --input_size 64 --epochs 100 -b 256 --gpus 1
 ```
 
 **tiny-imagenet with Bop2ndOrder** 
 ```bash
-python main_binary_sgdat.py --model binarynet --save binarynet_tiny_imagenet_Bop2ndOrder --dataset tiny_imagenet --bin_regime "{0: {'optimizer': 'Bop2ndOrder','gamma':1e-7,'sigma':1e-3,'threshold':1e-6}}" --binarization det --input_size 64 --epochs 100 -b 256 --gpus 1
+python main_binary_sgdat.py --model binarynet --save binarynet_tiny_imagenet_Bop2ndOrder --dataset tiny_imagenet --bin_regime "{0: {'optimizer': 'Bop2ndOrder','gamma':1e-7,'sigma':1e-3,'threshold':1e-6}}" --binarization det --input_size 64 --epochs 100 -b 256 --gpus 2
 ```
 
 **tiny-imagenet with SGDT** 
@@ -279,73 +286,51 @@ Binary networks in this benchmark use different latent weight (`weight.org`) ini
 ---
 
 <a id="exp2"></a>
-### 🧫 Experiment 2: Full-Precision Network Accuracy Comparison
+### ⚗️ Full-Precision & Binary & Quantized Network Accuracy Comparison
 
+**Goal:** Provide comprehensive baselines across full-precision, binary, and quantized regimes on CIFAR-10 and CIFAR-100. These results serve as reference points for comparing different compression techniques.
+
+
+<a id="exp3"></a>
+### 🧫 Experiment 3: Full-Precision Network Accuracy Comparison on ImageNet
 
 **Goal:** Establish full-precision (FP32) accuracy baselines across multiple architectures to serve as **upper-bound references** for subsequent binary and quantization experiments. The accuracy gap between these baselines and compressed models quantifies the cost of binarization and low-bit quantization.
 
-#### 📊 Results (Take CIFAR-100 as example)
+#### 📊 Results (Take ImageNet as example)
 
-**CIFAR-100**
+**ImageNet**
 
-| Model | SGD | Adam |
+| Model | Top1 (%) | Top5 (%) |
 |-------|:--------:|:---------:|
 | AlexNet | ⏳ | ⏳ |
-| ResNet18 | ⏳ | ⏳ |
-| VGG | ⏳ | ⏳ |
-> 📝 **Notes:**
-> All results are from a single run with a fixed random seed (seed_value=2020). No hyperparameter tuning was performed.
+| BiRealNet | ⏳ | ⏳ |
+| ResNet | ⏳ | ⏳ |
 
 #### 📋 Example Command
 
-**Run with SGD**
+**Run with Adam**
 ````bash
-python main_full.py \
-  --model resnet \
-  --save resnet18_full \
-  --dataset cifar10 \
-  --optimizer sgd \
+python main_full_imagenet.py \
+  --model alexnet \
+  --save alexnet_imagenet_full \
+  --optimizer Adam \
   --lr 0.1 \
-  --momentum 0.9 \
-  --weight_decay 1e-4 \
-  --input_size 32 \
-  --epochs 200 \
+  --epochs 100 \
   -b 256 \
   --gpus 0
 ````
 
-**Run with Adam**
-````bash
-python main_full.py \
-  --model resnet \
-  --save resnet18_full \
-  --dataset cifar10 \
-  --optimizer adam \
-  --lr 0.1 \
-  --input_size 32 \
-  --epochs 200 \
-  -b 256 \
-  --gpus 1
-````
-
 <details> <summary>🔁 All Reproducible Commands with CIFAR-100</summary>
 
-**AlexNet with SGD** 
+**AlexNet** 
 ```bash
-python main_full.py --model alexnet --save alexnet_full_sgd --dataset cifar100 --optimizer sgd --lr 0.1 --momentum 0.9 --weight_decay 1e-4 --input_size 32 --epochs 200 -b 256 --gpus 0
-```
-
-**AlexNet with Adam** 
-```bash
-python main_full.py --model alexnet --save alexnet_full_adam --dataset cifar100 --optimizer adam --lr 0.1 --input_size 32 --epochs 200 -b 256 --gpus 1
+python main_full_imagenet.py --model alexnet --save alexnet_imagenet_full --optimizer Adam --lr 0.1 --epochs 100 -b 256 --gpus 1
 ```
   
 </details>
 
 ---
 
-<details> <summary>⌛️ The results on ImageNet will coming soon~</summary>
-</details>
 
 ## 📝 Citation
 If you use SnowBench in your research, please cite:
@@ -366,6 +351,7 @@ This project is built upon the excellent work of the following open-source proje
 
 - [SGDAT](https://github.com/gushan/SGDAT) — SGD with Adaptive Threshold for binary neural networks
 - [BinaryNet](https://github.com/itayhubara/BinaryNet) — Training deep neural networks with weights and activations constrained to +1 or -1
+- [VISPA](https://github.com/snownus/bnn_vi) - BNN training and variational inference
 
 We are grateful to all the researchers and developers who have made their code publicly available, enabling this benchmark to exist.
 
