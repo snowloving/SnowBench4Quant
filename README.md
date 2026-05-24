@@ -47,7 +47,7 @@ SnowBench/
 ├── models_full_cifar/          # Full-precision models (CIFAR-scale)
 │   ├── __init__.py.py/         # __all__ = ['resnet18', 'resnet20', 'resnet56', 'vgg_small', 'vgg16']
 │   ├── vgg.py/                 # Full-precision versions of VGG-family
-│   ├── vgg_opt.py/             # # Same architecture as vgg.py, but with optimized code style (cleaner implementation)
+│   ├── vgg_opt.py/             # Same architecture as vgg.py, but with optimized code style (cleaner implementation)
 │   └── resnet.py/              # Full-precision versions of ResNet-family
 ├
 ├── models_binarynet/           # Full-precision & Binary & Quantized (BinaryNet-style)
