@@ -93,11 +93,11 @@ This benchmark supports two main experimental tracks:
 
 | Optimizer | CIFAR-10 | CIFAR-100 | Tiny-ImageNet |
 |-----------|:--------:|:---------:|:-------------:|
-| SGD | 51.36 |  |  |
+| SGD | 51.36 | 20.86 |  |
 | SGDM | 51.90 |  |  |
 | Adam | 89.74 |  |  |
 | Bop | 89.08 |  |  |
-| Bop2ndOrder |  |  |  |
+| Bop2ndOrder | 89.74 |  |  |
 | SGDT |  |  |  |
 | SGDAT |  |  |  |
 > 📝 **Notes:**
@@ -162,6 +162,36 @@ python main_binary_sgdat.py --model binarynet --save binarynet_cifar10_SGDAT --d
 **CIFAR-100 with SGD** 
 ```bash
 python main_binary_sgdat.py --model binarynet --save binarynet_cifar100_SGD --dataset cifar100 --bin_regime "{0: {'optimizer': 'SGD','lr':1e-4}}" --binarization det --input_size 32 --epochs 200 -b 256 --gpus 3
+```
+
+**CIFAR-100 with SGDM** 
+```bash
+python main_binary_sgdat.py --model binarynet --save binarynet_cifar100_SGDM --dataset cifar100 --bin_regime "{0: {'optimizer': 'SGD','lr':1e-4,'momentum':0.9}}" --binarization det --input_size 32 --epochs 200 -b 256 --gpus 0
+```
+
+**CIFAR-100 with Adam** 
+```bash
+python main_binary_sgdat.py --model binarynet --save binarynet_cifar100_Adam --dataset cifar100 --bin_regime "{0: {'optimizer': 'Adam','lr':1e-3}}" --binarization det --input_size 32 --epochs 200 -b 256 --gpus 3
+```
+
+**CIFAR-100 with Bop** 
+```bash
+python main_binary_sgdat.py --model binarynet --save binarynet_cifar100_Bop --dataset cifar100 --bin_regime "{0: {'optimizer': 'Bop','gamma':1e-4,'threshold':1e-8}}" --binarization det --input_size 32 --epochs 200 -b 256 --gpus 3
+```
+
+**CIFAR-100 with Bop2ndOrder** 
+```bash
+python main_binary_sgdat.py --model binarynet --save binarynet_cifar100_Bop2ndOrder --dataset cifar100 --bin_regime "{0: {'optimizer': 'Bop2ndOrder','gamma':1e-7,'sigma':1e-3,'threshold':1e-6}}" --binarization det --input_size 32 --epochs 200 -b 256 --gpus 0
+```
+
+**CIFAR-100 with SGDT** 
+```bash
+python main_binary_sgdat.py --model binarynet --save binarynet_cifar100_SGDT --dataset cifar100 --bin_regime "{0: {'optimizer': 'SGD','lr':1e-4}}" --binarization threshold --threshold 1e-8 --input_size 32 --epochs 200 -b 256 --gpus 1
+```
+
+**CIFAR-100 with SGDAT** 
+```bash
+python main_binary_sgdat.py --model binarynet --save binarynet_cifar100_SGDAT --dataset cifar100 --bin_regime "{0: {'optimizer':'SGDAT','lr':1e-4,'threshold':1e-7}}" --binarization det --input_size 32 --epochs 200 -b 256 --gpus 2
 ```
 
 **tiny-imagenet with SGD** 
