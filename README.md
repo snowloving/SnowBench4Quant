@@ -47,6 +47,7 @@ SnowBench/
 ├── models_full_cifar/          # Full-precision models (CIFAR-scale)
 │   ├── __init__.py.py/         # __all__ = ['resnet18', 'resnet20', 'resnet56', 'vgg_small', 'vgg16']
 │   ├── vgg.py/                 # Full-precision versions of VGG-family
+│   ├── vgg_opt.py/             # # Same architecture as vgg.py, but with optimized code style (cleaner implementation)
 │   └── resnet.py/              # Full-precision versions of ResNet-family
 ├
 ├── models_binarynet/           # Full-precision & Binary & Quantized (BinaryNet-style)
@@ -291,9 +292,9 @@ Binary networks in this benchmark use different latent weight (`weight.org`) ini
 |-----------|:---------:|:---------:|:---------:|---------|
 | VGG | vgg_small | 91.37 | 68.75 | BinaryNet baseline (7-layer) |
 |  | vgg16 | 90.62 | 64.96 | CIFAR modified (No 4096-FCs) |
-| ResNet | resnet20 | ⌛️ | ⌛️ | He et al. (16-32-64 channels)  |
-|  | resnet56 | ⌛️ | ⌛️ | He et al. (16-32-64 channels) |
-|  | resnet18 | ⌛️ | ⌛️ | ImageNet modified (3x3 conv1) |
+| ResNet | resnet20 | 89.15 | 61.75 | He et al. (16-32-64 channels)  |
+|  | resnet56 | 90.06 | 63.54 | He et al. (16-32-64 channels) |
+|  | resnet18 | 92.08 | 68.42 | ImageNet modified (3x3 conv1) |
 
 #### 📋 Quick Example Command
 
@@ -351,12 +352,12 @@ python main_full_cifar.py --model resnet20 --save full_resnet20_cifar100 --datas
 
 **CIFAR-100 on ResNet56** 
 ```bash
-python main_full_cifar.py --model resnet56 --save full_resnet56_cifar100 --dataset cifar100 --epochs 200 -b 256 --gpus 0
+python main_full_cifar.py --model resnet56 --save full_resnet56_cifar100 --dataset cifar100 --epochs 200 -b 256 --gpus 2
 ```
 
 **CIFAR-100 on ResNet18** 
 ```bash
-python main_full_cifar.py --model resnet18 --save full_resnet18_cifar100 --dataset cifar100 --epochs 200 -b 256 --gpus 1
+python main_full_cifar.py --model resnet18 --save full_resnet18_cifar100 --dataset cifar100 --epochs 200 -b 256 --gpus 3
 ```
 
 </details>
