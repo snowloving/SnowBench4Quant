@@ -226,6 +226,7 @@ python main_binary_sgdat.py --model binarynet --save binarynet_tiny_imagenet_SGD
 | `--dataset` | Dataset | `cifar10`, `cifar100`, `tiny-imagenet` |
 | `--binarization` | Binarization method | `det` or `threshold` |
 
+#### 🔨 Optimizer Configuration Reference
 
 | Optimizer | `--bin_regime` Configuration |
 |-----------|---------------------------|
