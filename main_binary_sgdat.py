@@ -39,7 +39,7 @@ model_names = sorted(name for name in models_sgdat.__dict__
 
 parser = argparse.ArgumentParser(description='PyTorch ConvNet Training')
 
-parser.add_argument('--results_dir', metavar='RESULTS_DIR', default='./results',
+parser.add_argument('--results_dir', metavar='RESULTS_DIR', default='./results_sgdat',
                     help='results dir')
 parser.add_argument('--save', metavar='SAVE', default='',
                     help='saved folder')
