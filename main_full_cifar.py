@@ -198,7 +198,7 @@ def main():
     if args.optimizer=='SGD':
         optimizer = torch.optim.SGD([{'params':model.parameters()}], lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
     elif args.optimizer=='Adam':
-        optimizer = torch.optim.Adam([{'params':model.parameters()}], lr=args.lr)
+        optimizer = torch.optim.Adam([{'params':model.parameters()}], lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
 
 
     for epoch in range(args.start_epoch, args.epochs):
