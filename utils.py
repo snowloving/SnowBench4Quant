@@ -160,12 +160,12 @@ def binarize_model(model,threshold,quant_mode):
     if quant_mode == 'det':
       for p in list(model.parameters()):
           if hasattr(p,'org'):
-              p.org = p.data.clamp_(-1,1).clone()
-              p.data = binarize(p.org,quant_mode='det')        
+              p.org = p.data.clamp(-1, 1).clone().detach() 
+              p.data.copy_(binarize(p.org, quant_mode='det'))  
 
     elif quant_mode =='threshold': 
       for p in list(model.parameters()):
           if hasattr(p,'org'):
-              p.org = p.data.clamp_(-1,1).clone()
+              p.org = p.data.clamp(-1, 1).clone().detach() 
               p.data = torch.sign(torch.sign(torch.where(p.org.abs()-threshold>0, p.org, p.pre_binary_data)).add(0.1))
               
