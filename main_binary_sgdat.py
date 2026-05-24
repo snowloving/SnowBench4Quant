@@ -189,34 +189,36 @@ def main():
         num_workers=args.workers, pin_memory=True)
 
 
+    num_parameters = sum([l.nelement() for l in model.parameters()])
+    binary_num_parameters = 0
+    fp_num_parameters = 0
+    for l in list(model.parameters()):
+        if hasattr(l,'org'):
+            binary_num_parameters = binary_num_parameters + l.nelement()
+        else:
+            fp_num_parameters = fp_num_parameters + l.nelement()
+    logging.info("number of parameters: %d", num_parameters)
+    logging.info("number of binary parameters: %d", binary_num_parameters)
+    logging.info("number of full precision parameters: %d", fp_num_parameters)
+
+    bin_parameters = []
+    fp_parameters = []
+    # flip number per epoch
+    for p in list(model.parameters()):
+        if hasattr(p,'org'):
+            bin_parameters.append(p)  
+        else:
+            fp_parameters.append(p)
+
+    bin_optimizer = torch.optim.Adam(bin_parameters, lr=0.001)
+    fp_optimizer = torch.optim.Adam(fp_parameters, lr=0.001)
+    bin_optimizer = adjust_optimizer(bin_optimizer, epoch, bin_regime)
+    fp_optimizer = adjust_optimizer(fp_optimizer, epoch, fp_regime)
+    logging.info('training bin_regime: %s', bin_regime)
+    logging.info('training fp_regime: %s', fp_regime)
+
+
     for epoch in range(args.start_epoch, args.epochs):
-        num_parameters = sum([l.nelement() for l in model.parameters()])
-        binary_num_parameters = 0
-        fp_num_parameters = 0
-        for l in list(model.parameters()):
-            if hasattr(l,'org'):
-                binary_num_parameters = binary_num_parameters + l.nelement()
-            else:
-                fp_num_parameters = fp_num_parameters + l.nelement()
-        logging.info("number of parameters: %d", num_parameters)
-        logging.info("number of binary parameters: %d", binary_num_parameters)
-        logging.info("number of full precision parameters: %d", fp_num_parameters)
-
-        bin_parameters = []
-        fp_parameters = []
-        # flip number per epoch
-        for p in list(model.parameters()):
-            if hasattr(p,'org'):
-                bin_parameters.append(p)  
-            else:
-                fp_parameters.append(p)
-
-        bin_optimizer = torch.optim.Adam(bin_parameters, lr=0.001)
-        fp_optimizer = torch.optim.Adam(fp_parameters, lr=0.001)
-        bin_optimizer = adjust_optimizer(bin_optimizer, epoch, bin_regime)
-        fp_optimizer = adjust_optimizer(fp_optimizer, epoch, fp_regime)
-        logging.info('training bin_regime: %s', bin_regime)
-        logging.info('training fp_regime: %s', fp_regime)
 
 
         # train for one epoch
@@ -275,7 +277,7 @@ def forward(data_loader, model, criterion, epoch=0, training=True,  bin_optimize
     top1 = AverageMeter()
     top5 = AverageMeter()
     flip_count=0
-    flip_num=0
+    flip_num=0.0
     flip_flops=0.0
     total_num=0 #it should be the same as binary_num_parameters
 
@@ -312,13 +314,11 @@ def forward(data_loader, model, criterion, epoch=0, training=True,  bin_optimize
             for p in list(model.parameters()):
                 if hasattr(p,'pre_binary_data'):
                     flip_count=abs(torch.sign(p.data)-torch.sign(p.pre_binary_data))/2
-                    flip_num+=torch.sum(flip_count)
+                    flip_num+=torch.sum(flip_count).item()
                     total_num+=flip_count.numel()
                     p.pre_binary_data = p.data.clone()
-                    p.flip_num_epoch = torch.zeros_like(p.data)
-                    p.flip_num_step = torch.zeros_like(p.data)
                 if hasattr(p,'org'):
-                    p.data = p.org.clone()
+                    p.data.copy_(p.org)
             bin_optimizer.step()
             fp_optimizer.step()
 
