@@ -45,11 +45,14 @@ SnowBench/
 │   ├── binarynet.py/           # Binary versions of BinaryNet
 │   └── resnet_binary.py/       # Binary versions of ResNet18
 │
-├── models_full/                # Full-precision models (to be added)
-│   ├── __init__.py.py/         
+├── models_binarynet/           # Full-precision models (to be added)
+│   ├── __init__.py.py/
+│   ├── alexnet.py/             # Full-precision versions of AlexNet
+│   ├── resnet.py/              # Full-precision versions of ResNet18
+│   └── vgg_cifar.py/           # Full-precision versions of VGG  
 │
 ├── main_binary_sgdat.py        # Training entry: binary models (corresponding to models_sgdat)
-├── main_full.py                # Training entry: full-precision models (to be added)
+├── main_binary_binarynet.py    # Training entry: full-precision models (to be added)
 ├── main_quant.py               # Training entry: other quantization bit-widths (to be added)
 └
 ```
