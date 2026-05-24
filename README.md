@@ -47,10 +47,10 @@ SnowBench/
 ├── models_binarynet/           # Full-precision & Binary & Quantized (BinaryNet-style)
 │   ├── __init__.py.py/         
 │   ├── binarized_modules.py/   # Binarize / quantize layers & functions
-│   ├── resnet.py/              # Full-precision ResNet18
-│   ├── resnet_binary.py/       # Binary ResNet18
 │   ├── vgg.py/                 # Full-precision VGG
-│   └── vgg_binary.py/          # Binary VGG
+│   ├── resnet.py/              # Full-precision ResNet
+│   ├── vgg_binary.py/          # Binary VGG
+│   └── resnet_binary.py/       # Binary ResNet
 │
 ├── models_full_imagenet/       # Full-precision models (ImageNet-scale)
 │   ├── __init__.py.py/
@@ -87,7 +87,7 @@ This benchmark supports two main experimental tracks:
 ### 🎯 Experiments Navigator
 
 - [🔬 Experiment 1](#exp1): Binary Network Optimizer Comparison (SGDAT-style) — SGD vs Adam vs Bop vs Bop2ndOrder vs SGDAT
-- [⚗️ Experiment 2](#exp2): Full-Precision & Binary & Quantized Network Accuracy Comparison (BynaryNet-style)
+- [⚗️ Experiment 2](#exp2): Full-Precision & Binary & Quantized Network Accuracy Comparison on CIFAR (BynaryNet-style)
 - [🧫 Experiment 3](#exp3): Full-Precision Network Accuracy Comparison on ImageNet — FP32 baselines as reference ceiling
 
 ---
@@ -286,10 +286,18 @@ Binary networks in this benchmark use different latent weight (`weight.org`) ini
 ---
 
 <a id="exp2"></a>
-### ⚗️ Full-Precision & Binary & Quantized Network Accuracy Comparison
+### ⚗️ Full-Precision & Binary & Quantized Network Accuracy Comparison on CIFAR
 
 **Goal:** Provide comprehensive baselines across full-precision, binary, and quantized regimes on CIFAR-10 and CIFAR-100. These results serve as reference points for comparing different compression techniques.
 
+#### 📊 Results (Take CIFAR10 and CIFAR100 as example)
+
+**Full-Precision**
+
+| Architecture | CIFAR-10 | CIFAR-100 |
+|-----------|:--------:|:---------:|
+| ResNet | ⌛️ | ⌛️ |
+| VGG | ⌛️ | ⌛️ |
 
 <a id="exp3"></a>
 ### 🧫 Experiment 3: Full-Precision Network Accuracy Comparison on ImageNet
