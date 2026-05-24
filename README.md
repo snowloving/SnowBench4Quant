@@ -367,7 +367,7 @@ python main_full_cifar.py --model resnet18 --save full_resnet18_cifar100 --datas
 ---
 
 <a id="exp3"></a>
-### 🔭 Experiment 3: Binary & Quantized Networks on CIFAR (BinaryNet-style)
+### 🔭 Experiment 3: Binary & Quantized Networks on CIFAR
 
 **Goal:** Evaluate extreme model compression techniques (1-bit BNNs & low-bit QNNs) using the standardized CIFAR architectures defined in Experiment 2.
 
