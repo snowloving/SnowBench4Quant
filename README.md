@@ -399,8 +399,8 @@ python
 | Model | Top1 (%) | Top5 (%) |
 |-------|:--------:|:---------:|
 | AlexNet | ⏳ | ⏳ |
-| BiRealNet | ⏳ | ⏳ |
 | ResNet | ⏳ | ⏳ |
+| BiRealNet | ⏳ | ⏳ |
 
 #### 📋 Quick Example Command
 
