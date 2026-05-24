@@ -230,6 +230,14 @@ python main_binary_sgdat.py --model binarynet --save binarynet_tiny_imagenet_SGD
 ```bash
 python main_binary_sgdat.py --model binarynet --save binarynet_tiny_imagenet_SGDAT --dataset tiny_imagenet --bin_regime "{0: {'optimizer':'SGDAT','lr':1e-4,'threshold':1e-7}}" --binarization det --input_size 64 --epochs 100 -b 256 --gpus 3
 ```
+
+**On the Resnet-18**
+
+**CIFAR-10 with SGD**
+```bash
+python main_binary_sgdat.py --model resnet_binary --save resnet18_cifar10_SGD --dataset cifar10 --bin_regime "{0: {'optimizer': 'SGD','lr':1e-4}}" --binarization det --input_size 32 --epochs 200 -b 256 --gpus 1
+```
+
 </details>
 
 ---
@@ -276,7 +284,9 @@ Binary networks in this benchmark use different latent weight (`weight.org`) ini
 
 #### 📊 Results
 
-| Model | CIFAR-10 | CIFAR-100 |
+**CIFAR-100**
+
+| Model | SGD | Adam |
 |-------|:--------:|:---------:|
 | AlexNet | ⏳ | ⏳ |
 | ResNet18 | ⏳ | ⏳ |
@@ -289,14 +299,27 @@ python main_full.py \
   --model resnet \
   --save resnet18_full \
   --dataset cifar10 \
-  --optimizer SGD \
+  --optimizer sgd \
   --lr 0.1 \
   --momentum 0.9 \
   --weight_decay 1e-4 \
   --input_size 32 \
   --epochs 200 \
   -b 256 \
-  --gpus 2
+  --gpus 0
+````
+
+````bash
+python main_full.py \
+  --model resnet \
+  --save resnet18_full \
+  --dataset cifar10 \
+  --optimizer adam \
+  --lr 0.1 \
+  --input_size 32 \
+  --epochs 200 \
+  -b 256 \
+  --gpus 1
 ````
 
 
