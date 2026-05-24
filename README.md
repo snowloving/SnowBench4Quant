@@ -102,7 +102,7 @@ This benchmark supports two main experimental tracks:
 | Bop | 89.08 | 63.91 | ⌛️ |
 | Bop2ndOrder | 89.74 | 64.70 | ⌛️ |
 | SGDT | 89.17 | 64.57 | ⌛️ |
-| SGDAT | 90.15 | 65.5 | ⌛️ |
+| SGDAT | 90.15 | 65.50 | ⌛️ |
 > 📝 **Notes:**
 > All results are from a single run with a fixed random seed (seed_value=2020). No hyperparameter tuning was performed.
 
