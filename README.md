@@ -39,13 +39,13 @@ SnowBench/
 ├── results/
 ├── optimizers/                 # Bop/Bop2ndOrder/SGDAT
 │
-├── models_sgdat/               # Model definitions derived from SGDAT: BinaryNet, ResNet18
+├── models_sgdat/               # Binary model definitions derived from  SGDAT: BinaryNet, ResNet18
 │   ├── __init__.py.py/         
 │   ├── binarized_modules.py/   # Binary quantization layers: BinarizeLinear, BinarizeConv2d (weights + activations), and 1w32a variants (weights only binarized)
 │   ├── binarynet.py/           # Binary versions of BinaryNet
 │   └── resnet_binary.py/       # Binary versions of ResNet18
 │
-├── models_binarynet/           # Full-precision models (to be added)
+├── models_full/                # Full-precision model definitions derived from BinaryNet: BinaryNet, ResNet18, VGG
 │   ├── __init__.py.py/
 │   ├── alexnet.py/             # Full-precision versions of AlexNet
 │   ├── resnet.py/              # Full-precision versions of ResNet18
@@ -102,7 +102,7 @@ This benchmark supports two main experimental tracks:
 | Bop | 89.08 | 63.91 | ⌛️ |
 | Bop2ndOrder | 89.74 | 64.70 | ⌛️ |
 | SGDT | 89.17 | 64.57 | ⌛️ |
-| SGDAT | 90.15 |  | ⌛️ |
+| SGDAT | 90.15 | 65.5 | ⌛️ |
 > 📝 **Notes:**
 > All results are from a single run with a fixed random seed (seed_value=2020). No hyperparameter tuning was performed.
 
@@ -285,7 +285,7 @@ Binary networks in this benchmark use different latent weight (`weight.org`) ini
 > All results are from a single run with a fixed random seed (seed_value=2020). No hyperparameter tuning was performed.
 
 ````bash
-python main_binary_binarynet.py \
+python main_full.py \
   --model resnet \
   --save resnet18_full \
   --dataset cifar10 \
