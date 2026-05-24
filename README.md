@@ -93,15 +93,16 @@ This benchmark supports two main experimental tracks:
 
 | Optimizer | CIFAR-10 | CIFAR-100 | Tiny-ImageNet |
 |-----------|:--------:|:---------:|:-------------:|
-| SGD | 51.36 | 20.86 |  |
-| SGDM | 51.90 | 21.32 |  |
-| Adam | 89.74 | 65.27 |  |
-| Bop | 89.08 | 63.91 |  |
-| Bop2ndOrder | 89.74 | 64.70 |  |
-| SGDT | 50.25 |  |  |
-| SGDAT | 88.45 | 62.80 |  |
+| SGD | 51.36 | 20.86 | ⌛️ |
+| SGDM | 51.90 | 21.32 | ⌛️  |
+| Adam | 89.74 | 65.27 | ⌛️ |
+| Bop | 89.08 | 63.91 | ⌛️ |
+| Bop2ndOrder | 89.74 | 64.70 | ⌛️ |
+| SGDT | 50.25 | 20.69 | ⌛️ |
+| SGDAT | 88.45 | 62.80 | ⌛️ |
 > 📝 **Notes:**
 > All results are from a single run with a fixed random seed (seed_value=2020). No hyperparameter tuning was performed.
+
 #### 📋 Example Command
 
 ````bash
@@ -151,11 +152,6 @@ python main_binary_sgdat.py --model binarynet --save binarynet_cifar10_Bop2ndOrd
 ```bash
 python main_binary_sgdat.py --model binarynet --save binarynet_cifar10_SGDT --dataset cifar10 --bin_regime "{0: {'optimizer': 'SGD','lr':1e-4}}" --binarization threshold --threshold 1e-8 --input_size 32 --epochs 200 -b 256 --gpus 1
 ```
-
-python main_binary_sgdat.py --model binarynet --save binarynet_cifar10_SGDT_t1e-7 --dataset cifar10 --bin_regime "{0: {'optimizer': 'SGD','lr':1e-4}}" --binarization threshold --threshold 1e-7 --input_size 32 --epochs 200 -b 256 --gpus 0
-
-❤
-python main_binary_sgdat.py --model binarynet --save binarynet_cifar10_SGDT_t1e-9 --dataset cifar10 --bin_regime "{0: {'optimizer': 'SGD','lr':1e-4}}" --binarization threshold --threshold 1e-9 --input_size 32 --epochs 200 -b 256 --gpus 2
 
 **CIFAR-10 with SGDAT** 
 ```bash
@@ -235,8 +231,26 @@ python main_binary_sgdat.py --model binarynet --save binarynet_tiny_imagenet_SGD
 | Model | CIFAR-10 | CIFAR-100 |
 |-------|:--------:|:---------:|
 | AlexNet | ⏳ | ⏳ |
-| VGG (CIFAR) | ⏳ | ⏳ |
 | ResNet18 | ⏳ | ⏳ |
+| VGG | ⏳ | ⏳ |
+> 📝 **Notes:**
+> All results are from a single run with a fixed random seed (seed_value=2020). No hyperparameter tuning was performed.
+
+````bash
+python main_binary_binarynet.py \
+  --model resnet \
+  --save resnet18_full \
+  --dataset cifar10 \
+  --optimizer SGD \
+  --lr 0.1 \
+  --momentum 0.9 \
+  --weight_decay 1e-4 \
+  --input_size 32 \
+  --epochs 200 \
+  -b 256 \
+  --gpus 2
+````
+
 
 ## 📝 Citation
 If you use SnowBench in your research, please cite:
