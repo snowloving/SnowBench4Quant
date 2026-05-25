@@ -373,7 +373,7 @@ python main_full_cifar.py --model resnet18 --save full_resnet18_cifar100 --datas
 
 #### 📊 Results
 
-**Binary Networks**
+**Binary Networks with SGD**
 
 | Architecture | Model Name | CIFAR-10 | CIFAR-100 |
 |-----------|:---------:|:---------:|:---------:|
@@ -393,7 +393,39 @@ python main_binary_binarynet.py \
   --gpus 0
 ````
 
-<details> <summary>🔁 All Reproducible Commands for Binary Networks</summary>
+**CIFAR-100 on VGG_Small** 
+```bash
+python main_binary_binarynet.py --model vgg_small_binary --save vgg_small_binary_cifar100_Adam --dataset cifar100 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 2
+```
+
+**CIFAR-100 on ResNet18** -
+```bash
+python main_binary_binarynet.py --model resnet18_binary --save resnet18_binary_cifar100_Adam --dataset cifar100 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 3
+```
+
+<details> <summary>🔁 Results and Reproducible Commands for Binary Networks with SGD</summary>
+
+---
+
+**Binary Networks with SGD**
+
+| Architecture | Model Name | CIFAR-10 | CIFAR-100 |
+|-----------|:---------:|:---------:|:---------:|
+| VGG | vgg_small | 69.96 | 48.89 |
+|  | vgg16 | 50.59 | 22.78 |
+| ResNet | resnet20 | 71.68 | 36.94 |
+|  | resnet56 | 68.36 | 37.49 |
+|  | resnet18 | 75.97 | 50.9 |
+
+📋 Quick Example Command
+
+````bash
+python main_binary_binarynet.py \
+  --model vgg_small_binary \
+  --save vgg_small_binary_cifar10 \
+  --dataset cifar10 \
+  --gpus 0
+````
 
 **CIFAR-10 on VGG_Small** 
 ```bash
