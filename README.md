@@ -51,11 +51,13 @@ SnowBench/
 │   └── resnet.py/              # Full-precision versions of ResNet-family
 ├
 ├── models_binarynet/           # Full-precision & Binary & Quantized (BinaryNet-style)
-│   ├── __init__.py.py/         # __all__ = ['vgg_small_binary', 'vgg16_binary', 'resnet18_binary', 'resnet20_binary', 'resnet56_binary', 'resnet_binary']
+│   ├── __init__.py.py/         # __all__ = ['vgg_small_binary', 'vgg16_binary', 'resnet18_binary', 'resnet20_binary', 'resnet56_binary', 'resnet_binary', 'vgg_small_quant', 'vgg16_quant', 'resnet18_quant', 'resnet20_quant', 'resnet56_quant']
 │   ├── binarized_modules.py/   # Binarize / quantize layers & functions
 │   ├── vgg.py/                 # Binary VGG
 │   ├── resnet.py/              # Binary ResNet
-│   └── resnet_opt.py/          # Optimized code structure with slightly different architectural details compared to the standard `resnet.py`
+│   ├── resnet_opt.py/          # Binary ResNet: optimized code structure with slightly different architectural details compared to the standard `resnet.py`
+│   ├── vgg_quant.py/           # Quantized VGG
+│   └── resnet_quant.py/        # Quantized ResNet
 │
 ├── models_full_imagenet/       # Full-precision models (ImageNet-scale)
 │   ├── __init__.py.py/         # __all__ = []
@@ -461,8 +463,8 @@ python main_binary_binarynet.py --model resnet18_binary --save resnet18_binary_c
 |  | resnet18 | 82.87 | 52.61 |
 |  | resnet20 <sup>$</sup> | 68.30 | 30.23 |
 |  | resnet56 <sup>$</sup> | ⌛️ | ⌛️ |
-|  | resnet18 <sup>$</sup> | ⌛️ | ⌛️ |
-|  | resnet20 <sup>†</sup> | ⌛️ | ⌛️ |
+|  | resnet18 <sup>$</sup> | 83.80 | 53.58 |
+|  | resnet20 <sup>†</sup> | 84.26 | 53.21 |
 > ℹ️ **Note on Adam:** These results use vanilla Adam without learning rate scheduling, gradient clipping, or step decay — the same basic configuration as the full-precision [Experiment 2](#exp2). No optimization tricks (warmup, cosine annealing, etc.) were applied, which may leave room for further improvement on binary networks.
 >
 > **Symbols:**
@@ -504,7 +506,7 @@ python main_binary_binarynet.py --model resnet20_binary --save resnet20_binary_c
 
 **CIFAR-10 on ResNet56** -
 ```bash
-python main_binary_binarynet.py --model resnet56_binary --save resnet56_binary_cifar10_Adam --dataset cifar10 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 2
+python main_binary_binarynet.py --model resnet56_binary --save resnet56_binary_cifar10_Adam --dataset cifar10 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 1
 ```
 
 **CIFAR-10 on ResNet18** -
@@ -572,22 +574,28 @@ python main_binary_binarynet.py --model resnet_binary --save resnet_binary_cifar
 
 #### 📊 Results of Quantized Networks with Adam
 
-| Architecture | Model Name | Precision (W/A) | CIFAR-10 | CIFAR-100 |
+> ℹ️ **Note:** Quantization experiments are conducted on **VGG-Small** and **ResNet18** as representative models from each architecture family.
+
+| Model | Wbits | Abits | CIFAR-10 | CIFAR-100 |
 |-----------|:---------:|:---------:|:---------:|:---------:|
-| VGG | vgg_small | 1/32 | ⌛️ | ⌛️ |
-|  | vgg16 | 1/32 | ⌛️ | ⌛️ |
-| ResNet | resnet20 | 1/32 | ⌛️ | ⌛️ |
-|  | resnet56 | 1/32 | ⌛️ | ⌛️ |
-|  | resnet18 | 1/32 | ⌛️ | ⌛️ |
+| vgg_small | 8 | 8 | ⌛️ | ⌛️ |
+|  | 4 | 4 | ⌛️ | ⌛️ |
+|  | 2 | 2 | ⌛️ | ⌛️ |
+| resnet18 | 8 | 8 | ⌛️ | ⌛️ |
+|  | 4 | 4 | ⌛️ | ⌛️ |
 
 #### 📋 Quick Example Command
 
 ````bash
 python main_binary_binarynet.py \
-  --model vgg_small_binary \
-  --save vgg_small_binary_cifar10 \
+  --model vgg16_quant \
+  --save vgg16_quant_cifar10 \
   --dataset cifar10 \
-  --gpus 0
+  --optimizer Adam \
+   --lr 1e-4 \
+   --momentum 0 \
+   --weight-decay 0 \
+  --gpus 1
 ````
 
 <details> <summary>🔁 All Reproducible Commands for Quantized Networks</summary>
