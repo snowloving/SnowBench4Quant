@@ -379,9 +379,9 @@ python main_full_cifar.py --model resnet18 --save full_resnet18_cifar100 --datas
 |-----------|:---------:|:---------:|:---------:|
 | VGG | vgg_small | 69.96 | 48.89 |
 |  | vgg16 | 50.59 | 22.78 |
-| ResNet | resnet20 | 71.68 | ⌛️ |
-|  | resnet56 | ⌛️ | ⌛️ |
-|  | resnet18 | ⌛️ | ⌛️ |
+| ResNet | resnet20 | 71.68 | 36.94 |
+|  | resnet56 | 68.36 | 37.49 |
+|  | resnet18 | 75.97 | 50.9 |
 
 #### 📋 Quick Example Command
 
