@@ -14,7 +14,7 @@ class VGG_Small(nn.Module):
     """
     def __init__(self, num_classes=10):
         super(VGG_Small, self).__init__()
-        self.infl_ratio=1
+        self.infl_ratio=3
         self.features = nn.Sequential(
             BinarizeConv2d(3, 128*self.infl_ratio, kernel_size=3, stride=1, padding=1,
                       bias=True),
@@ -94,7 +94,7 @@ class VGG16(nn.Module):
     """
     def __init__(self, num_classes=10):
         super(VGG16, self).__init__()
-        self.infl_ratio=1
+        self.infl_ratio=3
         self.features = nn.Sequential(
             BinarizeConv2d(3, 64*self.infl_ratio, kernel_size=3, stride=1, padding=1,
                       bias=True),
