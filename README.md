@@ -610,13 +610,6 @@ python main_binary_binarynet.py \
 python main_binary_binarynet.py --model vgg_small_quant --save vgg_small_quant_cifar10_w8a8 --dataset cifar10 --wbits 8 --abits 8 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 0
 ```
 
-python main_binary_binarynet.py --model vgg_small_quant --save vgg_small_quant_cifar10_w8a8 --dataset cifar10 --wbits 4 --abits 4 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 1
-
-python main_binary_binarynet.py --model vgg_small_quant --save vgg_small_quant_cifar10_w8a8 --dataset cifar10 --wbits 3 --abits 3 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 0
-
-python main_binary_binarynet.py --model vgg_small_quant --save vgg_small_quant_cifar10_w8a8 --dataset cifar10 --wbits 2 --abits 2 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 2
-
-
 **CIFAR-100 on VGG_Small** 
 ```bash
 python main_binary_binarynet.py --model vgg_small_quant --save vgg_small_quant_cifar100_w8a8 --dataset cifar100 --wbits 8 --abits 8 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 2
