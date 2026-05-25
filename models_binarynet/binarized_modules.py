@@ -49,7 +49,7 @@ class Quantize(InplaceFunction):
             output=output.round().add(torch.rand(output.size()).add(-0.5)).div(scale)
         return output
     
-    def backward(grad_output):
+    def backward(ctx, grad_output):
         #STE 
         grad_input=grad_output
         return grad_input,None,None
@@ -126,6 +126,60 @@ class BinarizeConv2d(nn.Conv2d):
         else:
             input_b=input
         weight_b=binarized(self.weight)
+
+        out = nn.functional.conv2d(input_b, weight_b, None, self.stride,
+                                   self.padding, self.dilation, self.groups)
+
+        if not self.bias is None:
+            self.bias.org=self.bias.data.clone()
+            out += self.bias.view(1, -1, 1, 1).expand_as(out)
+
+        return out
+
+
+class QuantizeLinear(nn.Linear):
+
+    def __init__(self, *args, **kwargs):
+        # 1. 从 kwargs 中提取自定义参数，并提供默认值（比如默认 8 bit）
+        # 使用 pop 可以将这两个键值对从 kwargs 中移除
+        self.wbits = kwargs.pop('wbits', 8)
+        self.abits = kwargs.pop('abits', 8)
+
+        # 2. 将剩余的、nn.Conv2d 认识的参数传给父类
+        super(QuantizeLinear, self).__init__(*args, **kwargs)
+
+
+    def forward(self, input):
+
+        if input.size(1) != 784:
+            input_b=quantize(input, quant_mode='det',numBits=self.abits)
+        weight_b=quantize(self.weight, quant_mode='det',numBits=self.wbits)
+        out = nn.functional.linear(input_b,weight_b)
+        if not self.bias is None:
+            self.bias.org=self.bias.data.clone()
+            out += self.bias.view(1, -1).expand_as(out)
+
+        return out
+
+class QuantizeConv2d(nn.Conv2d):
+
+    def __init__(self, *args, **kwargs):
+        # 1. 从 kwargs 中提取自定义参数，并提供默认值（比如默认 8 bit）
+        # 使用 pop 可以将这两个键值对从 kwargs 中移除
+        self.wbits = kwargs.pop('wbits', 8)
+        self.abits = kwargs.pop('abits', 8)
+
+        # 2. 将剩余的、nn.Conv2d 认识的参数传给父类
+        super(QuantizeConv2d, self).__init__(*args, **kwargs)
+
+
+
+    def forward(self, input):
+        if input.size(1) != 3:
+            input_b = quantize(input, quant_mode='det',numBits=self.abits)
+        else:
+            input_b=input
+        weight_b=quantize(self.weight, quant_mode='det',numBits=self.wbits)
 
         out = nn.functional.conv2d(input_b, weight_b, None, self.stride,
                                    self.padding, self.dilation, self.groups)
