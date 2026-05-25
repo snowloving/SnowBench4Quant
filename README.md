@@ -462,7 +462,7 @@ python main_binary_binarynet.py --model resnet18_binary --save resnet18_binary_c
 |  | resnet56 | 62.89 | 24.88 |
 |  | resnet18 | 82.87 | 52.61 |
 |  | resnet20 <sup>$</sup> | 68.30 | 30.23 |
-|  | resnet56 <sup>$</sup> | ⌛️ | ⌛️ |
+|  | resnet56 <sup>$</sup> | 62.76 | 26.38 |
 |  | resnet18 <sup>$</sup> | 83.80 | 53.58 |
 |  | resnet20 <sup>†</sup> | 84.26 | 53.21 |
 > ℹ️ **Note on Adam:** These results use vanilla Adam without learning rate scheduling, gradient clipping, or step decay — the same basic configuration as the full-precision [Experiment 2](#exp2). No optimization tricks (warmup, cosine annealing, etc.) were applied, which may leave room for further improvement on binary networks.
@@ -574,22 +574,27 @@ python main_binary_binarynet.py --model resnet_binary --save resnet_binary_cifar
 
 #### 📊 Results of Quantized Networks with Adam
 
-> ℹ️ **Note:** Quantization experiments are conducted on **VGG-Small** and **ResNet18** as representative models from each architecture family.
+> ⚠️ **Note:** Quantization experiments are conducted on **VGG-Small** (Uses `infl_ratio = 1`) and **ResNet18** (Option A) as representative models from each architecture family.
 
 | Model | Wbits | Abits | CIFAR-10 | CIFAR-100 |
 |-----------|:---------:|:---------:|:---------:|:---------:|
-| vgg_small | 8 | 8 | ⌛️ | ⌛️ |
+| vgg_small | 1 | 1 | 87.01 | 60.78 |
+|  | 8 | 8 | ⌛️ | ⌛️ |
 |  | 4 | 4 | ⌛️ | ⌛️ |
+|  | 3 | 3 | ⌛️ | ⌛️ |
 |  | 2 | 2 | ⌛️ | ⌛️ |
-| resnet18 | 8 | 8 | ⌛️ | ⌛️ |
+| resnet18 | 1 | 1 | 83.80 | 53.58 |
+|  | 8 | 8 | ⌛️ | ⌛️ |
 |  | 4 | 4 | ⌛️ | ⌛️ |
+|  | 3 | 3 | ⌛️ | ⌛️ |
+|  | 2 | 2 | ⌛️ | ⌛️ |
 
 #### 📋 Quick Example Command
 
 ````bash
 python main_binary_binarynet.py \
-  --model vgg16_quant \
-  --save vgg16_quant_cifar10 \
+  --model vgg_small_quant \
+  --save vgg_small_quant_cifar10 \
   --dataset cifar10 \
   --optimizer Adam \
    --lr 1e-4 \
@@ -599,6 +604,33 @@ python main_binary_binarynet.py \
 ````
 
 <details> <summary>🔁 All Reproducible Commands for Quantized Networks</summary>
+
+**CIFAR-10 on VGG_Small** ✅️
+```bash
+python main_binary_binarynet.py --model vgg_small_quant --save vgg_small_quant_cifar10_w8a8 --dataset cifar10 --wbits 8 --abits 8 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 0
+```
+
+python main_binary_binarynet.py --model vgg_small_quant --save vgg_small_quant_cifar10_w8a8 --dataset cifar10 --wbits 4 --abits 4 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 1
+
+python main_binary_binarynet.py --model vgg_small_quant --save vgg_small_quant_cifar10_w8a8 --dataset cifar10 --wbits 3 --abits 3 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 0
+
+python main_binary_binarynet.py --model vgg_small_quant --save vgg_small_quant_cifar10_w8a8 --dataset cifar10 --wbits 2 --abits 2 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 2
+
+
+**CIFAR-100 on VGG_Small** 
+```bash
+python main_binary_binarynet.py --model vgg_small_quant --save vgg_small_quant_cifar100_w8a8 --dataset cifar100 --wbits 8 --abits 8 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 2
+```
+
+**CIFAR-10 on ResNet18** -
+```bash
+python main_binary_binarynet.py --model resnet18_quant --save resnet18_quant_cifar10_w8a8 --dataset cifar10 --wbits 8 --abits 8 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 1
+```
+
+**CIFAR-100 on ResNet18** -
+```bash
+python main_binary_binarynet.py --model resnet18_quant --save resnet18_quant_cifar100_w8a8 --dataset cifar100 --wbits 8 --abits 8 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 1
+```
 </details>
 
 ---
