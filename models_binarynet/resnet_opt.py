@@ -66,7 +66,7 @@ class BasicBlockBinary(nn.Module):
         return out
 
 
-class ResNet_CIFAR_Binary(ResNet):
+class ResNet_CIFAR_Binary(nn.Module):
 
     def __init__(self, num_classes=10,
                  block=BasicBlockBinary, depth=18):
