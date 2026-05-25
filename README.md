@@ -373,6 +373,70 @@ python main_full_cifar.py --model resnet18 --save full_resnet18_cifar100 --datas
 
 #### 📊 Results
 
+**Binary Networks**
+
+| Architecture | Model Name | CIFAR-10 | CIFAR-100 |
+|-----------|:---------:|:---------:|:---------:|
+| VGG | vgg_small | ⌛️ | ⌛️ |
+|  | vgg16 | ⌛️ | ⌛️ |
+| ResNet | resnet20 | ⌛️ | ⌛️ |
+|  | resnet56 | ⌛️ | ⌛️ |
+|  | resnet18 | ⌛️ | ⌛️ |
+
+#### 📋 Quick Example Command
+
+````bash
+python main_binary_binarynet.py \
+  --model vgg_small_binary \
+  --save vgg_small_binary_cifar10 \
+  --dataset cifar10 \
+  --gpus 0
+````
+
+<details> <summary>🔁 All Reproducible Commands for Binary Networks</summary>
+
+**CIFAR-10 on VGG_Small** 
+```bash
+python main_binary_binarynet.py --model vgg_small_binary --save vgg_small_binary_cifar10 --dataset cifar10 --epochs 200 -b 256 --gpus 0
+```
+
+**CIFAR-10 on VGG16** 
+```bash
+python main_binary_binarynet.py --model vgg16_binary --save vgg16_binary_cifar10 --dataset cifar10 --epochs 200 -b 256 --gpus 1
+```
+
+**CIFAR-10 on ResNet20** 
+```bash
+python main_binary_binarynet.py --model resnet20_binary --save resnet20_binary_cifar10 --dataset cifar10 --epochs 200 -b 256 --gpus 0
+```
+
+**CIFAR-10 on ResNet56** 
+```bash
+python main_binary_binarynet.py --model resnet56_binary --save resnet56_binary_cifar10 --dataset cifar10 --epochs 200 -b 256 --gpus 1
+```
+
+**CIFAR-10 on ResNet18** 
+```bash
+python main_binary_binarynet.py --model resnet18_binary --save resnet18_binary_cifar10 --dataset cifar10 --epochs 200 -b 256 --gpus 2
+```
+
+**CIFAR-100 on VGG_Small** 
+```bash
+python main_binary_binarynet.py --model vgg_small_binary --save vgg_small_binary_cifar100 --dataset cifar100 --epochs 200 -b 256 --gpus 2
+```
+
+**CIFAR-100 on VGG16** 
+```bash
+python main_binary_binarynet.py --model vgg16_binary --save vgg16_binary_cifar100 --dataset cifar100 --epochs 200 -b 256 --gpus 3
+```
+</details>
+
+---
+
+#### 📊 Results
+
+**Quantized Networks**
+
 | Architecture | Model Name | Precision (W/A) | CIFAR-10 | CIFAR-100 |
 |-----------|:---------:|:---------:|:---------:|:---------:|
 | VGG | vgg_small | 1/32 | ⌛️ | ⌛️ |
@@ -391,7 +455,7 @@ python main_binary_binarynet.py \
   --gpus 0
 ````
 
-<details> <summary>🔁 All Reproducible Commands </summary>
+<details> <summary>🔁 All Reproducible Commands for Quantized Networks</summary>
 </details>
 
 ---
