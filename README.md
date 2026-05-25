@@ -290,6 +290,7 @@ Binary networks in this benchmark use different latent weight (`weight.org`) ini
 | ResNet | resnet20 | 89.15 | 61.75 | He et al. (16-32-64 channels)  |
 |  | resnet56 | 90.06 | 63.54 | He et al. (16-32-64 channels) |
 |  | resnet18 | 92.08 | 68.42 | ImageNet modified (3x3 conv1) |
+> ℹ️ **Default SGD configuration:** Unless otherwise noted, all full-precision SGD results use **lr = 0.1, momentum = 0.9, weight decay = 1e-4**. These serve as the standard baseline shared across all full-precision experiments.
 
 #### 📋 Quick Example Command
 
