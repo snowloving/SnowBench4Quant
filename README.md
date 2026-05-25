@@ -377,7 +377,7 @@ python main_full_cifar.py --model resnet18 --save full_resnet18_cifar100 --datas
 
 | Architecture | Model Name | CIFAR-10 | CIFAR-100 |
 |-----------|:---------:|:---------:|:---------:|
-| VGG | vgg_small | ⌛️ | ⌛️ |
+| VGG | vgg_small | 69.96 | ⌛️ |
 |  | vgg16 | ⌛️ | ⌛️ |
 | ResNet | resnet20 | ⌛️ | ⌛️ |
 |  | resnet56 | ⌛️ | ⌛️ |
@@ -407,17 +407,17 @@ python main_binary_binarynet.py --model vgg16_binary --save vgg16_binary_cifar10
 
 **CIFAR-10 on ResNet20** 
 ```bash
-python main_binary_binarynet.py --model resnet20_binary --save resnet20_binary_cifar10 --dataset cifar10 --epochs 200 -b 256 --gpus 0
+python main_binary_binarynet.py --model resnet20_binary --save resnet20_binary_cifar10 --dataset cifar10 --epochs 200 -b 256 --gpus 1
 ```
 
 **CIFAR-10 on ResNet56** 
 ```bash
-python main_binary_binarynet.py --model resnet56_binary --save resnet56_binary_cifar10 --dataset cifar10 --epochs 200 -b 256 --gpus 1
+python main_binary_binarynet.py --model resnet56_binary --save resnet56_binary_cifar10 --dataset cifar10 --epochs 200 -b 256 --gpus 2
 ```
 
 **CIFAR-10 on ResNet18** 
 ```bash
-python main_binary_binarynet.py --model resnet18_binary --save resnet18_binary_cifar10 --dataset cifar10 --epochs 200 -b 256 --gpus 2
+python main_binary_binarynet.py --model resnet18_binary --save resnet18_binary_cifar10 --dataset cifar10 --epochs 200 -b 256 --gpus 3
 ```
 
 **CIFAR-100 on VGG_Small** 
