@@ -101,12 +101,9 @@ This benchmark supports two main experimental tracks:
 <a id="exp1"></a>
 ### 🔬 Experiment 1: Binary Network Optimizer Comparison
 
-> **Goal:** Compare different optimizers (SGD, Adam, Bop, Bop2ndOrder, SGDAT) for training binary neural networks.  
-> ℹ️ **Note:** The "BinaryNet" used throughout this experiment refers to a compact VGG-style architecture (a.k.a. **VGG-Small**), implemented as `vgg_small` in `models_full_cifar/` and the "ResNet" used throughout this experiment refers to a ResNet18 architecture modified for ImageNet, implemented as `resnet18` in `models_full_cifar/`.
+ **Goal:** Compare different optimizers (SGD, Adam, Bop, Bop2ndOrder, SGDAT) for training binary neural networks.  
 
-#### 📊 Results (Take BinaryNet as example)
-
-**BinaryNet**
+#### 📊 Results on BinaryNet
 
 | Optimizer | CIFAR-10 | CIFAR-100 | Tiny-ImageNet |
 |-----------|:--------:|:---------:|:-------------:|
@@ -119,6 +116,8 @@ This benchmark supports two main experimental tracks:
 | SGDAT | 90.15 | 65.50 | 46.67 |
 > 📝 **Notes:**
 > All results are from a single run with a fixed random seed (`seed_value=2020`). No hyperparameter tuning was performed.
+> 
+> ℹ️ **Note:** The "BinaryNet" used throughout this experiment refers to a compact VGG-style architecture (a.k.a. **VGG-Small**), implemented as `vgg_small` in `models_full_cifar/` and the "ResNet" used throughout this experiment refers to a ResNet18 architecture modified for ImageNet, implemented as `resnet18` in `models_full_cifar/`.
 
 #### 📋 Quick Example Command
 
@@ -243,8 +242,6 @@ python main_binary_sgdat.py --model binarynet --save binarynet_tiny_imagenet_SGD
 
 </details>
 
----
-
 #### ⚙️ Key Arguments
 | Argument | Description | Options in this experiment |
 |----------|-------------|---------------------------|
@@ -279,6 +276,7 @@ Binary networks in this benchmark use different latent weight (`weight.org`) ini
 
 <details> <summary>⌛️ The results on ResNet18 will coming soon~</summary>
 </details>
+
 ---
 
 <a id="exp2"></a>
@@ -286,9 +284,7 @@ Binary networks in this benchmark use different latent weight (`weight.org`) ini
 
 **Goal:** Establish the FP32 upper-bound accuracy for standard CIFAR architectures. These results serve as the "ceiling" references when calculating the accuracy drop of binary and quantized models.
 
-#### 📊 Results (Take SGD as example)
-
-**SGD**
+#### 📊 Results with SGD
 
 | Architecture | Model Name | CIFAR-10 | CIFAR-100 | Structural Notes |
 |-----------|:---------:|:---------:|:---------:|---------|
@@ -371,9 +367,7 @@ python main_full_cifar.py --model resnet18 --save full_resnet18_cifar100 --datas
 
 **Goal:** Evaluate extreme model compression techniques (1-bit BNNs & low-bit QNNs) using the standardized CIFAR architectures defined in Experiment 2.
 
-#### 📊 Results
-
-**Binary Networks with SGD**
+#### 📊 Results of Binary Networks with SGD
 
 | Architecture | Model Name | CIFAR-10 | CIFAR-100 |
 |-----------|:---------:|:---------:|:---------:|
@@ -382,6 +376,7 @@ python main_full_cifar.py --model resnet18 --save full_resnet18_cifar100 --datas
 | ResNet | resnet20 | 71.68 | 36.94 |
 |  | resnet56 | 68.36 | 37.49 |
 |  | resnet18 | 75.97 | 50.9 |
+> ℹ️ **Note on SGD:** The SGD hyperparameters used here (lr, momentum, weight decay) are identical to those in [Experiment 2](#exp2) for full-precision networks. However, SGD performs noticeably worse on binary neural networks compared to full-precision — this gap highlights the inherent difficulty of optimizing 1-bit weights with standard first-order methods, motivating the optimizer comparison in [Experiment 1](#exp1).
 
 #### 📋 Quick Example Command
 
@@ -393,39 +388,9 @@ python main_binary_binarynet.py \
   --gpus 0
 ````
 
-**CIFAR-100 on VGG_Small** 
-```bash
-python main_binary_binarynet.py --model vgg_small_binary --save vgg_small_binary_cifar100_Adam --dataset cifar100 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 2
-```
-
-**CIFAR-100 on ResNet18** -
-```bash
-python main_binary_binarynet.py --model resnet18_binary --save resnet18_binary_cifar100_Adam --dataset cifar100 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 3
-```
-
 <details> <summary>🔁 Results and Reproducible Commands for Binary Networks with SGD</summary>
 
 ---
-
-**Binary Networks with SGD**
-
-| Architecture | Model Name | CIFAR-10 | CIFAR-100 |
-|-----------|:---------:|:---------:|:---------:|
-| VGG | vgg_small | 69.96 | 48.89 |
-|  | vgg16 | 50.59 | 22.78 |
-| ResNet | resnet20 | 71.68 | 36.94 |
-|  | resnet56 | 68.36 | 37.49 |
-|  | resnet18 | 75.97 | 50.9 |
-
-📋 Quick Example Command
-
-````bash
-python main_binary_binarynet.py \
-  --model vgg_small_binary \
-  --save vgg_small_binary_cifar10 \
-  --dataset cifar10 \
-  --gpus 0
-````
 
 **CIFAR-10 on VGG_Small** 
 ```bash
@@ -480,9 +445,88 @@ python main_binary_binarynet.py --model resnet18_binary --save resnet18_binary_c
 
 ---
 
-#### 📊 Results
+#### 📊 Results of Binary Networks with Adam
 
-**Quantized Networks**
+| Architecture | Model Name | CIFAR-10 | CIFAR-100 |
+|-----------|:---------:|:---------:|:---------:|
+| VGG | vgg_small | 87.01 | 60.78 |
+|  | vgg16 | ⌛️ | ⌛️ |
+| ResNet | resnet20 | ⌛️ | ⌛️ |
+|  | resnet56 | ⌛️ | ⌛️ |
+|  | resnet18 | 83.80 | 52.46 |
+> ℹ️ **Note on Adam:** These results use vanilla Adam without learning rate scheduling, gradient clipping, or step decay — the same basic configuration as the full-precision [Experiment 2](#exp2). No optimization tricks (warmup, cosine annealing, etc.) were applied, which may leave room for further improvement on binary networks.
+
+#### 📋 Quick Example Command
+
+````bash
+python main_binary_binarynet.py \
+  --model vgg_small_binary \
+  --save vgg_small_binary_cifar10 \
+  --dataset cifar10 \
+  --optimizer Adam \
+   --lr 1e-4 \
+   --momentum 0 \
+   --weight-decay 0 \
+  --gpus 0
+````
+
+<details> <summary>🔁 Results and Reproducible Commands for Binary Networks with Adam</summary>
+
+**CIFAR-10 on VGG_Small** 
+```bash
+python main_binary_binarynet.py --model vgg_small_binary --save vgg_small_binary_cifar10_Adam --dataset cifar10 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 2
+```
+
+**CIFAR-10 on VGG16** 
+```bash
+python main_binary_binarynet.py --model vgg16_binary --save vgg16_binary_cifar10_Adam --dataset cifar10 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 0
+```
+
+**CIFAR-10 on ResNet20** -
+```bash
+python main_binary_binarynet.py --model resnet20_binary --save resnet20_binary_cifar10_Adam --dataset cifar10 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 1
+```
+
+**CIFAR-10 on ResNet56** -
+```bash
+python main_binary_binarynet.py --model resnet56_binary --save resnet56_binary_cifar10_Adam --dataset cifar10 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 2
+```
+
+**CIFAR-10 on ResNet18** -
+```bash
+python main_binary_binarynet.py --model resnet18_binary --save resnet18_binary_cifar10_Adam --dataset cifar10 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 3
+```
+
+**CIFAR-100 on VGG_Small** 
+```bash
+python main_binary_binarynet.py --model vgg_small_binary --save vgg_small_binary_cifar100_Adam --dataset cifar100 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 2
+```
+
+**CIFAR-100 on VGG16** 
+```bash
+python main_binary_binarynet.py --model vgg16_binary --save vgg16_binary_cifar100_Adam --dataset cifar100 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 0
+```
+
+**CIFAR-100 on ResNet20** -
+```bash
+python main_binary_binarynet.py --model resnet20_binary --save resnet20_binary_cifar100_Adam --dataset cifar100 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 1
+```
+
+**CIFAR-100 on ResNet56** -
+```bash
+python main_binary_binarynet.py --model resnet56_binary --save resnet56_binary_cifar100_Adam --dataset cifar100 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 2
+```
+
+**CIFAR-100 on ResNet18** -
+```bash
+python main_binary_binarynet.py --model resnet18_binary --save resnet18_binary_cifar100_Adam --dataset cifar100 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 3
+```
+
+</details>
+
+---
+
+#### 📊 Results of Quantized Networks with Adam
 
 | Architecture | Model Name | Precision (W/A) | CIFAR-10 | CIFAR-100 |
 |-----------|:---------:|:---------:|:---------:|:---------:|
