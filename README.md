@@ -384,7 +384,11 @@ python main_full_cifar.py --model resnet18 --save full_resnet18_cifar100 --datas
 #### 📋 Quick Example Command
 
 ````bash
-python 
+python main_binary_binarynet.py \
+  --model vgg_small_binary \
+  --save vgg_small_binary_cifar10 \
+  --dataset cifar10 \
+  --gpus 0
 ````
 
 <details> <summary>🔁 All Reproducible Commands </summary>
@@ -408,7 +412,6 @@ python
 #### 📋 Quick Example Command
 
 ````bash
-python 
 ````
 
 <details> <summary>🔁 All Reproducible Commands </summary>
