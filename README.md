@@ -378,6 +378,7 @@ python main_full_cifar.py --model resnet18 --save full_resnet18_cifar100 --datas
 |  | resnet56 | 74.22 | 41.86 |
 |  | resnet18 | 81.24 | 54.50 |
 > ℹ️ **Note on SGD:** The SGD hyperparameters used here (lr, momentum, weight decay, eopch) are identical to those in [Experiment 2](#exp2) for full-precision networks. However, SGD performs noticeably worse on binary neural networks compared to full-precision — this gap highlights the inherent difficulty of optimizing 1-bit weights with standard first-order methods, motivating the optimizer comparison in [Experiment 1](#exp1).
+> 
 > ℹ️ **Epoch:** Note that some models may benefit from longer training (e.g., 500–600 epochs); these results represent a fair but not fully converged comparison point.
 
 #### 📋 Quick Example Command
@@ -458,7 +459,7 @@ python main_binary_binarynet.py --model resnet18_binary --save resnet18_binary_c
 | ResNet | resnet20 | 67.75 | 29.50 |
 |  | resnet56 | 62.89 | 24.88 |
 |  | resnet18 | 82.87 | 52.61 |
-|  | resnet20 <sup>$</sup> | ⌛️ | ⌛️ |
+|  | resnet20 <sup>$</sup> | 68.30 | 30.23 |
 |  | resnet56 <sup>$</sup> | ⌛️ | ⌛️ |
 |  | resnet18 <sup>$</sup> | ⌛️ | ⌛️ |
 |  | resnet20 <sup>†</sup> | ⌛️ | ⌛️ |
@@ -508,7 +509,7 @@ python main_binary_binarynet.py --model resnet56_binary --save resnet56_binary_c
 
 **CIFAR-10 on ResNet18** -
 ```bash
-python main_binary_binarynet.py --model resnet18_binary --save resnet18_binary_cifar10_Adam --dataset cifar10 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 2
+python main_binary_binarynet.py --model resnet18_binary --save resnet18_binary_cifar10_Adam --dataset cifar10 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 1
 ```
 
 **CIFAR-100 on VGG_Small** 
