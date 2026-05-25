@@ -51,10 +51,11 @@ SnowBench/
 │   └── resnet.py/              # Full-precision versions of ResNet-family
 ├
 ├── models_binarynet/           # Full-precision & Binary & Quantized (BinaryNet-style)
-│   ├── __init__.py.py/         # __all__ = ['vgg_small_binary', 'vgg16_binary', 'resnet18_binary', 'resnet20_binary', 'resnet56_binary']
+│   ├── __init__.py.py/         # __all__ = ['vgg_small_binary', 'vgg16_binary', 'resnet18_binary', 'resnet20_binary', 'resnet56_binary', 'resnet_binary']
 │   ├── binarized_modules.py/   # Binarize / quantize layers & functions
 │   ├── vgg.py/                 # Binary VGG
-│   └── resnet.py/              # Binary ResNet
+│   ├── resnet.py/              # Binary ResNet
+│   └── resnet_opt.py/          # Optimized code structure with slightly different architectural details compared to the standard `resnet.py`
 │
 ├── models_full_imagenet/       # Full-precision models (ImageNet-scale)
 │   ├── __init__.py.py/         # __all__ = []
@@ -290,7 +291,9 @@ Binary networks in this benchmark use different latent weight (`weight.org`) ini
 | ResNet | resnet20 | 89.15 | 61.75 | He et al. (16-32-64 channels)  |
 |  | resnet56 | 90.06 | 63.54 | He et al. (16-32-64 channels) |
 |  | resnet18 | 92.08 | 68.42 | ImageNet modified (3x3 conv1) |
-> ℹ️ **Default SGD configuration:** Unless otherwise noted, all full-precision SGD results use **lr = 0.1, momentum = 0.9, weight decay = 1e-4**. These serve as the standard baseline shared across all full-precision experiments.
+
+> ℹ️ **Default SGD configuration:** Unless otherwise noted, all full-precision SGD results use **lr = 0.1, momentum = 0.9, weight decay = 1e-4**, trained for **200 epochs**. These serve as the standard baseline shared across all full-precision experiments. Note that some models may benefit from longer training (e.g., 300–400 epochs); these results represent a fair but not fully converged comparison point.
+
 
 #### 📋 Quick Example Command
 
@@ -365,16 +368,17 @@ python main_full_cifar.py --model resnet18 --save full_resnet18_cifar100 --datas
 
 **Goal:** Evaluate extreme model compression techniques (1-bit BNNs & low-bit QNNs) using the standardized CIFAR architectures defined in Experiment 2.
 
-#### 📊 Results of Binary Networks with SGD
+#### 📊 Results of Binary Networks with SGD (1w1a)
 
 | Architecture | Model Name | CIFAR-10 | CIFAR-100 |
 |-----------|:---------:|:---------:|:---------:|
 | VGG | vgg_small | 69.96 | 48.89 |
 |  | vgg16 | 50.59 | 22.78 |
-| ResNet | resnet20 | 71.68 | 36.94 |
-|  | resnet56 | 68.36 | 37.49 |
-|  | resnet18 | 75.97 | 50.9 |
-> ℹ️ **Note on SGD:** The SGD hyperparameters used here (lr, momentum, weight decay) are identical to those in [Experiment 2](#exp2) for full-precision networks. However, SGD performs noticeably worse on binary neural networks compared to full-precision — this gap highlights the inherent difficulty of optimizing 1-bit weights with standard first-order methods, motivating the optimizer comparison in [Experiment 1](#exp1).
+| ResNet | resnet20 | 74.64 | 39.86 |
+|  | resnet56 | 74.22 | 41.86 |
+|  | resnet18 | 81.24 | 54.50 |
+> ℹ️ **Note on SGD:** The SGD hyperparameters used here (lr, momentum, weight decay, eopch) are identical to those in [Experiment 2](#exp2) for full-precision networks. However, SGD performs noticeably worse on binary neural networks compared to full-precision — this gap highlights the inherent difficulty of optimizing 1-bit weights with standard first-order methods, motivating the optimizer comparison in [Experiment 1](#exp1).
+> ℹ️ **Epoch:** Note that some models may benefit from longer training (e.g., 500–600 epochs); these results represent a fair but not fully converged comparison point.
 
 #### 📋 Quick Example Command
 
@@ -412,7 +416,7 @@ python main_binary_binarynet.py --model resnet56_binary --save resnet56_binary_c
 
 **CIFAR-10 on ResNet18** 
 ```bash
-python main_binary_binarynet.py --model resnet18_binary --save resnet18_binary_cifar10 --dataset cifar10 --epochs 200 -b 256 --gpus 3
+python main_binary_binarynet.py --model resnet18_binary --save resnet18_binary_cifar10 --dataset cifar10 --epochs 200 -b 256 --gpus 0
 ```
 
 **CIFAR-100 on VGG_Small** 
@@ -427,7 +431,7 @@ python main_binary_binarynet.py --model vgg16_binary --save vgg16_binary_cifar10
 
 **CIFAR-100 on ResNet20** 
 ```bash
-python main_binary_binarynet.py --model resnet20_binary --save resnet20_binary_cifar010 --dataset cifar100 --epochs 200 -b 256 --gpus 3
+python main_binary_binarynet.py --model resnet20_binary --save resnet20_binary_cifar010 --dataset cifar100 --epochs 200 -b 256 --gpus 0
 ```
 
 **CIFAR-100 on ResNet56** 
@@ -448,11 +452,23 @@ python main_binary_binarynet.py --model resnet18_binary --save resnet18_binary_c
 | Architecture | Model Name | CIFAR-10 | CIFAR-100 |
 |-----------|:---------:|:---------:|:---------:|
 | VGG | vgg_small | 87.01 | 60.78 |
-|  | vgg16 | ⌛️ | ⌛️ |
-| ResNet | resnet20 | ⌛️ | ⌛️ |
-|  | resnet56 | ⌛️ | ⌛️ |
-|  | resnet18 | 83.80 | 52.46 |
+|  | vgg16 | 83.77 | 54.44 |
+|  | vgg_small <sup>*</sup> | 89.59 | 65.06 |
+|  | vgg16 <sup>*</sup> | 87.29 | 58.81 |
+| ResNet | resnet20 | 67.75 | 29.50 |
+|  | resnet56 | 62.89 | 24.88 |
+|  | resnet18 | 82.87 | 52.61 |
+|  | resnet20 <sup>$</sup> | ⌛️ | ⌛️ |
+|  | resnet56 <sup>$</sup> | ⌛️ | ⌛️ |
+|  | resnet18 <sup>$</sup> | ⌛️ | ⌛️ |
+|  | resnet20 <sup>†</sup> | ⌛️ | ⌛️ |
 > ℹ️ **Note on Adam:** These results use vanilla Adam without learning rate scheduling, gradient clipping, or step decay — the same basic configuration as the full-precision [Experiment 2](#exp2). No optimization tricks (warmup, cosine annealing, etc.) were applied, which may leave room for further improvement on binary networks.
+>
+> **Symbols:**
+> - <sup>*</sup> Uses `infl_ratio = 3` (inflation ratio for latent weight initialization scaling). Other models use the default `infl_ratio = 1`.
+> - <sup>$</sup> Uses **Option A** (parameter-free shortcut — no 1×1 conv, only identity mapping). Preferred for strict compression benchmarks and top-tier submissions where every parameter counts. Unmarked ResNet models use **Option B** (full-precision 1×1 conv in shortcut, a common practice in BNN literature to stabilize training and boost accuracy, though technically it keeps the residual projection uncompressed).
+> - <sup>†</sup> Implementation from `resnet_opt.py` — optimized code structure with slightly different architectural details compared to the standard `resnet_binary.py`.
+
 
 #### 📋 Quick Example Command
 
@@ -492,7 +508,7 @@ python main_binary_binarynet.py --model resnet56_binary --save resnet56_binary_c
 
 **CIFAR-10 on ResNet18** -
 ```bash
-python main_binary_binarynet.py --model resnet18_binary --save resnet18_binary_cifar10_Adam --dataset cifar10 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 3
+python main_binary_binarynet.py --model resnet18_binary --save resnet18_binary_cifar10_Adam --dataset cifar10 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 2
 ```
 
 **CIFAR-100 on VGG_Small** 
@@ -517,9 +533,38 @@ python main_binary_binarynet.py --model resnet56_binary --save resnet56_binary_c
 
 **CIFAR-100 on ResNet18** -
 ```bash
-python main_binary_binarynet.py --model resnet18_binary --save resnet18_binary_cifar100_Adam --dataset cifar100 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 3
+python main_binary_binarynet.py --model resnet18_binary --save resnet18_binary_cifar100_Adam --dataset cifar100 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 2
 ```
 
+**CIFAR-10 on VGG_Small with infl_ratio=3** 
+```bash
+python main_binary_binarynet.py --model vgg_small_binary --save vgg_small_binary_infl_cifar10_Adam --dataset cifar10 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 0
+```
+
+**CIFAR-10 on VGG16_infl with infl_ratio=3** 
+```bash
+python main_binary_binarynet.py --model vgg16_binary --save vgg16_binary_infl_cifar10_Adam --dataset cifar10 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 1
+```
+
+**CIFAR-100 on VGG_Small with infl_ratio=3** 
+```bash
+python main_binary_binarynet.py --model vgg_small_binary --save vgg_small_binary_infl_cifar100_Adam --dataset cifar100 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 2
+```
+
+**CIFAR-100 on VGG16_infl with infl_ratio=3** 
+```bash
+python main_binary_binarynet.py --model vgg16_binary --save vgg16_binary_infl_cifar100_Adam --dataset cifar100 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 1
+```
+
+**CIFAR-10 on ResNet20_opt** 
+```bash
+python main_binary_binarynet.py --model resnet_binary --save resnet_binary_cifar10_Adam --dataset cifar10 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 0
+```
+
+**CIFAR-100 on ResNet20_opt**
+```bash
+python main_binary_binarynet.py --model resnet_binary --save resnet_binary_cifar100_Adam --dataset cifar100 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 0
+```
 </details>
 
 ---
