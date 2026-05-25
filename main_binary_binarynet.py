@@ -155,10 +155,10 @@ def main():
     }
 
     transform = getattr(model, 'input_transform', default_transform)
-    #regime = getattr(model, 'regime', {0: {'optimizer': args.optimizer,
-    #                                       'lr': args.lr,
-    #                                       'momentum': args.momentum,
-    #                                       'weight_decay': args.weight_decay}})
+    regime = getattr(model, 'regime', {0: {'optimizer': args.optimizer,
+                                           'lr': args.lr,
+                                           'momentum': args.momentum,
+                                           'weight_decay': args.weight_decay}})
 
 
     # define loss function (criterion) and optimizer
@@ -195,18 +195,16 @@ def main():
         batch_size=args.batch_size, shuffle=True,
         num_workers=args.workers, pin_memory=True)
 
-    if args.optimizer=='sgd':
-        optimizer = torch.optim.SGD([{'params':model.parameters()}], lr=args.lr, momentum=args.momentum, weight_decay=args.wd)
-    elif args.optimizer=='adam':
-        optimizer = torch.optim.Adam([{'params':model.parameters()}], lr=args.lr)
+    optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
+    logging.info('training regime: %s', regime)
 
 
     for epoch in range(args.start_epoch, args.epochs):
-        # optimizer = adjust_optimizer(optimizer, epoch, regime)
+        optimizer = adjust_optimizer(optimizer, epoch, regime)
 
         # train for one epoch
         train_loss, train_prec1, train_prec5 = train(
-            train_loader, model, criterion, epoch,optimizer)
+            train_loader, model, criterion, epoch, optimizer)
 
         # evaluate on validation set
         val_loss, val_prec1, val_prec5 = validate(
