@@ -97,7 +97,7 @@ This benchmark supports two main experimental tracks:
 - [🔬 Experiment 1](#exp1): Binary Network Optimizer Comparison (SGDAT-style) — SGD vs Adam vs Bop vs Bop2ndOrder vs SGDAT
 - [⚗️ Experiment 2](#exp2): Full-Precision Network Accuracy Comparison on CIFAR — FP32 baselines as reference ceiling
 - [🔭 Experiment 3](#exp3): Binary & Quantized Network Accuracy Comparison on CIFAR (BynaryNet-style) — 1-bit & Multi-bit compression
-- [🧫 Experiment 4](#exp4): Full-Precision Network Accuracy Comparison on ImageNet — Large-scale datasets ceiling
+- [🧫 Experiment N](#expN): Full-Precision Network Accuracy Comparison on ImageNet — Large-scale datasets ceiling
 
 ---
 
@@ -628,8 +628,8 @@ python main_binary_binarynet.py --model resnet18_quant --save resnet18_quant_cif
 
 ---
 
-<a id="exp4"></a>
-### 🧫 Experiment 4: Full-Precision Network Accuracy Comparison on ImageNet
+<a id="expN"></a>
+### 🧫 Experiment N: Full-Precision Network Accuracy Comparison on ImageNet
 
 **Goal:** Provide baseline accuracy on large-scale, high-resolution datasets (ImageNet-1K) for standard full-precision models.
 
@@ -665,13 +665,14 @@ If you use SnowBench in your research, please cite:
 }
 ```
 
-
 ## 🙏 Acknowledgements
+
 This project is built upon the excellent work of the following open-source projects (listed in order of reference, not contribution):
 
 - [SGDAT](https://github.com/gushan/SGDAT) — SGD with Adaptive Threshold for binary neural networks
 - [BinaryNet](https://github.com/itayhubara/BinaryNet.pytorch) — Training deep neural networks with weights and activations constrained to +1 or -1
-- [VISPA](https://github.com/snownus/bnn_vi) - BNN training and variational inference
+- [DoReFa-Net](https://github.com/zzzxxxttt/pytorch_DoReFaNet) — Training low bitwidth convolutional neural networks with low bitwidth gradients (PyTorch implementation)
+- [VISPA](https://github.com/snownus/bnn_vi) — BNN training and variational inference
 
 We are grateful to all the researchers and developers who have made their code publicly available, enabling this benchmark to exist.
 
