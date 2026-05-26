@@ -95,20 +95,20 @@ class ResNet_CIFAR_quant(nn.Module):
         self.bn1 = nn.BatchNorm2d(16)
         self.tanh1 = nn.Hardtanh(inplace=True)
         
-        self.layer1 = self._make_layer(block, 16, num_blocks[0], stride=1)
-        self.layer2 = self._make_layer(block, 32, num_blocks[1], stride=2)
-        self.layer3 = self._make_layer(block, 64, num_blocks[2], stride=2)
+        self.layer1 = self._make_layer(block, 16, num_blocks[0], stride=1, wbits=wbits, abits=abits)
+        self.layer2 = self._make_layer(block, 32, num_blocks[1], stride=2, wbits=wbits, abits=abits)
+        self.layer3 = self._make_layer(block, 64, num_blocks[2], stride=2, wbits=wbits, abits=abits)
         
         # 【潜规则 2】：最后一层分类器必须保持全精度 (nn.Linear)！否则 Logits 会严重降维。
         self.linear = nn.Linear(64, num_classes)
 
         init_model(self)
 
-    def _make_layer(self, block, planes, num_blocks, stride):
+    def _make_layer(self, block, planes, num_blocks, stride, wbits, abits):
         strides = [stride] + [1] * (num_blocks - 1)
         layers = []
         for s in strides:
-            layers.append(block(self.in_planes, planes, s))
+            layers.append(block(self.in_planes, planes, s, wbits, abits))
             self.in_planes = planes
         return nn.Sequential(*layers)
 
@@ -139,20 +139,20 @@ class ResNet_ImageNet_Modified_quant(nn.Module):
         self.bn1 = nn.BatchNorm2d(64)
         self.tanh1 = nn.Hardtanh(inplace=True)
         
-        self.layer1 = self._make_layer(block, 64, num_blocks[0], stride=1)
-        self.layer2 = self._make_layer(block, 128, num_blocks[1], stride=2)
-        self.layer3 = self._make_layer(block, 256, num_blocks[2], stride=2)
-        self.layer4 = self._make_layer(block, 512, num_blocks[3], stride=2)
+        self.layer1 = self._make_layer(block, 64, num_blocks[0], stride=1, wbits=wbits, abits=abits)
+        self.layer2 = self._make_layer(block, 128, num_blocks[1], stride=2, wbits=wbits, abits=abits)
+        self.layer3 = self._make_layer(block, 256, num_blocks[2], stride=2, wbits=wbits, abits=abits)
+        self.layer4 = self._make_layer(block, 512, num_blocks[3], stride=2, wbits=wbits, abits=abits)
         
         self.linear = nn.Linear(512, num_classes)
 
         init_model(self)
 
-    def _make_layer(self, block, planes, num_blocks, stride):
+    def _make_layer(self, block, planes, num_blocks, stride, wbits, abits):
         strides = [stride] + [1] * (num_blocks - 1)
         layers = []
         for s in strides:
-            layers.append(block(self.in_planes, planes, s))
+            layers.append(block(self.in_planes, planes, s, wbits, abits))
             self.in_planes = planes
         return nn.Sequential(*layers)
 
