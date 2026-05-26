@@ -48,12 +48,7 @@ class Quantize(InplaceFunction):
             output=output.round().add(torch.rand(output.size()).add(-0.5)).div(scale)
         return output
     
-    def backward(grad_output):
-        #STE 
-        grad_input=grad_output
-        return grad_input,None,None
 
-    @staticmethod
     def backward(ctx, grad_output):
         return grad_output, None, None, None # 注意这里要根据输入参数数量返回正确的 None 数量
 
@@ -63,42 +58,6 @@ def binarized(input,quant_mode='det'):
 
 def quantize(input,quant_mode,numBits):
       return Quantize.apply(input,quant_mode,numBits) 
-
-class HingeLoss(nn.Module):
-    def __init__(self):
-        super(HingeLoss,self).__init__()
-        self.margin=1.0
-
-    def hinge_loss(self,input,target):
-            #import pdb; pdb.set_trace()
-            output=self.margin-input.mul(target)
-            output[output.le(0)]=0
-            return output.mean()
-
-    def forward(self, input, target):
-        return self.hinge_loss(input,target)
-
-class SqrtHingeLossFunction(Function):
-    def __init__(self):
-        super(SqrtHingeLossFunction,self).__init__()
-        self.margin=1.0
-
-    def forward(self, input, target):
-        output=self.margin-input.mul(target)
-        output[output.le(0)]=0
-        self.save_for_backward(input, target)
-        loss=output.mul(output).sum(0).sum(1).div(target.numel())
-        return loss
-
-    def backward(self,grad_output):
-       input, target = self.saved_tensors
-       output=self.margin-input.mul(target)
-       output[output.le(0)]=0
-       grad_output.resize_as_(input).copy_(target).mul_(-2).mul_(output)
-       grad_output.mul_(output.ne(0).float())
-       grad_output.div_(input.numel())
-       return grad_output,grad_output
-
 
 
 class BinarizeLinear(nn.Linear):
