@@ -7,13 +7,13 @@ from .binarized_modules import  BinarizeLinear,BinarizeConv2d
 __all__ = ['vgg_small_binary', 'vgg16_binary']
 
 
-class VGG_Small(nn.Module):
+class VGG_Small_Binary(nn.Module):
     """
     BNN (BinaryNet) 开山之作中使用的经典直筒状 VGG 变体。
     常被量化/二值化论文作为 Baseline。
     """
     def __init__(self, num_classes=10):
-        super(VGG_Small, self).__init__()
+        super(VGG_Small_Binary, self).__init__()
         self.infl_ratio=3
         self.features = nn.Sequential(
             BinarizeConv2d(3, 128*self.infl_ratio, kernel_size=3, stride=1, padding=1,
@@ -87,13 +87,13 @@ class VGG_Small(nn.Module):
         return x
 
 
-class VGG16(nn.Module):
+class VGG16_Binary(nn.Module):
     """
     CIFAR 专属的 VGG-16 架构。
     与 ImageNet 版的区别在于：去掉了最后两个庞大的 4096 全连接层，防止在小图上严重过拟合。
     """
     def __init__(self, num_classes=10):
-        super(VGG16, self).__init__()
+        super(VGG16_Binary, self).__init__()
         self.infl_ratio=3
         self.features = nn.Sequential(
             BinarizeConv2d(3, 64*self.infl_ratio, kernel_size=3, stride=1, padding=1,
@@ -198,10 +198,10 @@ def _get_num_classes(kwargs):
 def vgg_small_binary(**kwargs):
     """ BNN 经典的 VGG-Small (BinaryNet) 架构 """
     num_classes = _get_num_classes(kwargs)
-    return VGG_Small(num_classes=num_classes)
+    return VGG_Small_Binary(num_classes=num_classes)
 
 
 def vgg16_binary(**kwargs):
     """ CIFAR 专属的 VGG-16 架构 """
     num_classes = _get_num_classes(kwargs)
-    return VGG16(num_classes=num_classes)
+    return VGG16_Binary(num_classes=num_classes)
