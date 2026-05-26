@@ -583,9 +583,9 @@ python main_binary_binarynet.py --model resnet_binary --save resnet_binary_cifar
 |  | 4 | 4 | 90.30 | 64.91 |
 |  | 2 | 2 | 90.03 | 64.89 |
 | resnet18 | 1 | 1 | 83.80 | 53.58 |
-|  | 8 | 8 | 84.20 | ⌛️ |
-|  | 4 | 4 | 84.54 | ⌛️ |
-|  | 2 | 2 | 84.99 | ⌛️ |
+|  | 8 | 8 | 84.34 | ⌛️ |
+|  | 4 | 4 | 83.82 | ⌛️ |
+|  | 2 | 2 | 84.46 | ⌛️ |
 
 #### 📋 Quick Example Command
 
