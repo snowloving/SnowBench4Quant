@@ -517,12 +517,12 @@ python main_binary_binarynet.py --model vgg16_binary --save vgg16_binary_cifar10
 python main_binary_binarynet.py --model resnet20_binary --save resnet20_binary_cifar10_Adam --dataset cifar10 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 1
 ```
 
-**CIFAR-10 on ResNet56** -
+**CIFAR-10 on ResNet56** 
 ```bash
 python main_binary_binarynet.py --model resnet56_binary --save resnet56_binary_cifar10_Adam --dataset cifar10 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 1
 ```
 
-**CIFAR-10 on ResNet18** -
+**CIFAR-10 on ResNet18** 
 ```bash
 python main_binary_binarynet.py --model resnet18_binary --save resnet18_binary_cifar10_Adam --dataset cifar10 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 1
 ```
@@ -628,12 +628,12 @@ python main_binary_binarynet.py --model vgg_small_quant --save vgg_small_quant_c
 python main_binary_binarynet.py --model vgg_small_quant --save vgg_small_quant_cifar100_w8a8 --dataset cifar100 --wbits 8 --abits 8 --epochs 200 -b 256 --gpus 2
 ```
 
-**CIFAR-10 on ResNet18** -
+**CIFAR-10 on ResNet18** 
 ```bash
 python main_binary_binarynet.py --model resnet18_quant --save resnet18_quant_cifar10_w8a8 --dataset cifar10 --wbits 8 --abits 8 --epochs 200 -b 256 --gpus 1
 ```
 
-**CIFAR-100 on ResNet18** -
+**CIFAR-100 on ResNet18** 
 ```bash
 python main_binary_binarynet.py --model resnet18_quant --save resnet18_quant_cifar100_w8a8 --dataset cifar100 --wbits 8 --abits 8 --epochs 200 -b 256 --gpus 1
 ```
@@ -676,11 +676,11 @@ python main_binary_binarynet.py --model resnet18_quant --save resnet18_quant_cif
 
 ````bash
 python main_binary_dorefanet.py \
-  --model resnet18_preact_quant \
-  --save resnet18_preact_dorefa_cifar10_w4a4 \
+  --model vgg_small_quant \
+  --save vgg_small_quant_dorefa_cifar10_w2a2 \
   --dataset cifar10 \
-  --wbits 4 \
-  --abits 4 \
+  --wbits 2 \
+  --abits 2 \
   --gpus 0
 ````
 
@@ -688,17 +688,17 @@ python main_binary_dorefanet.py \
 
 **CIFAR-10 on VGG_Small**
 ```bash
-python main_binary_binarynet.py --model vgg_small_quant --save vgg_small_quant_cifar10_w8a8 --dataset cifar10 --wbits 8 --abits 8 --epochs 200 -b 256 --gpus 0
+python main_binary_dorefanet.py --model vgg_small_quant --save vgg_small_quant_cifar10_w2a2 --dataset cifar10 --wbits 2 --abits 2  --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 1
 ```
 
-**CIFAR-10 on ResNet20** -
+**CIFAR-10 on ResNet20** 
 ```bash
-python main_binary_binarynet.py --model resnet20_binary --save resnet20_binary_cifar10_Adam --dataset cifar10 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 1
+python main_binary_dorefanet.py --model resnet20_quant --save resnet20_quant_cifar10_w2a2 --dataset cifar10 --wbits 2 --abits 2  --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 2
 ```
 
-**CIFAR-10 on ResNet18** -
+**CIFAR-10 on ResNet18** 
 ```bash
-python main_binary_binarynet.py --model resnet18_binary --save resnet18_binary_cifar10_Adam --dataset cifar10 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 1
+python main_binary_dorefanet.py --model resnet18_quant --save resnet18_quant_cifar10_w2a2 --dataset cifar10 --wbits 2 --abits 2  --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 0
 ```
 </details>
 
