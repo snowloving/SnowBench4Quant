@@ -111,7 +111,7 @@ def main():
     # create model
     logging.info("creating model %s", args.model)
     model = models_binarynet.__dict__[args.model]
-    model_config = {'input_size': args.input_size, 'dataset': args.dataset}
+    model_config = {'input_size': args.input_size, 'dataset': args.dataset,  'wbits': args.wbits, 'abits': args.abits}
 
     if args.model_config is not '':
         model_config = dict(model_config, **literal_eval(args.model_config))
