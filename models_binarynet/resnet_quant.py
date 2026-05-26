@@ -213,4 +213,5 @@ def resnet18_quant(**kwargs):
     num_classes = _get_num_classes(kwargs)
     wbits = kwargs.get('wbits', 8)
     abits = kwargs.get('abits', 8)
+
     return ResNet_ImageNet_Modified_quant(BasicBlockQuant, [2, 2, 2, 2], num_classes=num_classes, wbits=wbits, abits=abits)
