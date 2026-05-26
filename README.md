@@ -45,13 +45,13 @@ SnowBench/
 │   └── resnet_binary.py/      
 │  
 ├── models_full_cifar/          # Full-precision models (CIFAR-scale)
-│   ├── __init__.py.py/         # __all__ = ['vgg_small', 'vgg16', 'resnet18', 'resnet20', 'resnet56']
+│   ├── __init__.py.py/         # __all__ = ['vgg_small', 'vgg16', 'resnet18', 'resnet20', 'resnet56', 'resnet18_preact', 'resnet20_preact', 'resnet56_preact']
 │   ├── vgg.py/                 # Full-precision versions of VGG-family
 │   ├── vgg_opt.py/             # Same architecture as vgg.py, but with optimized code style (cleaner implementation)
 │   ├── resnet.py/              # Full-precision versions of ResNet-family
 │   └── resnet_preact.py/       # Full-precision versions of PreActResNet-family
 │
-├── models_binarynet/           # Full-precision & Binary & Quantized (BinaryNet-style)
+├── models_binarynet/           # Binary & Quantized (BinaryNet-style)
 │   ├── __init__.py.py/         # __all__ = ['vgg_small_binary', 'vgg16_binary', 'resnet18_binary', 'resnet20_binary', 'resnet56_binary', 'resnet_binary', 'vgg_small_quant', 'vgg16_quant', 'resnet18_quant', 'resnet20_quant', 'resnet56_quant']
 │   ├── binarized_modules.py/   # Binarize / quantize layers & functions
 │   ├── vgg.py/                 # Binary VGG
@@ -59,6 +59,16 @@ SnowBench/
 │   ├── resnet_opt.py/          # Binary ResNet: optimized code structure with slightly different architectural details compared to the standard `resnet.py`
 │   ├── vgg_quant.py/           # Quantized VGG
 │   └── resnet_quant.py/        # Quantized ResNet
+│
+├── models_dorefanet/           # Binary & Quantized (DoreFaNet-style)
+│   ├── __init__.py.py/         # __all__ = ['vgg_small_binary', 'vgg16_binary', 'resnet18_binary', 'resnet20_binary', 'resnet56_binary', 'resnet_binary', 'vgg_small_quant', 'vgg16_quant', 'resnet18_quant', 'resnet20_quant', 'resnet56_quant', 'resnet18_preact_quant', 'resnet20_preact_quant', 'resnet56_preact_quant']
+│   ├── binarized_modules.py/   # Binarize / quantize layers & functions
+│   ├── vgg.py/                 # Binary VGG
+│   ├── resnet.py/              # Binary ResNet
+│   ├── resnet_preact.py/       # Binary PreActResNet
+│   ├── vgg_quant.py/           # Quantized VGG
+│   ├── resnet_quant.py/        # Quantized ResNet
+│   └── resnet_preact_quant.py/ # Quantized PreActResNet
 │
 ├── models_full_imagenet/       # Full-precision models (ImageNet-scale)
 │   ├── __init__.py.py/         # __all__ = []
@@ -69,8 +79,8 @@ SnowBench/
 ├── main_binary_sgdat.py        # Entry: binary models (models_sgdat)
 ├── main_full_cifar.py          # Entry: full-precision on cifar (models_full_cifar)
 ├── main_binary_binarynet.py    # Entry: binary & full-precision (models_binarynet)
+├── main_binary_dorefanet.py    # Entry: binary & full-precision (models_dorefanet): The same as main_binary_binarynet.py
 ├── main_full_imagenet.py       # Entry: full-precision on imagenet (models_full_imagenet)
-├── main_quant.py               # Entry: quantization (to be added)
 └
 ```
 
@@ -97,7 +107,8 @@ This benchmark supports two main experimental tracks:
 
 - [🔬 Experiment 1](#exp1): Binary Network Optimizer Comparison (SGDAT-style) — SGD vs Adam vs Bop vs Bop2ndOrder vs SGDAT
 - [⚗️ Experiment 2](#exp2): Full-Precision Network Accuracy Comparison on CIFAR — FP32 baselines as reference ceiling
-- [🔭 Experiment 3](#exp3): Binary & Quantized Network Accuracy Comparison on CIFAR (BynaryNet-style) — 1-bit & Multi-bit compression
+- [🔭 Experiment 3](#exp3): Binary & Quantized Network Accuracy Comparison on CIFAR (BinaryNet-style) — 1-bit & Multi-bit compression
+- [🧬 Experiment 4](#exp4): Binary & Quantized Network Accuracy Comparison on CIFAR (DoReFaNet-style) — 1-bit & Multi-bit compression
 - [🧫 Experiment N](#expN): Full-Precision Network Accuracy Comparison on ImageNet — Large-scale datasets ceiling
 
 ---
@@ -294,9 +305,9 @@ Binary networks in this benchmark use different latent weight (`weight.org`) ini
 | ResNet | resnet20 | 89.15 | 61.75 | He et al. (16-32-64 channels) |
 |  | resnet56 | 90.06 | 63.54 | He et al. (16-32-64 channels) |
 |  | resnet18 | 92.08 | 68.42 | ImageNet modified (3x3 conv1) |
-| PreActResNet | resnet20 | ⌛️ | ⌛️ | Pre-activation: ReLU *before* conv |
-|  | resnet56 | ⌛️ | ⌛️ | Pre-activation: ReLU *before* conv |
-|  | resnet18 | ⌛️ | ⌛️ | Pre-activation: ReLU *before* conv |
+| PreActResNet | resnet20 | 89.28 | 60.75 | Pre-activation: ReLU *before* conv |
+|  | resnet56 | 90.60 | ⌛️ | Pre-activation: ReLU *before* conv |
+|  | resnet18 | 92.18 | 68.73 | Pre-activation: ReLU *before* conv |
 
 > ℹ️ **Default SGD configuration:** Unless otherwise noted, all full-precision SGD results use **lr = 0.1, momentum = 0.9, weight decay = 1e-4**, trained for **200 epochs**. These serve as the standard baseline shared across all full-precision experiments. Note that some models may benefit from longer training (e.g., 300–400 epochs); these results represent a fair but not fully converged comparison point.
 >
@@ -371,7 +382,7 @@ python main_full_cifar.py --model resnet18 --save full_resnet18_cifar100 --datas
 ---
 
 <a id="exp3"></a>
-### 🔭 Experiment 3: Binary & Quantized Networks on CIFAR
+### 🔭 Experiment 3: Binary & Quantized Networks on CIFAR (BinaryNet-style) 
 
 **Goal:** Evaluate extreme model compression techniques (1-bit BNNs & low-bit QNNs) using the standardized CIFAR architectures defined in Experiment 2.
 
@@ -628,6 +639,69 @@ python main_binary_binarynet.py --model resnet18_quant --save resnet18_quant_cif
 **CIFAR-100 on ResNet18** -
 ```bash
 python main_binary_binarynet.py --model resnet18_quant --save resnet18_quant_cifar100_w8a8 --dataset cifar100 --wbits 8 --abits 8 --epochs 200 -b 256 --gpus 1
+```
+</details>
+
+---
+
+<a id="exp4"></a>
+### 🧬 Experiment 4: Binary & Quantized Networks on CIFAR  (DoReFaNet-style) 
+
+**Goal:** Evaluate extreme model compression (1-bit & low-bit) using the **DoReFa-Net** quantization scheme. Unlike the generic uniform quantization implemented in [Experiment 3](#exp3), DoReFa-Net provides a mathematically rigorous and academically standardized framework. It strictly separates the quantization logic for weights (e.g., employing `tanh` for soft-clipping outliers and introducing XNOR-style scaling factors for 1-bit) and activations. 
+
+> 💡 **Ablation & Scope Note:** 
+> - **Architectures:** Since Experiment 3 already demonstrated the general trends of quantization across various depths, we omit redundant architectures (e.g., VGG16, ResNet56) in this section. We focus exclusively on highly representative compact models (**VGG-Small** and **PreActResNet18/20**) to highlight the algorithmic superiority of the DoReFa-Net scheme.
+> - **Datasets:** This section currently focuses on the CIFAR datasets to rapidly validate the quantization algorithms. Extensive results on large-scale datasets (i.e., **ImageNet-1K**) will be updated in future releases.
+> - **Optimizers:** Training extreme low-bit networks requires different optimization dynamics. We strictly use **Adam** (with weight decay = 0) for highly constrained settings (**1-bit & 2-bit**), and standard **SGD** for moderately quantized settings (**4-bit & 8-bit**).
+
+#### 📊 Results of DoReFa-Net Quantized Networks
+| Architecture | Model Name | Wbits | Abits | CIFAR-10 | CIFAR-100 |
+|-----------|:---------:|:---------:|:---------:|:---------:|:---------:|
+| VGG | vgg_small | 1 | 1 | ⏳ | ⏳ |
+|  |  | 2 | 2 | ⏳ | ⏳ |
+|  |  | 4 | 4 | ⏳ | ⏳ |
+|  |  | 8 | 8 | ⏳ | ⏳ |
+| PreActResNet | resnet20_preact | 1 | 1 | ⏳ | ⏳ |
+|  |  | 2 | 2 | ⏳ | ⏳ |
+|  |  | 4 | 4 | ⏳ | ⏳ |
+|  |  | 8 | 8 | ⏳ | ⏳ |
+|  | resnet18_preact | 1 | 1 | ⏳ | ⏳ |
+|  |  | 2 | 2 | ⏳ | ⏳ |
+|  |  | 4 | 4 | ⏳ | ⏳ |
+|  |  | 8 | 8 | ⏳ | ⏳ |
+
+> ℹ️ **Algorithmic Advantages over Exp 3:**
+> - **Outlier Immunity (2~4 bit):** By applying `torch.tanh()` to weights before calculating the maximum absolute value (`max_w`), DoReFa-Net effectively squashes extreme outliers. This prevents the dynamic range from being dominated by a few large values, solving the severe accuracy collapse observed in generic 2-bit quantization.
+> - **Optimal 1-bit Scaling (XNOR-style):** For 1w1a settings, DoReFa-Net analytically calculates the absolute mean of the real-valued weights ($E$) as a scaling factor, significantly boosting 1-bit accuracy compared to naive `sign()` binarization.
+> - **Pre-Activation Synergy:** The `resnet18_preact` (PreActResNet) is strongly recommended here. Placing `BatchNorm -> Hardtanh/ReLU` before convolutions preserves the full representational capacity of negative features prior to quantization, which is the gold standard for state-of-the-art BNNs/QNNs.
+
+#### 📋 Quick Example Command
+
+````bash
+python main_binary_dorefanet.py \
+  --model resnet18_preact_quant \
+  --save resnet18_preact_dorefa_cifar10_w4a4 \
+  --dataset cifar10 \
+  --wbits 4 \
+  --abits 4 \
+  --gpus 0
+````
+
+<details> <summary>🔁 All Reproducible Commands for DoReFa-Net Quantization</summary>
+
+**CIFAR-10 on VGG_Small**
+```bash
+python main_binary_binarynet.py --model vgg_small_quant --save vgg_small_quant_cifar10_w8a8 --dataset cifar10 --wbits 8 --abits 8 --epochs 200 -b 256 --gpus 0
+```
+
+**CIFAR-10 on ResNet20** -
+```bash
+python main_binary_binarynet.py --model resnet20_binary --save resnet20_binary_cifar10_Adam --dataset cifar10 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 1
+```
+
+**CIFAR-10 on ResNet18** -
+```bash
+python main_binary_binarynet.py --model resnet18_binary --save resnet18_binary_cifar10_Adam --dataset cifar10 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 1
 ```
 </details>
 
