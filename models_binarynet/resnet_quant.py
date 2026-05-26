@@ -81,13 +81,13 @@ class BasicBlockQuant(nn.Module):
         return out
 
 
-class ResNet_CIFAR_quant(nn.Module):
+class ResNet_CIFAR_Quant(nn.Module):
     """
     何恺明原论文 (ResNet, 2016) 中专为 CIFAR 提出的轻量级架构。
     特点：3 个 stage，通道数分别为 16, 32, 64。
     """
     def __init__(self, block, num_blocks, num_classes=10, wbits=8, abits=8):
-        super(ResNet_CIFAR_quant, self).__init__()
+        super(ResNet_CIFAR_Quant, self).__init__()
         self.in_planes = 16
 
         # 【潜规则 1】：第一层必须保持全精度 (nn.Conv2d)！负责高精度提取原始 RGB 边缘特征。
@@ -125,13 +125,13 @@ class ResNet_CIFAR_quant(nn.Module):
         return out
 
 
-class ResNet_ImageNet_Modified_quant(nn.Module):
+class ResNet_ImageNet_Modified_Quant(nn.Module):
     """
     ImageNet 缩水版架构 (ResNet-18)。
     特点：4 个 stage，通道数分别为 64, 128, 256, 512。
     """
     def __init__(self, block, num_blocks, num_classes=10, wbits=8, abits=8):
-        super(ResNet_ImageNet_Modified_quant, self).__init__()
+        super(ResNet_ImageNet_Modified_Quant, self).__init__()
         self.in_planes = 64
 
         # 针对 CIFAR 的修改：原版的 7x7 stride=2 替换为 3x3 stride=1，并且去掉了紧随其后的 MaxPool
@@ -191,7 +191,7 @@ def resnet20_quant(**kwargs):
     num_classes = _get_num_classes(kwargs)
     wbits = kwargs.get('wbits', 8)
     abits = kwargs.get('abits', 8)
-    return ResNet_CIFAR_quant(BasicBlockQuant, [3, 3, 3], num_classes=num_classes, wbits=wbits, abits=abits)
+    return ResNet_CIFAR_Quant(BasicBlockQuant, [3, 3, 3], num_classes=num_classes, wbits=wbits, abits=abits)
 
 
 def resnet56_quant(**kwargs):
@@ -202,7 +202,7 @@ def resnet56_quant(**kwargs):
     num_classes = _get_num_classes(kwargs)
     wbits = kwargs.get('wbits', 8)
     abits = kwargs.get('abits', 8)
-    return ResNet_CIFAR_quant(BasicBlockQuant, [9, 9, 9], num_classes=num_classes, wbits=wbits, abits=abits)
+    return ResNet_CIFAR_Quant(BasicBlockQuant, [9, 9, 9], num_classes=num_classes, wbits=wbits, abits=abits)
 
 
 def resnet18_quant(**kwargs):
@@ -214,4 +214,4 @@ def resnet18_quant(**kwargs):
     wbits = kwargs.get('wbits', 8)
     abits = kwargs.get('abits', 8)
 
-    return ResNet_ImageNet_Modified_quant(BasicBlockQuant, [2, 2, 2, 2], num_classes=num_classes, wbits=wbits, abits=abits)
+    return ResNet_ImageNet_Modified_Quant(BasicBlockQuant, [2, 2, 2, 2], num_classes=num_classes, wbits=wbits, abits=abits)
