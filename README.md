@@ -303,7 +303,7 @@ Binary networks in this benchmark use different latent weight (`weight.org`) ini
 |  | resnet56 | 90.06 | 63.54 | He et al. (16-32-64 channels) |
 |  | resnet18 | 92.08 | 68.42 | ImageNet modified (3x3 conv1) |
 | PreActResNet | resnet20 | 89.28 | 60.75 | Pre-activation: ReLU *before* conv |
-|  | resnet56 | 90.60 | ⌛️ | Pre-activation: ReLU *before* conv |
+|  | resnet56 | 90.60 | 63.35 | Pre-activation: ReLU *before* conv |
 |  | resnet18 | 92.18 | 68.73 | Pre-activation: ReLU *before* conv |
 
 > ℹ️ **Default SGD configuration:** Unless otherwise noted, all full-precision SGD results use **lr = 0.1, momentum = 0.9, weight decay = 1e-4**, trained for **200 epochs**. These serve as the standard baseline shared across all full-precision experiments. Note that some models may benefit from longer training (e.g., 300–400 epochs); these results represent a fair but not fully converged comparison point.
