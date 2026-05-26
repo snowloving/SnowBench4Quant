@@ -81,13 +81,13 @@ class BasicBlockBinary(nn.Module):
         return out
 
 
-class ResNet_CIFAR_Binary(nn.Module):
+class ResNet_CIFAR(nn.Module):
     """
     何恺明原论文 (ResNet, 2016) 中专为 CIFAR 提出的轻量级架构。
     特点：3 个 stage，通道数分别为 16, 32, 64。
     """
     def __init__(self, block, num_blocks, num_classes=10):
-        super(ResNet_CIFAR_Binary, self).__init__()
+        super(ResNet_CIFAR, self).__init__()
         self.in_planes = 16
 
         # 【潜规则 1】：第一层必须保持全精度 (nn.Conv2d)！负责高精度提取原始 RGB 边缘特征。
@@ -125,13 +125,13 @@ class ResNet_CIFAR_Binary(nn.Module):
         return out
 
 
-class ResNet_ImageNet_Modified_Binary(nn.Module):
+class ResNet_ImageNet_Modified(nn.Module):
     """
     ImageNet 缩水版架构 (ResNet-18)。
     特点：4 个 stage，通道数分别为 64, 128, 256, 512。
     """
     def __init__(self, block, num_blocks, num_classes=10):
-        super(ResNet_ImageNet_Modified_Binary, self).__init__()
+        super(ResNet_ImageNet_Modified, self).__init__()
         self.in_planes = 64
 
         # 针对 CIFAR 的修改：原版的 7x7 stride=2 替换为 3x3 stride=1，并且去掉了紧随其后的 MaxPool
@@ -189,7 +189,7 @@ def resnet20_binary(**kwargs):
     公式：6*n + 2 = 20 -> n = 3
     """
     num_classes = _get_num_classes(kwargs)
-    return ResNet_CIFAR_Binary(BasicBlockBinary, [3, 3, 3], num_classes=num_classes)
+    return ResNet_CIFAR(BasicBlockBinary, [3, 3, 3], num_classes=num_classes)
 
 
 def resnet56_binary(**kwargs):
@@ -198,7 +198,7 @@ def resnet56_binary(**kwargs):
     公式：6*n + 2 = 56 -> n = 9
     """
     num_classes = _get_num_classes(kwargs)
-    return ResNet_CIFAR_Binary(BasicBlockBinary, [9, 9, 9], num_classes=num_classes)
+    return ResNet_CIFAR(BasicBlockBinary, [9, 9, 9], num_classes=num_classes)
 
 
 def resnet18_binary(**kwargs):
@@ -207,4 +207,4 @@ def resnet18_binary(**kwargs):
     拥有远超 resnet20/56 的参数量 (约 11M)
     """
     num_classes = _get_num_classes(kwargs)
-    return ResNet_ImageNet_Modified_Binary(BasicBlockBinary, [2, 2, 2, 2], num_classes=num_classes)
+    return ResNet_ImageNet_Modified(BasicBlockBinary, [2, 2, 2, 2], num_classes=num_classes)
