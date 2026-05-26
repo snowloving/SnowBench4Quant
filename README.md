@@ -48,8 +48,9 @@ SnowBench/
 │   ├── __init__.py.py/         # __all__ = ['vgg_small', 'vgg16', 'resnet18', 'resnet20', 'resnet56']
 │   ├── vgg.py/                 # Full-precision versions of VGG-family
 │   ├── vgg_opt.py/             # Same architecture as vgg.py, but with optimized code style (cleaner implementation)
-│   └── resnet.py/              # Full-precision versions of ResNet-family
-├
+│   ├── resnet.py/              # Full-precision versions of ResNet-family
+│   └── resnet_preact.py/       # Full-precision versions of PreActResNet-family
+│
 ├── models_binarynet/           # Full-precision & Binary & Quantized (BinaryNet-style)
 │   ├── __init__.py.py/         # __all__ = ['vgg_small_binary', 'vgg16_binary', 'resnet18_binary', 'resnet20_binary', 'resnet56_binary', 'resnet_binary', 'vgg_small_quant', 'vgg16_quant', 'resnet18_quant', 'resnet20_quant', 'resnet56_quant']
 │   ├── binarized_modules.py/   # Binarize / quantize layers & functions
@@ -290,12 +291,16 @@ Binary networks in this benchmark use different latent weight (`weight.org`) ini
 |-----------|:---------:|:---------:|:---------:|---------|
 | VGG | vgg_small | 91.37 | 68.75 | BinaryNet baseline (7-layer) |
 |  | vgg16 | 90.62 | 64.96 | CIFAR modified (No 4096-FCs) |
-| ResNet | resnet20 | 89.15 | 61.75 | He et al. (16-32-64 channels)  |
+| ResNet | resnet20 | 89.15 | 61.75 | He et al. (16-32-64 channels) |
 |  | resnet56 | 90.06 | 63.54 | He et al. (16-32-64 channels) |
 |  | resnet18 | 92.08 | 68.42 | ImageNet modified (3x3 conv1) |
+| PreActResNet | resnet20 | ⌛️ | ⌛️ | Pre-activation: ReLU *before* conv |
+|  | resnet56 | ⌛️ | ⌛️ | Pre-activation: ReLU *before* conv |
+|  | resnet18 | ⌛️ | ⌛️ | Pre-activation: ReLU *before* conv |
 
 > ℹ️ **Default SGD configuration:** Unless otherwise noted, all full-precision SGD results use **lr = 0.1, momentum = 0.9, weight decay = 1e-4**, trained for **200 epochs**. These serve as the standard baseline shared across all full-precision experiments. Note that some models may benefit from longer training (e.g., 300–400 epochs); these results represent a fair but not fully converged comparison point.
-
+>
+> ⚠️ **On PreActResNet:** PreActResNet results are summarized here as they will serve as the backbone for upcoming quantization and binarization experiments. This architecture places activation functions (ReLU) *before* the convolution (rather than after, as in standard ResNet), preserving negative activations prior to binarization/quantization — maintaining the representational capacity of discrete features that would otherwise be clipped to zero by a post-conv ReLU.
 
 #### 📋 Quick Example Command
 
