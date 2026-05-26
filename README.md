@@ -655,15 +655,23 @@ python main_binary_binarynet.py --model resnet18_quant --save resnet18_quant_cif
 | Architecture | Model Name | Wbits | Abits | CIFAR-10 | CIFAR-100 |
 |-----------|:---------:|:---------:|:---------:|:---------:|:---------:|
 | VGG | vgg_small | 1 | 1 | ⏳ | ⏳ |
-|  |  | 2 | 2 | ⏳ | ⏳ |
+|  |  | 2 | 2 | 90.03 | ⏳ |
+|  |  | 4 | 4 | ⏳ | ⏳ |
+|  |  | 8 | 8 | ⏳ | ⏳ |
+| ResNet | resnet20 | 1 | 1 | ⏳ | ⏳ |
+|  |  | 2 | 2 | 72.24 | ⏳ |
+|  |  | 4 | 4 | ⏳ | ⏳ |
+|  |  | 8 | 8 | ⏳ | ⏳ |
+|  | resnet18 | 1 | 1 | ⏳ | ⏳ |
+|  |  | 2 | 2 | 85.09 | ⏳ |
 |  |  | 4 | 4 | ⏳ | ⏳ |
 |  |  | 8 | 8 | ⏳ | ⏳ |
 | PreActResNet | resnet20_preact | 1 | 1 | ⏳ | ⏳ |
-|  |  | 2 | 2 | ⏳ | ⏳ |
+|  |  | 2 | 2 | 72.24 | ⏳ |
 |  |  | 4 | 4 | ⏳ | ⏳ |
 |  |  | 8 | 8 | ⏳ | ⏳ |
 |  | resnet18_preact | 1 | 1 | ⏳ | ⏳ |
-|  |  | 2 | 2 | ⏳ | ⏳ |
+|  |  | 2 | 2 | 85.09 | ⏳ |
 |  |  | 4 | 4 | ⏳ | ⏳ |
 |  |  | 8 | 8 | ⏳ | ⏳ |
 
@@ -699,6 +707,16 @@ python main_binary_dorefanet.py --model resnet20_quant --save resnet20_quant_cif
 **CIFAR-10 on ResNet18** 
 ```bash
 python main_binary_dorefanet.py --model resnet18_quant --save resnet18_quant_cifar10_w2a2 --dataset cifar10 --wbits 2 --abits 2  --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 0
+```
+
+**CIFAR-10 on PreActResNet20** 
+```bash
+python main_binary_dorefanet.py --model resnet20_preact_quant --save resnet20_preact_quant_cifar10_w2a2 --dataset cifar10 --wbits 2 --abits 2  --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 1
+```
+
+**CIFAR-10 on PreActResNet18** 
+```bash
+python main_binary_dorefanet.py --model resnet18_preact_quant --save resnet18_preact_quant_cifar10_w2a2 --dataset cifar10 --wbits 2 --abits 2  --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 2
 ```
 </details>
 
