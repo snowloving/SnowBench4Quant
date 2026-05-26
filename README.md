@@ -63,12 +63,9 @@ SnowBench/
 ├── models_dorefanet/           # Binary & Quantized (DoreFaNet-style)
 │   ├── __init__.py.py/         # __all__ = ['vgg_small_binary', 'vgg16_binary', 'resnet18_binary', 'resnet20_binary', 'resnet56_binary', 'resnet_binary', 'vgg_small_quant', 'vgg16_quant', 'resnet18_quant', 'resnet20_quant', 'resnet56_quant', 'resnet18_preact_quant', 'resnet20_preact_quant', 'resnet56_preact_quant']
 │   ├── binarized_modules.py/   # Binarize / quantize layers & functions
-│   ├── vgg.py/                 # Binary VGG
-│   ├── resnet.py/              # Binary ResNet
-│   ├── resnet_preact.py/       # Binary PreActResNet
-│   ├── vgg_quant.py/           # Quantized VGG
-│   ├── resnet_quant.py/        # Quantized ResNet
-│   └── resnet_preact_quant.py/ # Quantized PreActResNet
+│   ├── vgg.py/                 # Binary & Quantized VGG
+│   ├── resnet.py/              # Binary & Quantized ResNet
+│   └── resnet_preact.py/       # Binary & Quantized PreActResNet
 │
 ├── models_full_imagenet/       # Full-precision models (ImageNet-scale)
 │   ├── __init__.py.py/         # __all__ = []
