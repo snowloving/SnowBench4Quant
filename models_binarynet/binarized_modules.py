@@ -32,27 +32,41 @@ class Binarize(InplaceFunction):
         grad_input=grad_output
         return grad_input,None,None,None
 
-
 class Quantize(InplaceFunction):
-    def forward(ctx,input,quant_mode='det',numBits=4,inplace=False):
+    @staticmethod
+    def forward(ctx, input, quant_mode='det', numBits=8, inplace=False):
         ctx.inplace = inplace
         if ctx.inplace:
             ctx.mark_dirty(input)
             output = input
         else:
             output = input.clone()
-        scale=(2**numBits-1)/(output.max()-output.min())
-        output = output.mul(scale).clamp(-2**(numBits-1)+1,2**(numBits-1))
-        if quant_mode=='det':
-            output=output.round().div(scale)
+            
+        # 修复：使用对称量化，找绝对值的最大值
+        abs_max = output.abs().max()
+        # 防止全 0 张量导致除以 0 的 NaN
+        abs_max = torch.clamp(abs_max, min=1e-8) 
+        
+        # 对称区间的最大整数 (8-bit 就是 127)
+        qmax = (2 ** (numBits - 1)) - 1  
+        
+        # 新的 scale
+        scale = qmax / abs_max
+        
+        # 缩放并裁剪 (8-bit 为 [-127, 127])
+        output = output.mul(scale).clamp(-qmax, qmax)
+        
+        if quant_mode == 'det':
+            output = output.round().div(scale)
         else:
-            output=output.round().add(torch.rand(output.size()).add(-0.5)).div(scale)
+            output = output.round().add(torch.rand_like(output).sub(0.5)).div(scale)
+            
         return output
-    
+
+    @staticmethod
     def backward(ctx, grad_output):
-        #STE 
-        grad_input=grad_output
-        return grad_input,None,None
+        return grad_output, None, None, None # 注意这里要根据输入参数数量返回正确的 None 数量
+
 
 def binarized(input,quant_mode='det'):
       return Binarize.apply(input,quant_mode)  
