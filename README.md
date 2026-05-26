@@ -572,7 +572,7 @@ python main_binary_binarynet.py --model resnet_binary --save resnet_binary_cifar
 
 ---
 
-#### 📊 Results of Quantized Networks with Adam
+#### 📊 Results of Quantized Networks with SGD
 
 > ⚠️ **Note:** Quantization experiments are conducted on **VGG-Small** (Uses `infl_ratio = 1`) and **ResNet18** (Option A) as representative models from each architecture family.
 
@@ -583,9 +583,9 @@ python main_binary_binarynet.py --model resnet_binary --save resnet_binary_cifar
 |  | 4 | 4 | 90.30 | 64.91 | ⌛️ | ⌛️ |
 |  | 2 | 2 | 90.03 | 64.89 | ⌛️ | ⌛️ |
 | resnet18 | 1 | 1 | 83.80 | 53.58 |
-|  | 8 | 8 | 84.03 | 56.56 |
-|  | 4 | 4 | 84.73 | 58.05 |
-|  | 2 | 2 | 80.52 | 46.14 |
+|  | 8 | 8 | 84.03 | 56.56 | ⌛️ | ⌛️ |
+|  | 4 | 4 | 84.73 | 58.05 | ⌛️ | ⌛️ |
+|  | 2 | 2 | 80.52 | 46.14 | ⌛️ | ⌛️ |
 
 #### 📋 Quick Example Command
 
@@ -594,33 +594,29 @@ python main_binary_binarynet.py \
   --model vgg_small_quant \
   --save vgg_small_quant_cifar10 \
   --dataset cifar10 \
-  --optimizer Adam \
-   --lr 1e-4 \
-   --momentum 0 \
-   --weight-decay 0 \
   --gpus 1
 ````
 
 <details> <summary>🔁 All Reproducible Commands for Quantized Networks</summary>
 
-**CIFAR-10 on VGG_Small** ✅️
+**CIFAR-10 on VGG_Small**
 ```bash
-python main_binary_binarynet.py --model vgg_small_quant --save vgg_small_quant_cifar10_w8a8 --dataset cifar10 --wbits 8 --abits 8 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 0
+python main_binary_binarynet.py --model vgg_small_quant --save vgg_small_quant_cifar10_w8a8 --dataset cifar10 --wbits 8 --abits 8 --epochs 200 -b 256 --gpus 0
 ```
 
 **CIFAR-100 on VGG_Small** 
 ```bash
-python main_binary_binarynet.py --model vgg_small_quant --save vgg_small_quant_cifar100_w8a8 --dataset cifar100 --wbits 8 --abits 8 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 2
+python main_binary_binarynet.py --model vgg_small_quant --save vgg_small_quant_cifar100_w8a8 --dataset cifar100 --wbits 8 --abits 8 --epochs 200 -b 256 --gpus 2
 ```
 
 **CIFAR-10 on ResNet18** -
 ```bash
-python main_binary_binarynet.py --model resnet18_quant --save resnet18_quant_cifar10_w8a8 --dataset cifar10 --wbits 8 --abits 8 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 1
+python main_binary_binarynet.py --model resnet18_quant --save resnet18_quant_cifar10_w8a8 --dataset cifar10 --wbits 8 --abits 8 --epochs 200 -b 256 --gpus 1
 ```
 
 **CIFAR-100 on ResNet18** -
 ```bash
-python main_binary_binarynet.py --model resnet18_quant --save resnet18_quant_cifar100_w8a8 --dataset cifar100 --wbits 8 --abits 8 --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 1
+python main_binary_binarynet.py --model resnet18_quant --save resnet18_quant_cifar100_w8a8 --dataset cifar100 --wbits 8 --abits 8 --epochs 200 -b 256 --gpus 1
 ```
 </details>
 
