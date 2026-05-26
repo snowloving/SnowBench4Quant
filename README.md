@@ -572,20 +572,26 @@ python main_binary_binarynet.py --model resnet_binary --save resnet_binary_cifar
 
 ---
 
-#### 📊 Results of Quantized Networks with SGD
-
-> ⚠️ **Note:** Quantization experiments are conducted on **VGG-Small** (Uses `infl_ratio = 1`) and **ResNet18** (Option A) as representative models from each architecture family.
+#### 📊 Results of Quantized Networks
 
 | Model | Wbits | Abits | CIFAR-10 | CIFAR-100 |
 |-----------|:---------:|:---------:|:---------:|:---------:|
 | vgg_small | 1 | 1 | 87.01 | 60.78 |
-|  | 8 | 8 | 90.30 | 64.91 | ⌛️ | ⌛️ |
-|  | 4 | 4 | 90.30 | 64.91 | ⌛️ | ⌛️ |
-|  | 2 | 2 | 90.03 | 64.89 | ⌛️ | ⌛️ |
+|  | 8 | 8 | 90.18 | 65.96 |
+|  | 4 | 4 | 89.56 | 65.72 |
+|  | 2 | 2 | 46.16 | 22.30 |
+| * | 2 | 2 | 88.75 | 61.82 |
 | resnet18 | 1 | 1 | 83.80 | 53.58 |
-|  | 8 | 8 | 84.03 | 56.56 | ⌛️ | ⌛️ |
-|  | 4 | 4 | 84.73 | 58.05 | ⌛️ | ⌛️ |
-|  | 2 | 2 | 80.52 | 46.14 | ⌛️ | ⌛️ |
+|  | 8 | 8 | 88.87 | 63.17 |
+|  | 4 | 4 | 88.96 | 63.70 |
+|  | 2 | 2 | 86.05 | 59.65 |
+| * | 2 | 2 | 85.50 | 56.53 |
+
+> ⚠️ **Note:** Quantization experiments are conducted on **VGG-Small** (uses `infl_ratio = 1`) and **ResNet18** (Option A) as representative models from each architecture family.
+>
+> **Optimizer legend:**
+> - \* Uses **Adam** (all 1-bit and asterisk-marked rows). Adam is the default for binary/very low-bit regimes where SGD struggles.
+> - Unmarked rows use **SGD** (lr = 0.1, momentum = 0.9, weight decay = 1e-4), which performs well at higher bit-widths (4-bit and above).
 
 #### 📋 Quick Example Command
 
