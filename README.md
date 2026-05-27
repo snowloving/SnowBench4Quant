@@ -667,7 +667,7 @@ python main_binary_binarynet.py --model resnet18_quant --save resnet18_quant_cif
 **Goal:** Evaluate extreme model compression (1-bit & low-bit) using the **DoReFa-Net** quantization scheme. Unlike the generic uniform quantization implemented in [Experiment 3](#exp3), DoReFa-Net provides a mathematically rigorous and academically standardized framework. It strictly separates the quantization logic for weights (e.g., employing `tanh` for soft-clipping outliers and introducing XNOR-style scaling factors for 1-bit) and activations. 
 
 > 💡 **Ablation & Scope Note:** 
-> - **Architectures:** Since Experiment 3 already demonstrated the general trends of quantization across various depths, we omit redundant architectures (e.g., VGG16, ResNet56) in this section. We focus exclusively on highly representative compact models (**VGG-Small** and **PreActResNet18/20**) to highlight the algorithmic superiority of the DoReFa-Net scheme.
+> - **Architectures:** Since Experiment 3 already demonstrated the general trends of quantization across various depths, we omit redundant architectures (e.g., VGG16, ResNet56) in this section. We focus exclusively on highly representative compact models (**VGG-Small** and **ResNet18/20**) to highlight the algorithmic superiority of the DoReFa-Net scheme.
 > - **Datasets:** This section currently focuses on the CIFAR datasets to rapidly validate the quantization algorithms. Extensive results on large-scale datasets (i.e., **ImageNet-1K**) will be updated in future releases.
 > - **Optimizers:** Training extreme low-bit networks requires different optimization dynamics. We strictly use **Adam** (with weight decay = 0) for highly constrained settings (**1-bit & 2-bit**), and standard **SGD** for moderately quantized settings (**4-bit & 8-bit**).
 
@@ -686,18 +686,6 @@ python main_binary_binarynet.py --model resnet18_quant --save resnet18_quant_cif
 |  |  | 2 | 2 | 85.09 | 55.45 |
 |  |  | 4 | 4 | 90.88 | 64.62 |
 |  |  | 8 | 8 | 91.21 | 65.50 |
-| PreActResNet | resnet20_preact | 1 | 1 | 80.17 | 45.75 |
-|  |  | 2 | 2 | 80.20 | 45.22 |
-|  |  | 4 | 4 | 87.17 | 55.86 |
-|  |  | 8 | 8 | 86.94 | 55.52 |
-|  | resnet18_preact | 1 | 1 | 88.73 | 60.16 |
-|  |  | 2 | 2 | 88.73 | 59.98 |
-|  |  | 4 | 4 | 91.49 | 66.86 |
-|  |  | 8 | 8 | 91.37 | 67.06 |
-|  |  | 1 | 32 | 91.69 | 66.92 |
-|  |  | 2 | 32 | 91.69 | 67.66 |
-|  |  | 4 | 32 | 91.67 | 67.19 |
-|  |  | 8 | 32 | 91.27 | 66.67 |
 
 
 > ℹ️ **Algorithmic Advantages over Exp 3:**
