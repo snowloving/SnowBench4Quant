@@ -67,6 +67,19 @@ SnowBench/
 │   ├── resnet.py/              # Binary & Quantized ResNet
 │   └── resnet_preact.py/       # Binary & Quantized PreActResNet
 │
+├── models_qat/                 # Quantized-Aware Training
+│   ├── __init__.py/            # 
+│   ├── resnet_preact.py        # [Clean] Pure network architecture definition — completely agnostic to quantization method
+│   ├── q_layers.py             # [Hub] Defines QConv2d, QLinear — dispatches to different quantizers
+│   │
+│   └── quantizers/             # [Core] Algorithm factory — one file per top-conference method!
+│       ├── __init__.py         # Contains get_weight_quantizer() and get_act_quantizer()
+│       ├── dorefa.py           # Existing DoReFa logic lives here
+│       ├── lsq.py              # LSQ (Learned Step Size Quantization)
+│       ├── pact.py             # PACT (PArameterized Clipping acTivation)
+│       ├── ewgs.py             # EWGS (Elastic Weight Gradient Scaling)
+│       └── ...
+│
 ├── models_full_imagenet/       # Full-precision models (ImageNet-scale)
 │   ├── __init__.py.py/         # __all__ = []
 │   ├── alexnet.py/             # Full-precision versions of AlexNet
@@ -76,7 +89,8 @@ SnowBench/
 ├── main_binary_sgdat.py        # Entry: binary models (models_sgdat)
 ├── main_full_cifar.py          # Entry: full-precision on cifar (models_full_cifar)
 ├── main_binary_binarynet.py    # Entry: binary & full-precision (models_binarynet)
-├── main_binary_dorefanet.py    # Entry: binary & full-precision (models_dorefanet): The same as main_binary_binarynet.py
+├── main_binary_dorefanet.py    # Entry: binary & full-precision (models_dorefanet) — nearly identical to main_binary_binarynet.py
+├── main_modern_qat.py          # Entry: qat methods (models_qat) — nearly identical to main_binary_binarynet.py
 ├── main_full_imagenet.py       # Entry: full-precision on imagenet (models_full_imagenet)
 └
 ```
@@ -106,9 +120,11 @@ This benchmark supports two main experimental tracks:
 - [⚗️ Experiment 2](#exp2): Full-Precision Network Accuracy Comparison on CIFAR — FP32 baselines as reference ceiling
 - [🔭 Experiment 3](#exp3): Binary & Quantized Network Accuracy Comparison on CIFAR (BinaryNet-style) — 1-bit & Multi-bit compression
 - [🧬 Experiment 4](#exp4): Binary & Quantized Network Accuracy Comparison on CIFAR (DoReFaNet-style) — 1-bit & Multi-bit compression
+- [🩺 Experiment 5](#exp5): Modern QAT SOTAs for Extreme Low-Bit (LSQ, EWGS, QDrop, etc.)
 - [🧫 Experiment N](#expN): Full-Precision Network Accuracy Comparison on ImageNet — Large-scale datasets ceiling
 
 ---
+
 
 <a id="exp1"></a>
 ### 🔬 Experiment 1: Binary Network Optimizer Comparison
@@ -133,7 +149,7 @@ This benchmark supports two main experimental tracks:
 
 #### 📋 Quick Example Command
 
-````bash
+```bash
 python main_binary_sgdat.py \
   --model binarynet \
   --save binarynet_cifar10_SGD \
@@ -141,7 +157,7 @@ python main_binary_sgdat.py \
   --bin_regime "{0: {'optimizer': 'SGD', 'lr': 1e-4}}" \
   --binarization det \
   --gpus 0
-````
+```
 
 <details> <summary>🔁 All Reproducible Commands on BinaryNet</summary>
 
@@ -312,18 +328,18 @@ Binary networks in this benchmark use different latent weight (`weight.org`) ini
 
 #### 📋 Quick Example Command
 
-````bash
+```bash
 python main_full_cifar.py \
   --model vgg_small \
   --save full_vgg_small_cifar10 \
   --dataset cifar10 \
   --gpus 0
-````
+```
 
 <details> <summary>🔁 All Reproducible Commands </summary>
   
 ---
-  
+
 **CIFAR-10 on VGG_Small** 
 ```bash
 python main_full_cifar.py --model vgg_small --save full_vgg_small_cifar10 --dataset cifar10 --epochs 200 -b 256 --gpus 0
@@ -398,13 +414,13 @@ python main_full_cifar.py --model resnet18 --save full_resnet18_cifar100 --datas
 
 #### 📋 Quick Example Command
 
-````bash
+```bash
 python main_binary_binarynet.py \
   --model vgg_small_binary \
   --save vgg_small_binary_cifar10 \
   --dataset cifar10 \
   --gpus 0
-````
+```
 
 <details> <summary>🔁 Results and Reproducible Commands for Binary Networks with SGD</summary>
 
@@ -488,7 +504,7 @@ python main_binary_binarynet.py --model resnet18_binary --save resnet18_binary_c
 
 #### 📋 Quick Example Command
 
-````bash
+```bash
 python main_binary_binarynet.py \
   --model vgg_small_binary \
   --save vgg_small_binary_cifar10 \
@@ -498,9 +514,11 @@ python main_binary_binarynet.py \
    --momentum 0 \
    --weight-decay 0 \
   --gpus 0
-````
+```
 
 <details> <summary>🔁 Results and Reproducible Commands for Binary Networks with Adam</summary>
+
+---
 
 **CIFAR-10 on VGG_Small** 
 ```bash
@@ -608,15 +626,17 @@ python main_binary_binarynet.py --model resnet_binary --save resnet_binary_cifar
 
 #### 📋 Quick Example Command
 
-````bash
+```bash
 python main_binary_binarynet.py \
   --model vgg_small_quant \
   --save vgg_small_quant_cifar10 \
   --dataset cifar10 \
   --gpus 1
-````
+```
 
 <details> <summary>🔁 All Reproducible Commands for Quantized Networks</summary>
+
+---
 
 **CIFAR-10 on VGG_Small**
 ```bash
@@ -687,7 +707,7 @@ python main_binary_binarynet.py --model resnet18_quant --save resnet18_quant_cif
 
 #### 📋 Quick Example Command
 
-````bash
+```bash
 python main_binary_dorefanet.py \
   --model vgg_small_quant \
   --save vgg_small_quant_dorefa_cifar10_w2a2 \
@@ -695,9 +715,11 @@ python main_binary_dorefanet.py \
   --wbits 2 \
   --abits 2 \
   --gpus 0
-````
+```
 
 <details> <summary>🔁 All Reproducible Commands for DoReFa-Net Quantization</summary>
+
+---
 
 ✂️ **Note:** 1-bit and 4-bit quantization commands are omitted for brevity. Full command sets available upon request.
 
@@ -726,6 +748,66 @@ python main_binary_dorefanet.py --model resnet20_preact_quant --save resnet20_pr
 python main_binary_dorefanet.py --model resnet18_preact_quant --save resnet18_preact_quant_cifar10_w2a2 --dataset cifar10 --wbits 2 --abits 2  --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 2
 ```
 </details>
+---
+
+<a id="exp5"></a>
+### 🩺 Experiment 5: Modern QAT SOTAs for Extreme Low-Bit (LSQ, EWGS, QDrop, etc.)
+
+**Goal:** Provide fast, reproducible implementations of modern State-of-the-Art (SOTA) Quantization-Aware Training (QAT) algorithms. While [Experiment 4](#exp4) established the classical DoReFa-Net baseline, this section benchmarks advanced algorithms designed specifically to overcome the severe gradient mismatch (STE approximation errors) and weight oscillation problems inherent in extreme low-bit regimes.
+
+> 💡 **Ablation & Scope Note:** 
+> - **Bit-width Focus (2w2a & 3w3a):** Modern QAT methods achieve near-lossless accuracy at 4-bit, making it difficult to observe algorithmic superiority. Conversely, 1-bit (BNN) often requires specialized architectural modifications. Therefore, we strictly constrain this experiment to **2-bit and 3-bit** settings, which are the true battlegrounds for evaluating modern QAT algorithms.
+> - **Architecture & Dataset:** We isolate variables by standardizing the backbone to **PreActResNet18** (the optimal structure for retaining negative activations) and the dataset to **CIFAR-100**. CIFAR-100's higher complexity compared to CIFAR-10 serves as an excellent, computationally efficient proxy for evaluating quantization robustness before scaling to ImageNet.
+
+#### ℹ️ Supported QAT Algorithms
+This benchmark integrates several milestone QAT algorithms, including but not limited to:
+- **DoReFa-Net (arXiv 2016):** The foundational baseline that utilizes deterministic, statistics-based scaling and introduces a `tanh` soft-clipping mechanism to mitigate the impact of weight outliers.
+- **PACT (ICLR 2018):** Introduces a parameterized, learnable clipping bound ($\alpha$) for activations.
+- **LSQ (ICLR 2020) & LSQ+ (CVPRW 2020):** The modern gold standards that treat the quantization step size (and zero-point) as learnable parameters optimized via backpropagation.
+- **DSQ (ICCV 2019):** Differentiable Soft Quantization, which employs a series of hyperbolic tangent functions to smoothly approximate the discrete step function.
+- **EWGS (CVPR 2021):** Element-Wise Gradient Scaling, an elegant method that adaptively scales the backpropagated gradients based on the forward quantization error.
+- **QDrop (ICLR 2022):** Randomly drops the quantization of certain weights/activations during training to smooth the loss landscape (Flat Minima) and alleviate weight oscillation.
+
+#### 📊 Results of SOTA QAT Methods on CIFAR-100
+
+|Backbone | Method | 2w2a | 3w3a |
+|--------|--------|:----:|:----:|
+| PreActResNet18  | LSQ | ⏳ | ⏳ |
+|  | PACT | ⏳ | ⏳ |
+|  | LSQ+ | ⏳ | ⏳ |
+|  | DSQ | ⏳ | ⏳ |
+|  | EWGS | ⏳ | ⏳ |
+|  | QDrop | ⏳ | ⏳ |
+
+> ⚠️ **Optimizer Note:** Following common practices in modern QAT, these methods are trained using **SGD** (with momentum=0.9, weight_decay=1e-4) and Cosine Annealing learning rate schedules unless the specific algorithm strictly dictates otherwise (e.g., LSQ recommends scaling the learning rate of the step size parameter).
+
+#### 📋 Quick Example Command
+
+```bash
+# Example: Training PreActResNet18 on CIFAR-100 with LSQ (2w2a)
+python main_modern_qat.py \
+  --model resnet18_preact_quant \
+  --qat_method lsq \
+  --dataset cifar100 \
+  --wbits 2 \
+  --abits 2 \
+  --save resnet18_preact_lsq_cifar100_w2a2 \
+  --gpus 0
+```
+
+<details> <summary>🔁 All Reproducible Commands for all supported QAT methods</summary>
+
+---
+
+# ---------------------------------------------------------
+# 3-bit (3w3a) Experiments on CIFAR-100
+# ---------------------------------------------------------
+
+```bash
+python main_modern_qat.py --model resnet18_preact_quant --qat_method dorefa --dataset cifar100 --wbits 3 --abits 3 --epochs 200 -b 256 --gpus 0
+```
+
+</details>
 
 ---
 
@@ -744,8 +826,8 @@ python main_binary_dorefanet.py --model resnet18_preact_quant --save resnet18_pr
 
 #### 📋 Quick Example Command
 
-````bash
-````
+```bash
+```
 
 <details> <summary>🔁 All Reproducible Commands </summary>
 </details>
