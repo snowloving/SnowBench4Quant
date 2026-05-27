@@ -794,9 +794,9 @@ python main_modern_qat.py --model resnet18_preact_quant --qat_method dorefa --sa
 
 </details>
 
-#### 🔨 qat_method Configuration Reference
+#### 🔨 QAT Method Configuration Reference
 
-| Optimizer | `--bin_regime` Configuration |
+| Optimizer | `-qat_method` Configuration |
 |-----------|---------------------------|
 | DoReFaNet | `"dorefa"` |
 
