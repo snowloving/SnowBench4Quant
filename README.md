@@ -64,8 +64,7 @@ SnowBench/
 │   ├── __init__.py.py/         # __all__ = ['vgg_small_quant', 'vgg16_quant', 'resnet18_quant', 'resnet20_quant', 'resnet56_quant', 'resnet18_preact_quant', 'resnet20_preact_quant', 'resnet56_preact_quant']
 │   ├── binarized_modules.py/   # Binarize / quantize layers & functions
 │   ├── vgg.py/                 # Binary & Quantized VGG
-│   ├── resnet.py/              # Binary & Quantized ResNet
-│   └── resnet_preact.py/       # Binary & Quantized PreActResNet
+│   └── resnet.py/              # Binary & Quantized ResNet
 │
 ├── models_qat/                 # Quantized-Aware Training
 │   ├── __init__.py/            # 
