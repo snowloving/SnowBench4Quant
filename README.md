@@ -690,7 +690,7 @@ python main_binary_binarynet.py --model resnet18_quant --save resnet18_quant_cif
 > ℹ️ **Algorithmic Advantages over Exp 3:**
 > - **Outlier Immunity (2~4 bit):** By applying `torch.tanh()` to weights before calculating the maximum absolute value (`max_w`), DoReFa-Net effectively squashes extreme outliers. This prevents the dynamic range from being dominated by a few large values, solving the severe accuracy collapse observed in generic 2-bit quantization.
 > - **Optimal 1-bit Scaling (XNOR-style):** For 1w1a settings, DoReFa-Net analytically calculates the absolute mean of the real-valued weights ($E$) as a scaling factor, significantly boosting 1-bit accuracy compared to naive `sign()` binarization.
-> - **Pre-Activation Synergy:** The `resnet18_preact` (PreActResNet) is strongly recommended here. Placing `BatchNorm -> Hardtanh/ReLU` before convolutions preserves the full representational capacity of negative features prior to quantization, which is the gold standard for state-of-the-art BNNs/QNNs.
+
 
 #### 📋 Quick Example Command
 
@@ -725,15 +725,6 @@ python main_binary_dorefanet.py --model resnet20_quant --save resnet20_quant_cif
 python main_binary_dorefanet.py --model resnet18_quant --save resnet18_quant_cifar10_w2a2 --dataset cifar10 --wbits 2 --abits 2  --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 0
 ```
 
-**CIFAR-10 on PreActResNet20** 
-```bash
-python main_binary_dorefanet.py --model resnet20_preact_quant --save resnet20_preact_quant_cifar10_w2a2 --dataset cifar10 --wbits 2 --abits 2  --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 1
-```
-
-**CIFAR-10 on PreActResNet18** 
-```bash
-python main_binary_dorefanet.py --model resnet18_preact_quant --save resnet18_preact_quant_cifar10_w2a2 --dataset cifar10 --wbits 2 --abits 2  --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 2
-```
 </details>
 ---
 
