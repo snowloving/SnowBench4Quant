@@ -654,26 +654,31 @@ python main_binary_binarynet.py --model resnet18_quant --save resnet18_quant_cif
 #### 📊 Results of DoReFa-Net Quantized Networks
 | Architecture | Model Name | Wbits | Abits | CIFAR-10 | CIFAR-100 |
 |-----------|:---------:|:---------:|:---------:|:---------:|:---------:|
-| VGG | vgg_small | 1 | 1 | ⏳ | ⏳ |
-|  |  | 2 | 2 | 90.03 | ⏳ |
-|  |  | 4 | 4 | ⏳ | ⏳ |
-|  |  | 8 | 8 | ⏳ | ⏳ |
-| ResNet | resnet20 | 1 | 1 | ⏳ | ⏳ |
-|  |  | 2 | 2 | 72.24 | ⏳ |
-|  |  | 4 | 4 | ⏳ | ⏳ |
-|  |  | 8 | 8 | ⏳ | ⏳ |
-|  | resnet18 | 1 | 1 | ⏳ | ⏳ |
-|  |  | 2 | 2 | 85.09 | ⏳ |
-|  |  | 4 | 4 | ⏳ | ⏳ |
-|  |  | 8 | 8 | ⏳ | ⏳ |
-| PreActResNet | resnet20_preact | 1 | 1 | ⏳ | ⏳ |
-|  |  | 2 | 2 | 72.24 | ⏳ |
-|  |  | 4 | 4 | ⏳ | ⏳ |
-|  |  | 8 | 8 | ⏳ | ⏳ |
-|  | resnet18_preact | 1 | 1 | ⏳ | ⏳ |
-|  |  | 2 | 2 | 85.09 | ⏳ |
-|  |  | 4 | 4 | ⏳ | ⏳ |
-|  |  | 8 | 8 | ⏳ | ⏳ |
+| VGG | vgg_small | 1 | 1 | 88.30 | 62.48 |
+|  |  | 2 | 2 | 90.03 | 64.75 |
+|  |  | 4 | 4 | 90.50 | 61.56 |
+|  |  | 8 | 8 | 91.32 | 61.66 |
+| ResNet | resnet20 | 1 | 1 | 65.97 | 27.71 |
+|  |  | 2 | 2 | 72.24 | 34.29 |
+|  |  | 4 | 4 | 85.32 | 51.39 |
+|  |  | 8 | 8 | 85.77 | 53.19 |
+|  | resnet18 | 1 | 1 | 84.18 | 55.41 |
+|  |  | 2 | 2 | 85.09 | 55.45 |
+|  |  | 4 | 4 | 90.88 | 64.62 |
+|  |  | 8 | 8 | 91.21 | 65.50 |
+| PreActResNet | resnet20_preact | 1 | 1 | 80.17 | 45.75 |
+|  |  | 2 | 2 | 80.20 | 45.22 |
+|  |  | 4 | 4 | 87.17 | 55.86 |
+|  |  | 8 | 8 | 86.94 | 55.52 |
+|  | resnet18_preact | 1 | 1 | 88.73 | 60.16 |
+|  |  | 2 | 2 | 88.73 | 59.98 |
+|  |  | 4 | 4 | 91.49 | 66.86 |
+|  |  | 8 | 8 | 91.37 | 67.06 |
+|  |  | 1 | 32 | 91.69 | 66.92 |
+|  |  | 2 | 32 | 91.69 | 67.66 |
+|  |  | 4 | 32 | 91.67 | 67.19 |
+|  |  | 8 | 32 | 91.27 | 66.67 |
+
 
 > ℹ️ **Algorithmic Advantages over Exp 3:**
 > - **Outlier Immunity (2~4 bit):** By applying `torch.tanh()` to weights before calculating the maximum absolute value (`max_w`), DoReFa-Net effectively squashes extreme outliers. This prevents the dynamic range from being dominated by a few large values, solving the severe accuracy collapse observed in generic 2-bit quantization.
@@ -693,6 +698,8 @@ python main_binary_dorefanet.py \
 ````
 
 <details> <summary>🔁 All Reproducible Commands for DoReFa-Net Quantization</summary>
+
+✂️ **Note:** 1-bit and 4-bit quantization commands are omitted for brevity. Full command sets available upon request.
 
 **CIFAR-10 on VGG_Small**
 ```bash
