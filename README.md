@@ -74,8 +74,8 @@ SnowBench/
 │   └── quantizers/             # [Core] Algorithm factory — one file per top-conference method!
 │       ├── __init__.py         # Contains get_weight_quantizer() and get_act_quantizer()
 │       ├── dorefa.py           # Existing DoReFa logic lives here
-│       ├── lsq.py              # LSQ (Learned Step Size Quantization)
 │       ├── pact.py             # PACT (PArameterized Clipping acTivation)
+│       ├── lsq.py              # LSQ (Learned Step Size Quantization)
 │       ├── ewgs.py             # EWGS (Elastic Weight Gradient Scaling)
 │       └── ...
 │
@@ -114,7 +114,7 @@ pip install -r requirements.txt
 This benchmark supports two main experimental tracks:
 
 ### 🎯 Experiments Navigator
-
+ 5
 - [🔬 Experiment 1](#exp1): Binary Network Optimizer Comparison (SGDAT-style) — SGD vs Adam vs Bop vs Bop2ndOrder vs SGDAT
 - [⚗️ Experiment 2](#exp2): Full-Precision Network Accuracy Comparison on CIFAR — FP32 baselines as reference ceiling
 - [🔭 Experiment 3](#exp3): Binary & Quantized Network Accuracy Comparison on CIFAR (BinaryNet-style) — 1-bit & Multi-bit compression
@@ -751,8 +751,8 @@ This benchmark integrates several milestone QAT algorithms, including but not li
 |Backbone | Method | 2w2a | 3w3a |
 |--------|--------|:----:|:----:|
 | PreActResNet18  | DoReFaNet | 70.58 | 71.02 |
-|  | LSQ | ⏳ | ⏳ |
 |  | PACT | ⏳ | ⏳ |
+|  | LSQ | ⏳ | ⏳ |
 |  | LSQ+ | ⏳ | ⏳ |
 |  | DSQ | ⏳ | ⏳ |
 |  | EWGS | ⏳ | ⏳ |
@@ -795,6 +795,12 @@ python main_modern_qat.py \
 python main_modern_qat.py --model resnet18_preact_quant --qat_method dorefa --save resnet18_preact_dorefa_cifar100_w2a2 --dataset cifar100 --wbits 2 --abits 2 --optimizer SGD --lr 0.1 --momentum 0.9 --weight-decay 1e-4 --lr_scheduler cosine --epochs 200 -b 256 --gpus 1
 ```
 
+**PACT** 
+
+```bash
+python main_modern_qat.py --model resnet18_preact_quant --qat_method pact --save resnet18_preact_pact_cifar100_w2a2 --dataset cifar100 --wbits 2 --abits 2 --optimizer SGD --lr 0.1 --momentum 0.9 --weight-decay 1e-4 --lr_scheduler cosine --epochs 200 -b 256 --gpus 1
+```
+
 **LSQ** 
 
 ```bash
@@ -808,6 +814,7 @@ python main_modern_qat.py --model resnet18_preact_quant --qat_method lsq --save 
 | Optimizer | `-qat_method` Configuration |
 |-----------|---------------------------|
 | DoReFaNet | `"dorefa"` |
+| PACT | `"pact"` |
 | LSQ | `"lsq"` |
 
 ---
