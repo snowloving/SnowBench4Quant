@@ -771,6 +771,25 @@ This benchmark integrates several milestone QAT algorithms, including but not li
 #### 📋 Quick Example Command
 
 ```bash
+# Example: Training PreActResNet18 on CIFAR-100 with DoRaFaNet (2w2a)
+python main_modern_qat.py \
+  --model resnet18_preact_quant \
+  --qat_method dorefa \
+  --save resnet18_preact_dorefa_cifar100_w2a2 \
+  --dataset cifar100 \
+  --wbits 2 \
+  --abits 2 \
+  --optimizer SGD \
+  --lr 0.1 \
+  --momentum 0.9 \
+  --weight-decay 1e-4 \
+  --lr_scheduler cosine \
+  --epochs 200 \
+  -b 256 \
+  --gpus 1 
+```
+
+```bash
 # Example: Training PreActResNet18 on CIFAR-100 with LSQ (2w2a)
 python main_modern_qat.py \
   --model resnet18_preact_quant \
