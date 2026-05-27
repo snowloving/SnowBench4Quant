@@ -750,7 +750,7 @@ This benchmark integrates several milestone QAT algorithms, including but not li
 
 |Backbone | Method | 2w2a | 3w3a |
 |--------|--------|:----:|:----:|
-| PreActResNet18  | DoReFaNet | ⏳ | ⏳ |
+| PreActResNet18  | DoReFaNet | 70.58 | 71.02 |
 |  | LSQ | ⏳ | ⏳ |
 |  | PACT | ⏳ | ⏳ |
 |  | LSQ+ | ⏳ | ⏳ |
@@ -789,8 +789,16 @@ python main_modern_qat.py \
 # 2-bit (2w2a) Experiments on CIFAR-100
 # ---------------------------------------------------------
 
+**DoReFaNet** 
+
 ```bash
 python main_modern_qat.py --model resnet18_preact_quant --qat_method dorefa --save resnet18_preact_dorefa_cifar100_w2a2 --dataset cifar100 --wbits 2 --abits 2 --optimizer SGD --lr 0.1 --momentum 0.9 --weight-decay 1e-4 --lr_scheduler cosine --epochs 200 -b 256 --gpus 1
+```
+
+**LSQ** 
+
+```bash
+python main_modern_qat.py --model resnet18_preact_quant --qat_method lsq --save resnet18_preact_lsq_cifar100_w2a2 --dataset cifar100 --wbits 2 --abits 2 --optimizer SGD --lr 0.1 --momentum 0.9 --weight-decay 1e-4 --lr_scheduler cosine --epochs 200 -b 256 --gpus 1
 ```
 
 </details>
@@ -800,6 +808,7 @@ python main_modern_qat.py --model resnet18_preact_quant --qat_method dorefa --sa
 | Optimizer | `-qat_method` Configuration |
 |-----------|---------------------------|
 | DoReFaNet | `"dorefa"` |
+| LSQ | `"lsq"` |
 
 ---
 
