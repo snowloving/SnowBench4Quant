@@ -73,10 +73,11 @@ SnowBench/
 │   │
 │   └── quantizers/             # [Core] Algorithm factory — one file per top-conference method!
 │       ├── __init__.py         # Contains get_weight_quantizer() and get_act_quantizer()
-│       ├── dorefa.py           # Existing DoReFa logic lives here
-│       ├── pact.py             # PACT (PArameterized Clipping acTivation)
-│       ├── lsq.py              # LSQ (Learned Step Size Quantization)
-│       ├── lsq_plus.py         # LSQ+ 
+│       ├── dorefa.py           # DoReFa-Net (Zhou et al., 2016)
+│       ├── pact.py             # PACT — PArameterized Clipping acTivation (Choi et al., ICML 2018)
+│       ├── lsq.py              # LSQ — Learned Step Size Quantization (Esser et al., ICLR 2020)
+│       ├── lsq_plus.py         # LSQ+ — LSQ with learnable offsets (Bhalgat et al., ICLR 2021)
+│       ├── dsq.py              # DSQ — Differentiable Soft Quantization (Gong et al., AAAI 2021)
 │       └── ...
 │
 ├── models_full_imagenet/       # Full-precision models (ImageNet-scale)
