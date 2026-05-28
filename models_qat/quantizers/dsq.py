@@ -1,67 +1,64 @@
 # 文件路径：models_qat/quantizers/dsq.py
 import torch
 import torch.nn as nn
-import math
-from .lsq import grad_scale # 复用梯度缩放，防止 alpha 跑飞
+import torch.nn.functional as F
 
 # =======================================================
-# DSQ 核心前向逻辑 (软量化逼近)
+# 核心工具：带梯度的直通取整 (STE Rounding)
+# 修复了原版开源代码中奇怪的归一化，使用最纯正的 STE 保证梯度无损
 # =======================================================
-def dsq_function(x, alpha, qmin, qmax):
-    """
-    DSQ 的平滑逼近核心：
-    x: 已经被缩放到量化刻度区间的浮点数 (如 1.2, 2.7)
-    alpha: 控制 tanh 陡峭程度的可学习参数
-    """
-    # 找到每个数值距离最近的两个合法台阶
-    floor_val = torch.floor(x)
-    ceil_val = torch.ceil(x)
-    
-    # 限制在量化边界内
-    floor_val = torch.clamp(floor_val, qmin, qmax)
-    ceil_val = torch.clamp(ceil_val, qmin, qmax)
-    
-    # 防止刚好在整数点时 floor == ceil 导致除以 0
-    # 由于浮点误差，通常使用微小量兜底
-    interval = (ceil_val - floor_val).clamp(min=1e-5)
-    
-    # 将 x 映射到它所在的区间内部的相对位置 (-1 到 1 之间)
-    # 例如 x=2.4，在 [2, 3] 区间内，相对位置就是 (2.4 - 2.5) * 2 = -0.2
-    center = (ceil_val + floor_val) / 2.0
-    x_centered = (x - center) / (interval / 2.0)
-    
-    # 核心魔法：使用 tanh 进行软截断逼近！
-    # alpha 越大，tanh 越陡峭，越接近阶梯函数
-    soft_x = torch.tanh(alpha * x_centered)
-    
-    # 重新映射回真实的台阶高度
-    out = center + soft_x * (interval / 2.0)
-    
-    # 最后兜底截断，保证不越出整体量化范围
-    out = torch.clamp(out, qmin, qmax)
-    
+class RoundWithGradient(torch.autograd.Function):
+    @staticmethod
+    def forward(ctx, x):
+        return torch.round(x)
+    @staticmethod
+    def backward(ctx, g):
+        return g
+
+def round_with_grad(x):
+    return RoundWithGradient.apply(x)
+
+
+# =======================================================
+# DSQ 核心数学函数
+# =======================================================
+def clipping(x, upper, lower):
+    # DSQ 原版截断：使用 ReLU 来保证梯度在边界处的特殊传导
+    x = x + F.relu(lower - x)
+    x = x - F.relu(x - upper)
+    return x
+
+def phi_function(x, mi, alpha, delta):
+    # alpha 控制 tanh 的陡峭程度，必须严格小于 2.0 否则 log 会报 NaN
+    alpha = torch.clamp(alpha, min=1e-4, max=1.999)
+    s = 1.0 / (1.0 - alpha)
+    k = (2.0 / alpha - 1.0).log() * (1.0 / delta)
+    # DSQ 的平滑滑梯逼近
+    out = (((x - mi) * k).tanh()) * s
     return out
 
 
 # =======================================================
-# 权重 DSQ 量化器
+# 权重 DSQ 量化器 (完全还原官方可学习边界 + EMA)
 # =======================================================
 class DSQWeightQuantizer(nn.Module):
-    def __init__(self, wbits):
+    def __init__(self, wbits, momentum=0.1):
         super().__init__()
         self.wbits = wbits
-        
+        self.momentum = momentum
+        self.bit_range = 2 ** self.wbits - 1
+
         if self.wbits not in [1, 32]:
-            self.qmin = -2 ** (self.wbits - 1)
-            self.qmax = 2 ** (self.wbits - 1) - 1
+            # 初始化可学习的上下界为极大值 (2^31-1)，让网络自己去收缩它
+            self.uW = nn.Parameter(data=torch.tensor(2 ** 31 - 1).float())
+            self.lW = nn.Parameter(data=torch.tensor((-1) * (2 ** 32)).float())
             
-            # DSQ 需要统计当前层的量级进行整体缩放 (类似 DoReFa 的做法)
-            # 也可以学习步长，但这里使用经典的固定极大值法，将精力集中在 alpha 上
-            self.scale = None 
+            # EMA 滑动平均 Buffer，用于稳定训练
+            self.register_buffer('running_uw', torch.tensor([self.uW.data]))
+            self.register_buffer('running_lw', torch.tensor([self.lW.data]))
             
-            # DSQ 核心：可学习的平滑参数 alpha
-            # 初始值设为 0.2，让曲线初期平缓，提供丰满的真实梯度
-            self.alpha = nn.Parameter(torch.tensor(0.2))
+            # 可学习的平滑参数 alpha
+            self.alphaW = nn.Parameter(data=torch.tensor(0.2).float())
 
     def forward(self, weight):
         if self.wbits == 32:
@@ -69,70 +66,94 @@ class DSQWeightQuantizer(nn.Module):
         if self.wbits == 1:
             return torch.sign(weight)
 
-        # 1. 动态确定比例尺 (类似 DoReFa，但更温和)
-        # 用 3 倍标准差作为界限，防止极端离群值干扰
-        std, mean = torch.std_mean(weight)
-        max_val = torch.max(weight.min().abs(), (mean + 3 * std).abs()).detach()
-        max_val = torch.clamp(max_val, min=1e-5)
-        
-        s = max_val / self.qmax
+        # 1. EMA 滑动平均更新边界
+        if self.training:
+            # cur_running_lw/uw 带有梯度，用于当前这一步的软截断 clipping (保证 lW, uW 能学到东西)
+            cur_running_lw = self.running_lw.mul(1 - self.momentum).add(self.momentum * self.lW)
+            cur_running_uw = self.running_uw.mul(1 - self.momentum).add(self.momentum * self.uW)
+            
+            # 🚨 修复Bug：往 running_buffer 里存历史记录时，必须斩断计算图 detach()！
+            self.running_lw.copy_(cur_running_lw.detach())
+            self.running_uw.copy_(cur_running_uw.detach())
+        else:
+            cur_running_lw = self.running_lw
+            cur_running_uw = self.running_uw
 
-        # 2. 将权重缩放到整数刻度附近
-        w_scaled = weight / s
+        # 2. 软截断 (Clipping)
+        Qweight = clipping(weight, cur_running_uw, cur_running_lw)
         
-        # 3. 对 alpha 稍微进行梯度缩放，防止震荡
-        g_scale = 1.0 / math.sqrt(weight.numel())
-        alpha_scaled = grad_scale(self.alpha, g_scale)
-        
-        # 为了保证 tanh 方向正确，alpha 必须恒为正
-        alpha_pos = torch.abs(alpha_scaled) + 1e-4
+        # 3. 计算当前的步长 Delta 和中心点 mi
+        cur_max = torch.max(Qweight)
+        cur_min = torch.min(Qweight)
+        # 防止全 0 导致除以 0
+        delta = (cur_max - cur_min).clamp(min=1e-5) / self.bit_range
+        interval = torch.floor((Qweight - cur_min) / delta)
+        mi = (interval + 0.5) * delta + cur_min
 
-        # 4. 执行 DSQ 平滑逼近！没有 round()，处处可导！
-        w_q_soft = dsq_function(w_scaled, alpha_pos, self.qmin, self.qmax)
+        # 4. 执行 DSQ 的 Tanh 软逼近
+        Qweight_soft = phi_function(Qweight, mi, self.alphaW, delta)
         
-        # 5. 反缩放回真实量级
-        w_q = w_q_soft * s
+        # 5. 为了获得绝对的离散值进行真实卷积，我们需要将其映射并做 STE Round
+        # 官方代码这里写得极其绕，这里做等价的简化映射：
+        # 将软化的值映射到 [0, bit_range] 的整数空间
+        Qweight_scaled = (Qweight_soft + 1.0) / 2.0 + interval
+        Qweight_int = round_with_grad(Qweight_scaled)
         
-        return w_q
+        # 6. Dequantize 反量化回真实量级
+        Qweight_final = Qweight_int * delta + cur_min
+
+        return Qweight_final
 
 
 # =======================================================
-# 激活值 DSQ 量化器
+# 激活值 DSQ 量化器 (带有 EMA 稳定器)
 # =======================================================
 class DSQActQuantizer(nn.Module):
-    def __init__(self, abits):
+    def __init__(self, abits, momentum=0.1):
         super().__init__()
         self.abits = abits
-        
+        self.momentum = momentum
+        self.bit_range = 2 ** self.abits - 1
+
         if self.abits not in [1, 32]:
-            self.qmin = -2 ** (self.abits - 1)
-            self.qmax = 2 ** (self.abits - 1) - 1
+            self.uA = nn.Parameter(data=torch.tensor(2 ** 31 - 1).float())
+            self.lA = nn.Parameter(data=torch.tensor((-1) * (2 ** 32)).float())
             
-            self.alpha = nn.Parameter(torch.tensor(0.2))
+            self.register_buffer('running_uA', torch.tensor([self.uA.data]))
+            self.register_buffer('running_lA', torch.tensor([self.lA.data]))
             
-            # 对于激活值，我们通常采用类似 EMA (指数移动平均) 来稳定 scale
-            # 但这里为了简洁且避免状态冲突，采用批内统计
-            
+            self.alphaA = nn.Parameter(data=torch.tensor(0.2).float())
+
     def forward(self, activation):
         if self.abits == 32:
             return activation
         if self.abits == 1:
             return torch.sign(activation)
 
-        # 1. 寻找当前 batch 的最大量级 (针对 PreAct 的对称截断)
-        max_val = activation.abs().max().detach()
-        max_val = torch.clamp(max_val, min=1e-5)
-        s = max_val / self.qmax
+        if self.training:
+            cur_running_lA = self.running_lA.mul(1 - self.momentum).add(self.momentum * self.lA)
+            cur_running_uA = self.running_uA.mul(1 - self.momentum).add(self.momentum * self.uA)
+            
+            # 🚨 修复Bug：斩断计算图 detach()
+            self.running_lA.copy_(cur_running_lA.detach())
+            self.running_uA.copy_(cur_running_uA.detach())
+        else:
+            cur_running_lA = self.running_lA
+            cur_running_uA = self.running_uA
 
-        a_scaled = activation / s
-
-        g_scale = 1.0 / math.sqrt(activation.numel())
-        alpha_scaled = grad_scale(self.alpha, g_scale)
-        alpha_pos = torch.abs(alpha_scaled) + 1e-4
-
-        # 2. 执行 DSQ 平滑量化
-        a_q_soft = dsq_function(a_scaled, alpha_pos, self.qmin, self.qmax)
+        Qactivation = clipping(activation, cur_running_uA, cur_running_lA)
         
-        a_q = a_q_soft * s
+        cur_max = torch.max(Qactivation)
+        cur_min = torch.min(Qactivation)
+        delta = (cur_max - cur_min).clamp(min=1e-5) / self.bit_range
+        interval = torch.floor((Qactivation - cur_min) / delta)
+        mi = (interval + 0.5) * delta + cur_min
         
-        return a_q
+        Qactivation_soft = phi_function(Qactivation, mi, self.alphaA, delta)
+        
+        Qactivation_scaled = (Qactivation_soft + 1.0) / 2.0 + interval
+        Qactivation_int = round_with_grad(Qactivation_scaled)
+        
+        Qactivation_final = Qactivation_int * delta + cur_min
+
+        return Qactivation_final
