@@ -760,7 +760,7 @@ This benchmark integrates several milestone QAT algorithms, including but not li
 |  | QDrop | ⏳ | ⏳ |
 
 > ⚠️ **Optimizer Note:** Following common practices in modern QAT, these methods are trained using **SGD** (with momentum=0.9, weight_decay=1e-4) and Cosine Annealing learning rate schedules unless the specific algorithm strictly dictates otherwise (e.g., LSQ and DSQ implementations inherently employ gradient scaling for their learnable quantization parameters). 
-
+> 
 > 🚨 **Experimental Anomaly Note:** 
 > Readers may notice an anomalous trend in the current CIFAR-100 results: 
 > 1) **Sub-optimal Multi-bit Scaling:** Modern learnable methods (LSQ, LSQ+) underperform their 2-bit counterparts when scaled to 3-bit. 
@@ -823,6 +823,12 @@ python main_modern_qat.py --model resnet18_preact_quant --qat_method lsq --save 
 python main_modern_qat.py --model resnet18_preact_quant --qat_method lsq_plus --save resnet18_preact_lsq_plus_cifar100_w2a2 --dataset cifar100 --wbits 2 --abits 2 --optimizer Adam --lr 1e-3 --weight-decay 1e-4 --lr_scheduler cosine --epochs 200 -b 256 --gpus 1
 ```
 
+**DSQ** 
+
+```bash
+python main_modern_qat.py --model resnet18_preact_quant --qat_method dsq --save resnet18_preact_dsq_cifar100_w2a2 --dataset cifar100 --wbits 2 --abits 2 --optimizer Adam --lr 1e-3 --weight-decay 1e-4 --lr_scheduler cosine --epochs 200 -b 256 --gpus 1
+```
+
 # ---------------------------------------------------------
 # 3-bit (3w3a) Experiments on CIFAR-100
 # ---------------------------------------------------------
@@ -849,6 +855,12 @@ python main_modern_qat.py --model resnet18_preact_quant --qat_method lsq --save 
 python main_modern_qat.py --model resnet18_preact_quant --qat_method lsq_plus --save resnet18_preact_lsq_plus_cifar100_w3a3 --dataset cifar100 --wbits 3 --abits 3 --optimizer Adam --lr 1e-3 --weight-decay 1e-4 --lr_scheduler cosine --epochs 200 -b 256 --gpus 2
 ```
 
+**DSQ** 
+
+```bash
+python main_modern_qat.py --model resnet18_preact_quant --qat_method dsq --save resnet18_preact_dsq_cifar100_w3a3 --dataset cifar100 --wbits 3 --abits 3 --optimizer Adam --lr 1e-3 --weight-decay 1e-4 --lr_scheduler cosine --epochs 200 -b 256 --gpus 2
+```
+
 </details>
 
 #### 🔨 QAT Method Configuration Reference
@@ -858,6 +870,9 @@ python main_modern_qat.py --model resnet18_preact_quant --qat_method lsq_plus --
 | DoReFaNet | `"dorefa"` |
 | PACT | `"pact"` |
 | LSQ | `"lsq"` |
+| LSQ+ | `"lsq_plus"` |
+| DAQ | `"dsq"` |
+
 
 ---
 
