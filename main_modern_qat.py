@@ -216,7 +216,7 @@ def main():
             continue
         # 如果是 1D 张量 (比如 BatchNorm 的 gamma/beta，或者量化的 s, alpha)，不加 WD
         # 如果名字里显式包含 's' 或 'alpha' 等量化参数，不加 WD
-        if len(param.shape) == 1 or name.endswith('.s') or name.endswith('.alpha'):
+        if len(param.shape) == 1 or name.endswith('.s') or name.endswith('.alpha') or name.endswith('.beta'):
             no_decay_params.append(param)
         else:
             decay_params.append(param)
