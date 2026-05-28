@@ -749,9 +749,9 @@ This benchmark integrates several milestone QAT algorithms, including but not li
 
 |Backbone | Method | 2w2a | 3w3a |
 |--------|--------|:----:|:----:|
-| PreActResNet18  | DoReFaNet | 72.65 | ⏳ |
-|  | PACT | ⏳ | ⏳ |
-|  | LSQ | 72.00 | ⏳ |
+| PreActResNet18  | DoReFaNet | 72.65 | 72.81 |
+|  | PACT | 71.28 | 71.84 |
+|  | LSQ | 72.00 | 69.63 |
 |  | LSQ+ | ⏳ | ⏳ |
 |  | DSQ | ⏳ | ⏳ |
 |  | EWGS | ⏳ | ⏳ |
