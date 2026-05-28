@@ -866,7 +866,7 @@ This project is built upon the excellent work of the following open-source proje
 - [SGDAT](https://github.com/gushan/SGDAT) — SGD with Adaptive Threshold for binary neural networks
 - [BinaryNet](https://github.com/itayhubara/BinaryNet.pytorch) — Training deep neural networks with weights and activations constrained to +1 or -1
 - [DoReFa-Net](https://github.com/zzzxxxttt/pytorch_DoReFaNet) — Training low bitwidth convolutional neural networks with low bitwidth gradients (PyTorch implementation)
-- [LSQ (unofficial)](https://github.com/hustzxd/LSQuantization) — The PyTorch implementation of Learned Step size Quantization (LSQ) in ICLR2020 (unofficial)
+- [LSQ](https://github.com/hustzxd/LSQuantization) — The PyTorch implementation of Learned Step size Quantization (LSQ) in ICLR2020 (unofficial)
 - [VISPA](https://github.com/snownus/bnn_vi) — BNN training and variational inference
 
 We are grateful to all the researchers and developers who have made their code publicly available, enabling this benchmark to exist.
