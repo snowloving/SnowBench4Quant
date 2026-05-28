@@ -101,7 +101,7 @@ SnowBench/
 ### Installation
 
 ```bash
-git clone https://github.com/yourusername/SnowBench4Quant.git
+git clone https://github.com/snpwloving/SnowBench4Quant.git
 cd SnowBench4Quant
 pip install -r requirements.txt
 ```
