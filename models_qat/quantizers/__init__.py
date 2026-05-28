@@ -11,8 +11,10 @@ def get_weight_quantizer(qat_method, wbits):
         return PACTWeightQuantizer(wbits)
     elif qat_method == 'lsq':
         return LSQWeightQuantizer(wbits)
-    elif qat_method == 'lsq_plus': # 👈 新增 LSQ+
+    elif qat_method == 'lsq_plus': 
         return LSQPlusWeightQuantizer(wbits)
+    elif qat_method == 'dsq': 
+        return DSQWeightQuantizer(wbits)
     else:
         raise ValueError(f"Unsupported QAT method for weights: {qat_method}")
 
@@ -24,7 +26,9 @@ def get_act_quantizer(qat_method, abits):
         return PACTActQuantizer(abits)
     elif qat_method == 'lsq':
         return LSQActQuantizer(abits)
-    elif qat_method == 'lsq_plus': # 👈 新增 LSQ+
+    elif qat_method == 'lsq_plus': 
         return LSQPlusActQuantizer(abits)
+    elif qat_method == 'dsq':  
+        return DSQActQuantizer(abits)
     else:
         raise ValueError(f"Unsupported QAT method for activations: {qat_method}")
