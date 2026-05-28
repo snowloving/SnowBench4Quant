@@ -101,7 +101,7 @@ SnowBench/
 ### Installation
 
 ```bash
-git clone https://github.com/snpwloving/SnowBench4Quant.git
+git clone https://github.com/snowloving/SnowBench4Quant.git
 cd SnowBench4Quant
 pip install -r requirements.txt
 ```
@@ -771,9 +771,8 @@ python main_modern_qat.py \
   --dataset cifar100 \
   --wbits 2 \
   --abits 2 \
-  --optimizer SGD \
-  --lr 0.1 \
-  --momentum 0.9 \
+  --optimizer Adam \
+  --lr 1e-3 \
   --weight-decay 1e-4 \
   --lr_scheduler cosine \
   --epochs 200 \
@@ -811,11 +810,6 @@ python main_modern_qat.py --model resnet18_preact_quant --qat_method lsq --save 
 # 3-bit (3w3a) Experiments on CIFAR-100
 # ---------------------------------------------------------
 
-**DoReFaNet** 
-
-```bash
-python main_modern_qat.py --model resnet18_preact_quant --qat_method dorefa --save resnet18_preact_dorefa_cifar100_w3a3 --dataset cifar100 --wbits 3 --abits 3 --optimizer SGD --lr 0.01 --momentum 0.9 --weight-decay 1e-4 --lr_scheduler cosine --epochs 200 -b 256 --gpus 1
-```
 
 </details>
 
