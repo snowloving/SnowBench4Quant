@@ -111,10 +111,10 @@ pip install -r requirements.txt
 
 ## 🖥️ Experiments
 
-This benchmark supports two main experimental tracks:
+This benchmark supports following main experimental tracks:
 
 ### 🎯 Experiments Navigator
- 5
+ 
 - [🔬 Experiment 1](#exp1): Binary Network Optimizer Comparison (SGDAT-style) — SGD vs Adam vs Bop vs Bop2ndOrder vs SGDAT
 - [⚗️ Experiment 2](#exp2): Full-Precision Network Accuracy Comparison on CIFAR — FP32 baselines as reference ceiling
 - [🔭 Experiment 3](#exp3): Binary & Quantized Network Accuracy Comparison on CIFAR (BinaryNet-style) — 1-bit & Multi-bit compression
