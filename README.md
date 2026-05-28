@@ -76,7 +76,6 @@ SnowBench/
 │       ├── dorefa.py           # Existing DoReFa logic lives here
 │       ├── pact.py             # PACT (PArameterized Clipping acTivation)
 │       ├── lsq.py              # LSQ (Learned Step Size Quantization)
-│       ├── ewgs.py             # EWGS (Elastic Weight Gradient Scaling)
 │       └── ...
 │
 ├── models_full_imagenet/       # Full-precision models (ImageNet-scale)
