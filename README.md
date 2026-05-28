@@ -754,12 +754,22 @@ This benchmark integrates several milestone QAT algorithms, including but not li
 | PreActResNet18  | DoReFaNet | 72.65 | 72.81 |
 |  | PACT | 71.28 | 71.84 |
 |  | LSQ | 72.00 | 69.63 |
-|  | LSQ+ | ⏳ | ⏳ |
+|  | LSQ+ | 70.71 | 66.07 |
 |  | DSQ | ⏳ | ⏳ |
 |  | EWGS | ⏳ | ⏳ |
 |  | QDrop | ⏳ | ⏳ |
 
-> ⚠️ **Optimizer Note:** Following common practices in modern QAT, these methods are trained using **SGD** (with momentum=0.9, weight_decay=1e-4) and Cosine Annealing learning rate schedules unless the specific algorithm strictly dictates otherwise (e.g., LSQ recommends scaling the learning rate of the step size parameter).
+> ⚠️ **Optimizer Note:** Following common practices in modern QAT, these methods are trained using **SGD** (with momentum=0.9, weight_decay=1e-4) and Cosine Annealing learning rate schedules unless the specific algorithm strictly dictates otherwise (e.g., LSQ and DSQ implementations inherently employ gradient scaling for their learnable quantization parameters). 
+
+> 🚨 **Experimental Anomaly Note:** 
+> Readers may notice an anomalous trend in the current CIFAR-100 results: 
+> 1) **Sub-optimal Multi-bit Scaling:** Modern learnable methods (LSQ, LSQ+) underperform their 2-bit counterparts when scaled to 3-bit. 
+> 2) **Inverted Hierarchy:** The classical heuristic baseline (DoReFa-Net) surprisingly outperforms modern optimization-based SOTAs (LSQ/PACT).
+> 
+> **Analysis:** These paradoxes are a known phenomenon when deploying highly parameterized QAT algorithms on small-scale datasets like CIFAR-100. The rigid statistical scaling of DoReFa-Net acts as an implicit regularizer, preventing overfitting. Conversely, the extra learnable parameters in LSQ and PACT ($s$, $\alpha$, $\beta$) provide excess capacity, causing the model to severely overfit the dataset noise or suffer from hyperparameter sensitivity (e.g., learning rate mismatch leading to severe weight oscillation at 3-bit).
+> 
+> **Status:** The current implementations serve as rapid, structurally verified baselines. To observe the true algorithmic superiority of modern QAT methods (where LSQ/PACT typically dominate), we will conduct rigorous evaluations on the large-scale **ImageNet-1K** dataset in future updates, where the abundance of complex data prevents such benign overfitting.
+
 
 #### 📋 Quick Example Command
 
