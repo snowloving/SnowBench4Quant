@@ -751,8 +751,8 @@ This benchmark integrates several milestone QAT algorithms, including but not li
 |Backbone | Method | 2w2a | 3w3a |
 |--------|--------|:----:|:----:|
 | PreActResNet18  | DoReFaNet | 70.85 | 70.82 |
-|  | PACT | ⏳ | ⏳ |
-|  | LSQ | ⏳ | ⏳ |
+|  | PACT | 68.34 | 69.05 |
+|  | LSQ | 70.11 | 66.53 |
 |  | LSQ+ | ⏳ | ⏳ |
 |  | DSQ | ⏳ | ⏳ |
 |  | EWGS | ⏳ | ⏳ |
@@ -805,6 +805,16 @@ python main_modern_qat.py --model resnet18_preact_quant --qat_method pact --save
 
 ```bash
 python main_modern_qat.py --model resnet18_preact_quant --qat_method lsq --save resnet18_preact_lsq_cifar100_w2a2 --dataset cifar100 --wbits 2 --abits 2 --optimizer SGD --lr 0.1 --momentum 0.9 --weight-decay 1e-4 --lr_scheduler cosine --epochs 200 -b 256 --gpus 1
+```
+
+# ---------------------------------------------------------
+# 3-bit (3w3a) Experiments on CIFAR-100
+# ---------------------------------------------------------
+
+**DoReFaNet** 
+
+```bash
+python main_modern_qat.py --model resnet18_preact_quant --qat_method dorefa --save resnet18_preact_dorefa_cifar100_w3a3 --dataset cifar100 --wbits 3 --abits 3 --optimizer SGD --lr 0.01 --momentum 0.9 --weight-decay 1e-4 --lr_scheduler cosine --epochs 200 -b 256 --gpus 1
 ```
 
 </details>
