@@ -640,22 +640,22 @@ python main_binary_binarynet.py \
 
 **CIFAR-10 on VGG_Small**
 ```bash
-python main_binary_binarynet.py --model vgg_small_quant --save vgg_small_quant_cifar10_w8a8 --dataset cifar10 --wbits 8 --abits 8 --epochs 200 -b 256 --gpus 0
+python main_binary_binarynet.py --model vgg_small_quant --save vgg_small_quant_cifar10_8w8a --dataset cifar10 --wbits 8 --abits 8 --epochs 200 -b 256 --gpus 0
 ```
 
 **CIFAR-100 on VGG_Small** 
 ```bash
-python main_binary_binarynet.py --model vgg_small_quant --save vgg_small_quant_cifar100_w8a8 --dataset cifar100 --wbits 8 --abits 8 --epochs 200 -b 256 --gpus 2
+python main_binary_binarynet.py --model vgg_small_quant --save vgg_small_quant_cifar100_8w8a --dataset cifar100 --wbits 8 --abits 8 --epochs 200 -b 256 --gpus 2
 ```
 
 **CIFAR-10 on ResNet18** 
 ```bash
-python main_binary_binarynet.py --model resnet18_quant --save resnet18_quant_cifar10_w8a8 --dataset cifar10 --wbits 8 --abits 8 --epochs 200 -b 256 --gpus 1
+python main_binary_binarynet.py --model resnet18_quant --save resnet18_quant_cifar10_8w8a --dataset cifar10 --wbits 8 --abits 8 --epochs 200 -b 256 --gpus 1
 ```
 
 **CIFAR-100 on ResNet18** 
 ```bash
-python main_binary_binarynet.py --model resnet18_quant --save resnet18_quant_cifar100_w8a8 --dataset cifar100 --wbits 8 --abits 8 --epochs 200 -b 256 --gpus 1
+python main_binary_binarynet.py --model resnet18_quant --save resnet18_quant_cifar100_8w8a --dataset cifar100 --wbits 8 --abits 8 --epochs 200 -b 256 --gpus 1
 ```
 </details>
 
@@ -698,7 +698,7 @@ python main_binary_binarynet.py --model resnet18_quant --save resnet18_quant_cif
 ```bash
 python main_binary_dorefanet.py \
   --model vgg_small_quant \
-  --save vgg_small_quant_dorefa_cifar10_w2a2 \
+  --save vgg_small_quant_dorefa_cifar10_2w2a \
   --dataset cifar10 \
   --wbits 2 \
   --abits 2 \
@@ -713,17 +713,17 @@ python main_binary_dorefanet.py \
 
 **CIFAR-10 on VGG_Small**
 ```bash
-python main_binary_dorefanet.py --model vgg_small_quant --save vgg_small_quant_cifar10_w2a2 --dataset cifar10 --wbits 2 --abits 2  --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 1
+python main_binary_dorefanet.py --model vgg_small_quant --save vgg_small_quant_cifar10_2w2a --dataset cifar10 --wbits 2 --abits 2  --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 1
 ```
 
 **CIFAR-10 on ResNet20** 
 ```bash
-python main_binary_dorefanet.py --model resnet20_quant --save resnet20_quant_cifar10_w2a2 --dataset cifar10 --wbits 2 --abits 2  --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 2
+python main_binary_dorefanet.py --model resnet20_quant --save resnet20_quant_cifar10_2w2a --dataset cifar10 --wbits 2 --abits 2  --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 2
 ```
 
 **CIFAR-10 on ResNet18** 
 ```bash
-python main_binary_dorefanet.py --model resnet18_quant --save resnet18_quant_cifar10_w2a2 --dataset cifar10 --wbits 2 --abits 2  --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 0
+python main_binary_dorefanet.py --model resnet18_quant --save resnet18_quant_cifar10_2w2a --dataset cifar10 --wbits 2 --abits 2  --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 0
 ```
 
 </details>
@@ -778,7 +778,7 @@ This benchmark integrates several milestone QAT algorithms, including but not li
 python main_modern_qat.py \
   --model resnet18_preact_quant \
   --qat_method dorefa \
-  --save resnet18_preact_dorefa_cifar100_w2a2 \
+  --save resnet18_preact_dorefa_cifar100_2w2a \
   --dataset cifar100 \
   --wbits 2 \
   --abits 2 \
@@ -800,31 +800,31 @@ python main_modern_qat.py \
 **DoReFaNet** 
 
 ```bash
-python main_modern_qat.py --model resnet18_preact_quant --qat_method dorefa --save resnet18_preact_dorefa_cifar100_w2a2 --dataset cifar100 --wbits 2 --abits 2 --optimizer Adam --lr 1e-3 --weight-decay 1e-4 --lr_scheduler cosine --epochs 200 -b 256 --gpus 0
+python main_modern_qat.py --model resnet18_preact_quant --qat_method dorefa --save resnet18_preact_dorefa_cifar100_2w2a --dataset cifar100 --wbits 2 --abits 2 --optimizer Adam --lr 1e-3 --weight-decay 1e-4 --lr_scheduler cosine --epochs 200 -b 256 --gpus 0
 ```
 
 **PACT** 
 
 ```bash
-python main_modern_qat.py --model resnet18_preact_quant --qat_method pact --save resnet18_preact_pact_cifar100_w2a2 --dataset cifar100 --wbits 2 --abits 2 --optimizer Adam --lr 1e-3 --weight-decay 1e-4 --lr_scheduler cosine --epochs 200 -b 256 --gpus 1
+python main_modern_qat.py --model resnet18_preact_quant --qat_method pact --save resnet18_preact_pact_cifar100_2w2a --dataset cifar100 --wbits 2 --abits 2 --optimizer Adam --lr 1e-3 --weight-decay 1e-4 --lr_scheduler cosine --epochs 200 -b 256 --gpus 1
 ```
 
 **LSQ** 
 
 ```bash
-python main_modern_qat.py --model resnet18_preact_quant --qat_method lsq --save resnet18_preact_lsq_cifar100_w2a2 --dataset cifar100 --wbits 2 --abits 2 --optimizer Adam --lr 1e-3 --weight-decay 1e-4 --lr_scheduler cosine --epochs 200 -b 256 --gpus 2
+python main_modern_qat.py --model resnet18_preact_quant --qat_method lsq --save resnet18_preact_lsq_cifar100_2w2a --dataset cifar100 --wbits 2 --abits 2 --optimizer Adam --lr 1e-3 --weight-decay 1e-4 --lr_scheduler cosine --epochs 200 -b 256 --gpus 2
 ```
 
 **LSQ+** 
 
 ```bash
-python main_modern_qat.py --model resnet18_preact_quant --qat_method lsq_plus --save resnet18_preact_lsq_plus_cifar100_w2a2 --dataset cifar100 --wbits 2 --abits 2 --optimizer Adam --lr 1e-3 --weight-decay 1e-4 --lr_scheduler cosine --epochs 200 -b 256 --gpus 1
+python main_modern_qat.py --model resnet18_preact_quant --qat_method lsq_plus --save resnet18_preact_lsq_plus_cifar100_2w2a --dataset cifar100 --wbits 2 --abits 2 --optimizer Adam --lr 1e-3 --weight-decay 1e-4 --lr_scheduler cosine --epochs 200 -b 256 --gpus 1
 ```
 
 **DSQ** 
 
 ```bash
-python main_modern_qat.py --model resnet18_preact_quant --qat_method dsq --save resnet18_preact_dsq_cifar100_w2a2 --dataset cifar100 --wbits 2 --abits 2 --optimizer Adam --lr 1e-3 --weight-decay 1e-4 --lr_scheduler cosine --epochs 200 -b 256 --gpus 1
+python main_modern_qat.py --model resnet18_preact_quant --qat_method dsq --save resnet18_preact_dsq_cifar100_2w2a --dataset cifar100 --wbits 2 --abits 2 --optimizer Adam --lr 1e-3 --weight-decay 1e-4 --lr_scheduler cosine --epochs 200 -b 256 --gpus 1
 ```
 
 #### 3-bit (3w3a) Experiments on CIFAR-100
@@ -836,25 +836,25 @@ python main_modern_qat.py --model resnet18_preact_quant --qat_method dorefa --sa
 **PACT** 
 
 ```bash
-python main_modern_qat.py --model resnet18_preact_quant --qat_method pact --save resnet18_preact_pact_cifar100_w3a3 --dataset cifar100 --wbits 3 --abits 3 --optimizer Adam --lr 1e-3 --weight-decay 1e-4 --lr_scheduler cosine --epochs 200 -b 256 --gpus 1
+python main_modern_qat.py --model resnet18_preact_quant --qat_method pact --save resnet18_preact_pact_cifar100_3w3a --dataset cifar100 --wbits 3 --abits 3 --optimizer Adam --lr 1e-3 --weight-decay 1e-4 --lr_scheduler cosine --epochs 200 -b 256 --gpus 1
 ```
 
 **LSQ** 
 
 ```bash
-python main_modern_qat.py --model resnet18_preact_quant --qat_method lsq --save resnet18_preact_lsq_cifar100_w3a3 --dataset cifar100 --wbits 3 --abits 3 --optimizer Adam --lr 1e-3 --weight-decay 1e-4 --lr_scheduler cosine --epochs 200 -b 256 --gpus 2
+python main_modern_qat.py --model resnet18_preact_quant --qat_method lsq --save resnet18_preact_lsq_cifar100_3w3a --dataset cifar100 --wbits 3 --abits 3 --optimizer Adam --lr 1e-3 --weight-decay 1e-4 --lr_scheduler cosine --epochs 200 -b 256 --gpus 2
 ```
 
 **LSQ+** 
 
 ```bash
-python main_modern_qat.py --model resnet18_preact_quant --qat_method lsq_plus --save resnet18_preact_lsq_plus_cifar100_w3a3 --dataset cifar100 --wbits 3 --abits 3 --optimizer Adam --lr 1e-3 --weight-decay 1e-4 --lr_scheduler cosine --epochs 200 -b 256 --gpus 2
+python main_modern_qat.py --model resnet18_preact_quant --qat_method lsq_plus --save resnet18_preact_lsq_plus_cifar100_3w3a --dataset cifar100 --wbits 3 --abits 3 --optimizer Adam --lr 1e-3 --weight-decay 1e-4 --lr_scheduler cosine --epochs 200 -b 256 --gpus 2
 ```
 
 **DSQ** 
 
 ```bash
-python main_modern_qat.py --model resnet18_preact_quant --qat_method dsq --save resnet18_preact_dsq_cifar100_w3a3 --dataset cifar100 --wbits 3 --abits 3 --optimizer Adam --lr 1e-3 --weight-decay 1e-4 --lr_scheduler cosine --epochs 200 -b 256 --gpus 2
+python main_modern_qat.py --model resnet18_preact_quant --qat_method dsq --save resnet18_preact_dsq_cifar100_3w3a --dataset cifar100 --wbits 3 --abits 3 --optimizer Adam --lr 1e-3 --weight-decay 1e-4 --lr_scheduler cosine --epochs 200 -b 256 --gpus 2
 ```
 
 </details>
