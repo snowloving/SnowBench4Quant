@@ -89,7 +89,7 @@ SnowBench4Quant/
 ├── main_binary_sgdat.py        # Entry: binary models (models_sgdat)
 ├── main_full_cifar.py          # Entry: full-precision on cifar (models_full_cifar)
 ├── main_binary_binarynet.py    # Entry: binary & full-precision (models_binarynet)
-├── main_binary_dorefanet.py    # Entry: binary & full-precision (models_dorefanet) — nearly identical to main_binary_binarynet.py
+├── main_quant_dorefa.py     # Entry: quantized & full-precision (models_dorefanet) — nearly identical to main_binary_binarynet.py
 ├── main_modern_qat.py          # Entry: qat methods (models_qat) — nearly identical to main_binary_binarynet.py
 ├── main_full_imagenet.py       # Entry: full-precision on imagenet (models_full_imagenet)
 └
