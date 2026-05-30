@@ -918,7 +918,6 @@ This project is built upon the excellent work of the following open-source proje
 - [DoReFa-Net](https://github.com/zzzxxxttt/pytorch_DoReFaNet) — Training low bitwidth convolutional neural networks with low bitwidth gradients (PyTorch implementation)
 - [LSQ](https://github.com/hustzxd/LSQuantization/tree/master) — Learned Step Size Quantization (PyTorch implementation)
 - [DSQ](https://github.com/ricky40403/DSQ/) — Differentiable Soft Quantization (PyTorch implementation)
-- [VISPA](https://github.com/snownus/bnn_vi) — BNN training and variational inference
 
 We are grateful to all the researchers and developers who have made their code publicly available, enabling this benchmark to exist.
 
