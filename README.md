@@ -27,7 +27,7 @@ SnowBench4Quant is a reproducible benchmark suite designed for training and eval
 
 ## 📂 Repository Structure
 ```text
-SnowBench/
+SnowBench4Quant/
 ├── README.md                   
 ├── requirements.txt            
 ├── data.py                     # Dataset loader: CIFAR-10/100, Tiny-ImageNet, ImageNet (with path configuration)
@@ -61,7 +61,7 @@ SnowBench/
 │   └── resnet_quant.py/        # Quantized ResNet
 │
 ├── models_dorefanet/           # Binary & Quantized (DoreFaNet-style)
-│   ├── __init__.py.py/         # __all__ = ['vgg_small_quant', 'vgg16_quant', 'resnet18_quant', 'resnet20_quant', 'resnet56_quant', 'resnet18_preact_quant', 'resnet20_preact_quant', 'resnet56_preact_quant']
+│   ├── __init__.py.py/         # __all__ = ['vgg_small_quant', 'vgg16_quant', 'resnet18_quant', 'resnet20_quant', 'resnet56_quant']
 │   ├── binarized_modules.py/   # Binarize / quantize layers & functions
 │   ├── vgg.py/                 # Binary & Quantized VGG
 │   └── resnet.py/              # Binary & Quantized ResNet
