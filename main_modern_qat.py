@@ -215,8 +215,15 @@ def main():
         if not param.requires_grad:
             continue
         # 如果是 1D 张量 (比如 BatchNorm 的 gamma/beta，或者量化的 s, alpha)，不加 WD
-        # 如果名字里显式包含 's' 或 'alpha' 等量化参数，不加 WD
-        if len(param.shape) == 1 or name.endswith('.s') or name.endswith('.alpha') or name.endswith('.beta'):
+        # 保护所有的量化参数！
+        # 涵盖了：LSQ(s), PACT(alpha), LSQ+(beta), DSQ(alpha, uW, lW, uA, lA, uB, lB)
+        quant_param_keywords = ['.s', '.alpha', '.beta', '.alphaW', '.alphaA', '.alphaB', 
+                                '.uW', '.lW', '.uA', '.lA', '.uB', '.lB']
+        
+        is_quant_param = any(name.endswith(kw) for kw in quant_param_keywords)
+        
+        # 1D张量(BatchNorm) 或 量化参数 免除 Weight Decay
+        if len(param.shape) == 1 or is_quant_param:
             no_decay_params.append(param)
         else:
             decay_params.append(param)
@@ -266,15 +273,6 @@ def main():
             
         # 🔥 更新学习率调度器
         scheduler.step()
-
-
-        # train for one epoch
-        train_loss, train_prec1, train_prec5 = train(
-            train_loader, model, criterion, epoch, optimizer)
-
-        # evaluate on validation set
-        val_loss, val_prec1, val_prec5 = validate(
-            val_loader, model, criterion, epoch)
 
         # remember best prec@1 and save checkpoint
         is_best = val_prec1 > best_prec1
