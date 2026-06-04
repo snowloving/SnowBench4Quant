@@ -63,19 +63,9 @@ class DoReFaActQuantizer(nn.Module):
         if self.abits == 32:
             return activation
             
-        # 💡 高级适配：
-        # 因为在 resnet_preact.py 中我们去掉了 Hardtanh，
-        # 传进来的 activation 是不受限制的（有正有负，且很大）。
-        # 所以我们必须先把它手动截断在 [-1, 1] 之间！
-        act_clipped = torch.clamp(activation, -1.0, 1.0)
-        
-        # 将 [-1, 1] 平移压缩到 [0, 1]
-        act_0_1 = act_clipped / 2.0 + 0.5
+        act_0_1 = torch.clamp(activation, 0, 1)
         
         # 用 DoReFa 核心函数量化
         act_q_0_1 = uniform_quantize(act_0_1, self.abits)
-        
-        # 反向映射回 [-1, 1] 交给卷积运算
-        activation_q = act_q_0_1 * 2.0 - 1.0
         
         return activation_q
