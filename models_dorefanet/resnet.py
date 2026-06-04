@@ -42,12 +42,12 @@ class BasicBlockQuant(nn.Module):
         self.conv1 = QuantizeConv2d(in_planes, planes, kernel_size=3, stride=stride,
                      padding=1, bias=False, wbits=wbits, abits=abits)
         self.bn1 = nn.BatchNorm2d(planes)
-        self.tanh1 = nn.Hardtanh(inplace=True)
+        self.tanh1 = nn.ReLU(inplace=True)
         
         self.conv2 = QuantizeConv2d(planes, planes, kernel_size=3, stride=1,
                      padding=1, bias=False, wbits=wbits, abits=abits)
         self.bn2 = nn.BatchNorm2d(planes)
-        self.tanh2 = nn.Hardtanh(inplace=True)
+        self.tanh2 = nn.ReLU(inplace=True)
 
         self.shortcut = nn.Sequential()
         # Option A（补零）
@@ -93,7 +93,7 @@ class ResNet_CIFAR(nn.Module):
         # 【潜规则 1】：第一层必须保持全精度 (nn.Conv2d)！负责高精度提取原始 RGB 边缘特征。
         self.conv1 = nn.Conv2d(3, 16, kernel_size=3, stride=1, padding=1, bias=False)
         self.bn1 = nn.BatchNorm2d(16)
-        self.tanh1 = nn.Hardtanh(inplace=True)
+        self.tanh1 = nn.ReLU(inplace=True)
         
         self.layer1 = self._make_layer(block, 16, num_blocks[0], stride=1, wbits=wbits, abits=abits)
         self.layer2 = self._make_layer(block, 32, num_blocks[1], stride=2, wbits=wbits, abits=abits)
@@ -137,7 +137,7 @@ class ResNet_ImageNet_Modified(nn.Module):
         # 针对 CIFAR 的修改：原版的 7x7 stride=2 替换为 3x3 stride=1，并且去掉了紧随其后的 MaxPool
         self.conv1 = nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1, bias=False)
         self.bn1 = nn.BatchNorm2d(64)
-        self.tanh1 = nn.Hardtanh(inplace=True)
+        self.tanh1 = nn.ReLU(inplace=True)
         
         self.layer1 = self._make_layer(block, 64, num_blocks[0], stride=1, wbits=wbits, abits=abits)
         self.layer2 = self._make_layer(block, 128, num_blocks[1], stride=2, wbits=wbits, abits=abits)
