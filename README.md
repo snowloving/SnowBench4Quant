@@ -713,17 +713,17 @@ python main_quant_dorefa.py \
 
 **CIFAR-10 on VGG_Small**
 ```bash
-python main_quant_dorefa.py --model vgg_small_quant --save vgg_small_quant_cifar10_2w2a --dataset cifar10 --wbits 2 --abits 2  --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 1
+python main_quant_dorefa.py --model vgg_small_quant --save vgg_small_quant_cifar10_2w2a --dataset cifar10 --wbits 2 --abits 2 --epochs 200 -b 256 --gpus 1
 ```
 
 **CIFAR-10 on ResNet20** 
 ```bash
-python main_quant_dorefa.py --model resnet20_quant --save resnet20_quant_cifar10_2w2a --dataset cifar10 --wbits 2 --abits 2  --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 2
+python main_quant_dorefa.py --model resnet20_quant --save resnet20_quant_cifar10_2w2a --dataset cifar10 --wbits 2 --abits 2 --epochs 200 -b 256 --gpus 2
 ```
 
 **CIFAR-10 on ResNet18** 
 ```bash
-python main_quant_dorefa.py --model resnet18_quant --save resnet18_quant_cifar10_2w2a --dataset cifar10 --wbits 2 --abits 2  --optimizer Adam --lr 1e-4 --momentum 0 --weight-decay 0  --epochs 200 -b 256 --gpus 0
+python main_quant_dorefa.py --model resnet18_quant --save resnet18_quant_cifar10_2w2a --dataset cifar10 --wbits 2 --abits 2 --epochs 200 -b 256 --gpus 0
 ```
 
 </details>
