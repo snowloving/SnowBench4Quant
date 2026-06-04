@@ -19,34 +19,34 @@ class VGG_Small_Quant(nn.Module):
             QuantizeConv2d(3, 128*self.infl_ratio, kernel_size=3, stride=1, padding=1,
                       bias=True, wbits=wbits, abits=abits),
             nn.BatchNorm2d(128*self.infl_ratio),
-            nn.Hardtanh(inplace=True),
+            nn.ReLU(inplace=True),
 
             QuantizeConv2d(128*self.infl_ratio, 128*self.infl_ratio, kernel_size=3, padding=1, bias=True, wbits=wbits, abits=abits),
             nn.MaxPool2d(kernel_size=2, stride=2),
             nn.BatchNorm2d(128*self.infl_ratio),
-            nn.Hardtanh(inplace=True),
+            nn.ReLU(inplace=True),
 
 
             QuantizeConv2d(128*self.infl_ratio, 256*self.infl_ratio, kernel_size=3, padding=1, bias=True, wbits=wbits, abits=abits),
             nn.BatchNorm2d(256*self.infl_ratio),
-            nn.Hardtanh(inplace=True),
+            nn.ReLU(inplace=True),
 
 
             QuantizeConv2d(256*self.infl_ratio, 256*self.infl_ratio, kernel_size=3, padding=1, bias=True, wbits=wbits, abits=abits),
             nn.MaxPool2d(kernel_size=2, stride=2),
             nn.BatchNorm2d(256*self.infl_ratio),
-            nn.Hardtanh(inplace=True),
+            nn.ReLU(inplace=True),
 
 
             QuantizeConv2d(256*self.infl_ratio, 512*self.infl_ratio, kernel_size=3, padding=1, bias=True, wbits=wbits, abits=abits),
             nn.BatchNorm2d(512*self.infl_ratio),
-            nn.Hardtanh(inplace=True),
+            nn.ReLU(inplace=True),
 
 
             QuantizeConv2d(512*self.infl_ratio, 512, kernel_size=3, padding=1, bias=True, wbits=wbits, abits=abits),
             nn.MaxPool2d(kernel_size=2, stride=2),
             nn.BatchNorm2d(512),
-            nn.Hardtanh(inplace=True)
+            nn.ReLU(inplace=True)
         )
 
         
@@ -56,11 +56,11 @@ class VGG_Small_Quant(nn.Module):
         self.classifier = nn.Sequential(
             QuantizeLinear(512 * 4 * 4, 1024, bias=True, wbits=wbits, abits=abits),
             nn.BatchNorm1d(1024),
-            nn.Hardtanh(inplace=True),
+            nn.ReLU(inplace=True),
             #nn.Dropout(0.5),
             QuantizeLinear(1024, 1024, bias=True, wbits=wbits, abits=abits),
             nn.BatchNorm1d(1024),
-            nn.Hardtanh(inplace=True),
+            nn.ReLU(inplace=True),
             #nn.Dropout(0.5),
             QuantizeLinear(1024, num_classes, bias=True, wbits=wbits, abits=abits),
             nn.BatchNorm1d(num_classes, affine=False),
@@ -99,67 +99,67 @@ class VGG16_Quant(nn.Module):
             QuantizeConv2d(3, 64*self.infl_ratio, kernel_size=3, stride=1, padding=1,
                       bias=True, wbits=wbits, abits=abits),
             nn.BatchNorm2d(64*self.infl_ratio),
-            nn.Hardtanh(inplace=True),
+            nn.ReLU(inplace=True),
 
             QuantizeConv2d(64*self.infl_ratio, 64*self.infl_ratio, kernel_size=3, padding=1, bias=True, wbits=wbits, abits=abits),
             nn.MaxPool2d(kernel_size=2, stride=2),
             nn.BatchNorm2d(64*self.infl_ratio),
-            nn.Hardtanh(inplace=True),
+            nn.ReLU(inplace=True),
 
 
             QuantizeConv2d(64*self.infl_ratio, 128*self.infl_ratio, kernel_size=3, stride=1, padding=1,bias=True, wbits=wbits, abits=abits),
             nn.BatchNorm2d(128*self.infl_ratio),
-            nn.Hardtanh(inplace=True),
+            nn.ReLU(inplace=True),
 
             QuantizeConv2d(128*self.infl_ratio, 128*self.infl_ratio, kernel_size=3, padding=1, bias=True, wbits=wbits, abits=abits),
             nn.MaxPool2d(kernel_size=2, stride=2),
             nn.BatchNorm2d(128*self.infl_ratio),
-            nn.Hardtanh(inplace=True),
+            nn.ReLU(inplace=True),
 
 
             QuantizeConv2d(128*self.infl_ratio, 256*self.infl_ratio, kernel_size=3, padding=1, bias=True, wbits=wbits, abits=abits),
             nn.BatchNorm2d(256*self.infl_ratio),
-            nn.Hardtanh(inplace=True),
+            nn.ReLU(inplace=True),
 
 
             QuantizeConv2d(256*self.infl_ratio, 256*self.infl_ratio, kernel_size=3, padding=1, bias=True, wbits=wbits, abits=abits),
             nn.BatchNorm2d(256*self.infl_ratio),
-            nn.Hardtanh(inplace=True),
+            nn.ReLU(inplace=True),
 
             QuantizeConv2d(256*self.infl_ratio, 256*self.infl_ratio, kernel_size=3, padding=1, bias=True, wbits=wbits, abits=abits),
             nn.MaxPool2d(kernel_size=2, stride=2),
             nn.BatchNorm2d(256*self.infl_ratio),
-            nn.Hardtanh(inplace=True),
+            nn.ReLU(inplace=True),
 
 
             QuantizeConv2d(256*self.infl_ratio, 512*self.infl_ratio, kernel_size=3, padding=1, bias=True, wbits=wbits, abits=abits),
             nn.BatchNorm2d(512*self.infl_ratio),
-            nn.Hardtanh(inplace=True),
+            nn.ReLU(inplace=True),
 
 
             QuantizeConv2d(512*self.infl_ratio, 512*self.infl_ratio, kernel_size=3, padding=1, bias=True, wbits=wbits, abits=abits),
             nn.BatchNorm2d(512*self.infl_ratio),
-            nn.Hardtanh(inplace=True),
+            nn.ReLU(inplace=True),
 
             QuantizeConv2d(512*self.infl_ratio, 512*self.infl_ratio, kernel_size=3, padding=1, bias=True, wbits=wbits, abits=abits),
             nn.MaxPool2d(kernel_size=2, stride=2),
             nn.BatchNorm2d(512*self.infl_ratio),
-            nn.Hardtanh(inplace=True),
+            nn.ReLU(inplace=True),
 
 
             QuantizeConv2d(512*self.infl_ratio, 512*self.infl_ratio, kernel_size=3, padding=1, bias=True, wbits=wbits, abits=abits),
             nn.BatchNorm2d(512*self.infl_ratio),
-            nn.Hardtanh(inplace=True),
+            nn.ReLU(inplace=True),
 
             QuantizeConv2d(512*self.infl_ratio, 512*self.infl_ratio, kernel_size=3, padding=1, bias=True, wbits=wbits, abits=abits),
             nn.BatchNorm2d(512*self.infl_ratio),
-            nn.Hardtanh(inplace=True),
+            nn.ReLU(inplace=True),
 
 
             QuantizeConv2d(512*self.infl_ratio, 512, kernel_size=3, padding=1, bias=True, wbits=wbits, abits=abits),
             nn.MaxPool2d(kernel_size=2, stride=2),
             nn.BatchNorm2d(512),
-            nn.Hardtanh(inplace=True),
+            nn.ReLU(inplace=True),
         )
         
         # 维度计算：CIFAR 输入为 32x32
@@ -168,7 +168,7 @@ class VGG16_Quant(nn.Module):
         self.classifier = nn.Sequential(
             QuantizeLinear(512, 512, bias=True, wbits=wbits, abits=abits),
             nn.BatchNorm1d(512),
-            nn.Hardtanh(inplace=True),
+            nn.ReLU(inplace=True),
             #nn.Dropout(0.5),
             QuantizeLinear(512, num_classes, bias=True, wbits=wbits, abits=abits),
             nn.BatchNorm1d(num_classes, affine=False),
