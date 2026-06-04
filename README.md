@@ -683,7 +683,8 @@ python main_binary_binarynet.py --model resnet18_quant --save resnet18_quant_cif
 |  | resnet18 | 2 | 2 | 85.09 | 55.45 |
 |  |  | 4 | 4 | 90.88 | 64.62 |
 |  |  | 8 | 8 | 91.21 | 65.50 |
-|  | resnet18_preact_quant | 4 | 4 | ⌛️ | ⌛️ |
+|  | resnet18_preact_quant | 2 | 2 | 90.66 | ⌛️ |
+|  |  | 4 | 4 | 91.38 | ⌛️ |
 
 > ℹ️ **Activation function note:** All results above use `nn.ReLU` by default. However, for 2w2a ResNet on CIFAR-10, switching to `nn.Hardtanh` yields significant improvements:
 > - **resnet20 (2w2a):** 72.24 → **83.01** ✅
@@ -727,7 +728,7 @@ python main_quant_dorefa.py --model resnet18_quant --save resnet18_quant_cifar10
 
 **CIFAR-10 on PreActResNet18** 
 ```bash
-python main_quant_dorefa.py --model resnet18_preact_quant --save resnet18_preact_quant_cifar10_2w2a --dataset cifar10 --wbits 2 --abits 2 --epochs 200 -b 256 --gpus 0
+python main_quant_dorefa.py --model resnet18_preact_quant --save resnet18_preact_quant_cifar10_2w2a --dataset cifar10 --wbits 2 --abits 2 --epochs 200 -b 256 --gpus 2
 ```
 
 </details>
@@ -753,12 +754,12 @@ This benchmark integrates several milestone QAT algorithms, including but not li
 
 #### 📊 Results of SOTA QAT Methods on CIFAR-100
 
-|Backbone | Method | 2w2a | 3w3a |
+|Backbone | Method | 2w2a | 4w4a |
 |--------|--------|:----:|:----:|
-| PreActResNet18  | DoReFaNet | 72.65 | 72.81 | 64.66? 71.42? 4w4a
-|  | PACT | 71.28 | 71.84 |
-|  | LSQ | 72.00 | 69.63 |
-|  | LSQ+ | 70.71 | 66.07 |
+| PreActResNet18  | DoReFaNet | 70.48 | 71.43 |
+|  | PACT | ❌️ | ⏳ |
+|  | LSQ | ⏳ | ⏳ |
+|  | LSQ+ | ⏳ | ⏳ |
 |  | DSQ | ⏳ | ⏳ |
 |  | EWGS | ⏳ | ⏳ |
 |  | QDrop | ⏳ | ⏳ |
@@ -795,12 +796,10 @@ python main_modern_qat.py \
 
 ---
 
-#### 2-bit (2w2a) Experiments on CIFAR-100
-
 **DoReFaNet** 
 
 ```bash
-python main_modern_qat.py --model resnet18_preact_quant --qat_method dorefa --save resnet18_preact_dorefa_cifar100_2w2a --dataset cifar100 --wbits 2 --abits 2 --epochs 200 -b 256 --gpus 2
+python main_modern_qat.py --model resnet18_preact_quant --qat_method dorefa --save resnet18_preact_dorefa_cifar100_2w2a --dataset cifar100 --wbits 2 --abits 2 --epochs 200 -b 256 --gpus 1
 ```
 
 **PACT** 
@@ -825,30 +824,6 @@ python main_modern_qat.py --model resnet18_preact_quant --qat_method lsq_plus --
 
 ```bash
 python main_modern_qat.py --model resnet18_preact_quant --qat_method dsq --save resnet18_preact_dsq_cifar100_2w2a --dataset cifar100 --wbits 2 --abits 2 --epochs 200 -b 256 --gpus 1
-```
-
-#### 4-bit (4w4a) Experiments on CIFAR-100
-
-```bash
-python main_modern_qat.py --model resnet18_preact_quant --qat_method dorefa --save resnet18_preact_dorefa_cifar100_4w4a --dataset cifar100 --wbits 4 --abits 4 --epochs 200 -b 256 --gpus 3
-```
-
-**PACT** 
-
-```bash
-python main_modern_qat.py --model resnet18_preact_quant --qat_method pact --save resnet18_preact_pact_cifar100_4w4a --dataset cifar100 --wbits 4 --abits 4 --epochs 200 -b 256 --gpus 1
-```
-
-**LSQ** 
-
-```bash
-python main_modern_qat.py --model resnet18_preact_quant --qat_method lsq --save resnet18_preact_lsq_cifar100_4w4a --dataset cifar100 --wbits 4 --abits 4 --epochs 200 -b 256 --gpus 2
-```
-
-**LSQ+** 
-
-```bash
-python main_modern_qat.py --model resnet18_preact_quant --qat_method lsq_plus --save resnet18_preact_lsq_plus_cifar100_4w4a --dataset cifar100 --wbits 4 --abits 4  --epochs 200 -b 256 --gpus 2
 ```
 
 </details>
