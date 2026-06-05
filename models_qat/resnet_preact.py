@@ -26,13 +26,14 @@ class PreActBasicBlockQuant(nn.Module):
         
         # 核心修改 1：第一个 BN 接收的是 in_planes
         self.bn1 = nn.BatchNorm2d(in_planes)
-        # 注意：不要加 Hardtanh，交给量化层的 act_quantizer 处理截断
+        self.tanh1 = nn.ReLU(inplace=True)
         
         # 🚨 修复点：使用 QConv2d 而不是 QuantizeConv2d
         self.conv1 = QConv2d(in_planes, planes, kernel_size=3, stride=stride, padding=1, bias=False, 
                              wbits=wbits, abits=abits, qat_method=qat_method)
         
         self.bn2 = nn.BatchNorm2d(planes)
+        self.tanh2 = nn.ReLU(inplace=True)
         # 🚨 修复点：使用 QConv2d
         self.conv2 = QConv2d(planes, planes, kernel_size=3, stride=1, padding=1, bias=False, 
                              wbits=wbits, abits=abits, qat_method=qat_method)
@@ -48,7 +49,7 @@ class PreActBasicBlockQuant(nn.Module):
 
     def forward(self, x):
         # 1. 对整个块的输入进行预激活 (只有 BN)
-        out = self.bn1(x)
+        out = self.tanh1(self.bn1(x))
         
         # 2. Shortcut 需要降维时，使用预激活特征 out；否则原样传递 x
         shortcut = self.shortcut(out) if self.use_shortcut else x
@@ -56,7 +57,7 @@ class PreActBasicBlockQuant(nn.Module):
         # 3. 走主干卷积网络 (截断和量化由 conv1 内部的 act_quantizer 自动完成)
         out = self.conv1(out)
         
-        out = self.bn2(out)
+        out = self.tanh2(self.bn2(out))
         out = self.conv2(out)
         
         # 4. 纯净相加！后面绝对不加 ReLU！
@@ -81,7 +82,7 @@ class PreActResNet_CIFAR(nn.Module):
         
         # 核心修改 4（尾）：在进入 Pooling 之前，必须补一个全局预激活
         self.bn_final = nn.BatchNorm2d(64)
-        self.tanh1 = nn.Hardtanh(inplace=True)
+        self.tanh1 = nn.ReLU(inplace=True)
         self.linear = nn.Linear(64, num_classes)
 
     def _make_layer(self, block, planes, num_blocks, stride, wbits, abits, qat_method):
@@ -101,7 +102,7 @@ class PreActResNet_CIFAR(nn.Module):
         out = self.layer2(out)
         out = self.layer3(out)
         
-        # 尾部 BN + Hardtanh
+        # 尾部 BN + ReLU
         out = self.tanh1(self.bn_final(out))
         
         out = F.adaptive_avg_pool2d(out, (1, 1))
@@ -128,7 +129,7 @@ class PreActResNet_ImageNet_Modified(nn.Module):
         
         # 核心修改 4（尾）：末尾补全局 BN
         self.bn_final = nn.BatchNorm2d(512)
-        self.tanh1 = nn.Hardtanh(inplace=True)
+        self.tanh1 = nn.ReLU(inplace=True)
         self.linear = nn.Linear(512, num_classes)
 
     def _make_layer(self, block, planes, num_blocks, stride, wbits, abits, qat_method):
@@ -147,7 +148,7 @@ class PreActResNet_ImageNet_Modified(nn.Module):
         out = self.layer3(out)
         out = self.layer4(out)
         
-        # 尾部 BN + Hardtanh
+        # 尾部 BN + ReLU
         out = self.tanh1(self.bn_final(out))
         
         out = F.adaptive_avg_pool2d(out, (1, 1))
