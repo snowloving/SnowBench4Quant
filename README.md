@@ -759,7 +759,7 @@ This benchmark integrates several milestone QAT algorithms, including but not li
 | PreActResNet18  | DoReFaNet | 70.48 | 71.43 |
 |  | PACT | 72.24 | 75.51 |
 |  | LSQ | 72.21 | 74.63 |
-|  | LSQ+ | 73.3 | 74.04 |
+|  | LSQ+ | 73.30 | 74.04 |
 |  | DSQ | ⏳ | ⏳ |
 |  | EWGS | ⏳ | ⏳ |
 |  | QDrop | ⏳ | ⏳ |
