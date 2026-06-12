@@ -874,7 +874,7 @@ If you use SnowBench in your research, please cite:
   title = {SnowBench4Quant: A Unified Benchmark for Full-Precision and Binary CNNs},
   year = {2026},
   publisher = {GitHub},
-  url = {https://github.com/snowloving/SnowBench}
+  url = {https://github.com/snowloving/SnowBench4Quant}
 }
 ```
 
